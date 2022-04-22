@@ -1,11 +1,7 @@
-﻿using System;
-using MySql.Data.MySqlClient;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DAL
 {
@@ -64,7 +60,7 @@ namespace DAL
         public DateTime lastUpdateTime;
         public DateTime time;
         private DataTable tbl = new DataTable();
-        public DataTable Refresh_conn(string DataTableSql)
+        public async Task <DataTable> Refresh_conn(string DataTableSql)
         {
             try
             {
@@ -98,14 +94,14 @@ namespace DAL
                     MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
                     tbl.Load(cmd1.ExecuteReader());
                     CloseConn(conn);
-                    return tbl;
+                    return await Task.FromResult(tbl);
                 }
             }
             catch (MySqlException ex)
             {
                 MessageBox.Show(ex.Message.ToString());
             }
-            return tbl;
+            return await Task.FromResult(tbl);
         }
 
         #region GetOffMeLawn
@@ -153,6 +149,67 @@ namespace DAL
         //}
         #endregion
 
+        #region Login
+        public async Task<string> Login(string username, string password)
+        {
+            try
+            {
+                Regex regex = new Regex(@"^[a-zA-Z1-9]+$");
+                string connSql = $"SELECT Username, Password, Privilege, id FROM account WHERE username = @username";
+                MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
+
+                if (regex.IsMatch(username))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+
+                    string dbusername = "NONE";
+                    string dbpassword = "NONE";
+                    string dbprivilege = "NONE";
+                    int dbid = 0;
+                    while (reader.Read())
+                    {
+                        dbusername = reader.GetString(0);
+                        dbpassword = reader.GetString(1);
+                        dbprivilege = reader.GetString(2);
+                        dbid = Convert.ToInt32(reader.GetString(3));
+                    }
+                    reader.Close();
+
+                    if (dbusername == username && dbpassword == password)
+                    {
+                        switch (dbprivilege)
+                        {
+                            case "secretary":
+                                return await Task.FromResult("secretary");
+
+                            case "admin":
+                                return await Task.FromResult("admin");
+
+                            case "resident":
+                                return await Task.FromResult("resident");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Username or Password Does Not Exist");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect Username Format!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            return await Task.FromResult("NONE");
+        }
+        #endregion
+
+        /*
         public async Task IsolationLevel()
         {
             Task task = new Task(() => {
@@ -161,13 +218,13 @@ namespace DAL
                     string FlightSeatsTable = "FlightSeats2";
 
                     /// Flight choice:
-                    int flightNo = Form1.Flightnumber;
+                    int flightNo = _2EksamensProjekt.Login.Flightnumber;
 
                     /// Menu: isolation level choice
-                    string level = Form1.conn;
+                    string level = _2EksamensProjekt.Login.conn;
 
                     /// Menu: Seats Choice
-                    int seats = Form1.Seats;
+                    int seats = _2EksamensProjekt.Login.Seats;
 
                     /// SET TRANSACTION
                     String sqlString = $"\nSET TRANSACTION ISOLATION LEVEL {level}";
@@ -241,7 +298,7 @@ namespace DAL
             try
             {
                 /// Menu: isolation level choice
-                string level = Form1.conn;
+                string level = _2EksamensProjekt.Login.conn;
                 /// SET TRANSACTION
                 sqlString = $"SET TRANSACTION ISOLATION LEVEL {level};";
                 MySqlCommand cmd = new MySqlCommand(sqlString, OpenConn(conn));
@@ -282,5 +339,6 @@ namespace DAL
                 MessageBox.Show(ex.Message + ex.Code + sqlString);
             }
         }
+        */
     }
 }

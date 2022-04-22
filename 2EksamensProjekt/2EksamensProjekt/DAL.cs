@@ -12,19 +12,19 @@ namespace DAL
     public class DAL
     {
         static DAL singleton = new DAL();
-        private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=FlerbrugerEksperiment;user=plebs;password=1234;SslMode=none;";
+        private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
         private static MySqlConnection conn = new MySqlConnection(ConnStr);
 
-
-        private DAL()
+        private DAL() //Private Due to Singleton ^^
         {
         }
-
+        //Singleton
         public static DAL Getinstance()
         {
             return singleton;
         }
 
+        //Open Connection Method 
         private MySqlConnection OpenConn(MySqlConnection conn)
         {
             string state = conn.State.ToString();
@@ -42,6 +42,7 @@ namespace DAL
             return conn;
         }
 
+        //Close Connection Method
         private MySqlConnection CloseConn(MySqlConnection conn)
         {
             string state = conn.State.ToString();
@@ -59,6 +60,7 @@ namespace DAL
             return conn;
         }
 
+        //DataGridView Thread Refresh Method
         public DateTime lastUpdateTime;
         public DateTime time;
         private DataTable tbl = new DataTable();
@@ -230,7 +232,7 @@ namespace DAL
                 }
             });
             task.Start();
-            await Task.WhenAll(task);
+            await task;
         }
 
         public void ResetDB()

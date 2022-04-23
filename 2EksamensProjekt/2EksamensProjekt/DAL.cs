@@ -193,12 +193,12 @@ namespace DAL
                     }
                     else
                     {
-                        MessageBox.Show("Username or Password Does Not Exist");
+                        return await Task.FromResult("Username or Password Does Not Exist");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Incorrect Username Format!");
+                    return await Task.FromResult("Incorrect Username Format!");
                 }
             }
             catch (Exception ex)

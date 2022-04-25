@@ -7,10 +7,8 @@ namespace DAL
 {
     public class DAL
     {
+        #region Singleton
         static DAL singleton = new DAL();
-        private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-        private static MySqlConnection conn = new MySqlConnection(ConnStr);
-
         private DAL() //Private Due to Singleton ^^
         {
         }
@@ -19,7 +17,11 @@ namespace DAL
         {
             return singleton;
         }
+        #endregion Singleton
 
+        #region Open/Close-Conn
+        private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+        private static MySqlConnection conn = new MySqlConnection(ConnStr);
         //Open Connection Method 
         private MySqlConnection OpenConn(MySqlConnection conn)
         {
@@ -55,7 +57,9 @@ namespace DAL
             }
             return conn;
         }
+        #endregion Open/Close-Conn
 
+        #region Datagridview Threading Update
         //DataGridView Thread Refresh Method
         public DateTime lastUpdateTime;
         public DateTime time;
@@ -71,12 +75,14 @@ namespace DAL
                 {
                     try
                     {
-                        string timeString = Convert.ToString(reader[0]);
+                        string? timeString = Convert.ToString(reader[0]);
                         if (timeString != null || timeString != "NULL" || timeString != "[NULL]")
                         {
                             string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd" };
-                            DateTime DBTime = DateTime.ParseExact(timeString, dateFormats, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None);
-                            time = Convert.ToDateTime(DBTime.ToString("dd-MM-yyyy HH:mm:ss"));
+                            #pragma warning disable CS8604 // Possible null reference argument.
+                            string DBTime = DateTime.ParseExact(s: timeString, formats: dateFormats, provider: DateTimeFormatInfo.InvariantInfo, style: DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss");
+                            #pragma warning restore CS8604 // Possible null reference argument.
+                            time = Convert.ToDateTime(DBTime);
                             lastUpdateTime = Convert.ToDateTime(lastUpdateTime.ToString("dd-MM-yyyy HH:mm:ss"));
                         }
                     }
@@ -103,6 +109,7 @@ namespace DAL
             }
             return await Task.FromResult(tbl);
         }
+        #endregion Datagridview Threading Update
 
         #region GetOffMeLawn
         //public void CreateSubject()
@@ -150,15 +157,16 @@ namespace DAL
         #endregion
 
         #region Login
+        public string Username { get; set; } = "user";
         public async Task<string> Login(string username, string password)
         {
             try
             {
-                Regex regex = new Regex(@"^[a-zA-Z1-9]+$");
+                Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
                 string connSql = $"SELECT Username, Password, Privilege, id FROM account WHERE username = @username";
                 MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
 
-                if (regex.IsMatch(username))
+                if (regex.IsMatch(username)) //Input Validation Check
                 {
                     cmd.Parameters.AddWithValue("@username", username);
 
@@ -179,16 +187,29 @@ namespace DAL
 
                     if (dbusername == username && dbpassword == password)
                     {
-                        switch (dbprivilege)
+                        Username = dbusername;
+                        if (dbprivilege == "secretary")
                         {
-                            case "secretary":
-                                return await Task.FromResult("secretary");
-
-                            case "admin":
-                                return await Task.FromResult("admin");
-
-                            case "resident":
-                                return await Task.FromResult("resident");
+                            return await Task.FromResult("secretary");
+                        }
+                        else if (dbprivilege == "admin")
+                        {
+                            return await Task.FromResult("admin");
+                        }
+                        else if (dbprivilege == "youth" || dbprivilege == "senior" || dbprivilege == "normal")
+                        {
+                            if (dbprivilege == "youth")
+                            {
+                                return await Task.FromResult("youth");
+                            }
+                            else if (dbprivilege == "senior")
+                            {
+                                return await Task.FromResult("senior");
+                            }
+                            else if (dbprivilege == "normal")
+                            {
+                                return await Task.FromResult("normal");
+                            }
                         }
                     }
                     else
@@ -198,7 +219,7 @@ namespace DAL
                 }
                 else
                 {
-                    return await Task.FromResult("Incorrect Username Format!");
+                    return await Task.FromResult("Incorrect Username Format!\nOnly Accepts A-Z & 0-9");
                 }
             }
             catch (Exception ex)

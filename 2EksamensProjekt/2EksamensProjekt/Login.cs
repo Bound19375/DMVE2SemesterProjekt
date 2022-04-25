@@ -1,5 +1,8 @@
 namespace _2EksamensProjekt
 {
+    using _2EksamensProjekt.FORMS.admin;
+    using _2EksamensProjekt.FORMS.resident;
+    using _2EksamensProjekt.FORMS.secretary;
     using DAL;
     using UnikAPI;
     public partial class Login : Form
@@ -7,24 +10,44 @@ namespace _2EksamensProjekt
         DAL dal = DAL.Getinstance(); 
         API api = API.Getinstance();
 
-        public Login()
+        private static Login singleton = new Login();
+
+        private Login()
         {
             InitializeComponent();
             Task slogan = new Task(() => Slogan());
             slogan.Start(); //Create an instance of a Task & Start it
         }
 
+        public static Login GetInstance() //Login Form Made Singleton Due To Otherwise Disposion Of Objects --Garbage Collector--.
+        {
+            return singleton;
+        }
+
+        private void formClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            Environment.Exit(0);
+        }
+
         private async void Slogan()
         {
             do
-            {
-                if (label1.InvokeRequired)
+            { 
+                if (label1.IsDisposed == false)
                 {
-                    label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
+                    if (label1.InvokeRequired)
                     {
-                        label1.Text = api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
-                    });
-                    await Task.Delay(1000); //Sleeping For X Seconds.
+                        label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
+                        {
+                            label1.Text = api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
+                        });
+                        await Task.Delay(1000); //Sleeping For X Seconds.
+                    }
+                }
+                else
+                {
+                    label1.CreateControl();
                 }
             }
             while (Form.ActiveForm == Login.ActiveForm); //Keep Task Running While Login Form Is The ActiveForm
@@ -34,9 +57,28 @@ namespace _2EksamensProjekt
         {
             string result = dal.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
             MessageBox.Show(result);
-
-
-            //this.Close();
+            if (result == "admin")
+            {
+                this.Hide();
+                adminSP obj = new adminSP();
+                //obj.Closed += (s, args) => this.Close();
+                obj.Show();
+            }
+            else if (result == "secretary")
+            {
+                this.Hide();
+                secretarySP obj = new secretarySP();
+                //obj.Closed += (s, args) => this.Close();
+                obj.Show();
+            }
+            else if (result == "youth" || result == "senior" || result == "normal")
+            {
+                this.Hide();
+                residentSP obj = new residentSP();
+                //obj.Closed += (s, args) => this.Close();
+                obj.Show();
+            }
+            
         }
 
     }

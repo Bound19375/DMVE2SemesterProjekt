@@ -22,6 +22,7 @@ namespace DAL
 
         #region Open/Close-Conn
         private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+        private static MySqlConnection conn = new MySqlConnection(ConnStr);
         //Open Connection Method 
         private MySqlConnection OpenConn(MySqlConnection conn)
         {
@@ -163,9 +164,20 @@ namespace DAL
             try
             {
                 MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd.ExecuteNonQuery();
+
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
                 string connSql = $"SELECT Username, AES_DECRYPT(Password, 'key'), Privilege, id FROM account WHERE username = @username";
-                MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
+                cmd = new MySqlCommand(connSql, OpenConn(conn));
 
                 if (regex.IsMatch(username)) //Input Validation Check
                 {
@@ -185,6 +197,12 @@ namespace DAL
                         dbid = Convert.ToInt32(reader.GetString(3));
                     }
                     reader.Close();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd = new MySqlCommand(commit, OpenConn(conn));
+                    cmd.ExecuteNonQuery();
+
                     CloseConn(conn);
 
                     if (dbusername == username && dbpassword == password)
@@ -238,23 +256,34 @@ namespace DAL
         {
             try 
             {
-                Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                MySqlConnection conn = new MySqlConnection(ConnStr);
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Create User
                 string sqlcommand = "INSERT INTO account (username, password, privilege) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist');";
-                MySqlCommand cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@username", SecretaryCreate.Username);
                 cmd1.Parameters.AddWithValue("@password", SecretaryCreate.Password);
 
                 #pragma warning disable CS8604 // Possible null reference argument.
+                Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
                 if (regex.IsMatch(SecretaryCreate.Username) && regex.IsMatch(SecretaryCreate.Password))
                 #pragma warning restore CS8604 // Possible null reference argument.
                 {
                     cmd1.ExecuteNonQuery();
 
+                    //Append Created User To Waitlist
                     string sql = "SELECT * FROM account WHERE username = @username";
-                    MySqlCommand cmd2 = new MySqlCommand(sql, OpenConn(conn));
-                    cmd2.Parameters.AddWithValue("@username", SecretaryCreate.Username);
-                    MySqlDataReader reader = cmd2.ExecuteReader();
+                    cmd1 = new MySqlCommand(sql, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@username", SecretaryCreate.Username);
+                    MySqlDataReader reader = cmd1.ExecuteReader();
                     string dbusername = "NONE";
                     string dbpassword = "NONE";
                     string dbprivilege = "NONE";
@@ -268,10 +297,16 @@ namespace DAL
                     }
                     reader.Close();
                     string sqlwaitlist = "INSERT INTO waitlist(`type`, account_id) VALUES(@type, @id);";
-                    MySqlCommand cmd3 = new MySqlCommand(sqlwaitlist, OpenConn(conn));
-                    cmd3.Parameters.AddWithValue("@type", SecretaryCreate.Type);
-                    cmd3.Parameters.AddWithValue("@id", dbid);
-                    cmd3.ExecuteNonQuery();
+                    cmd1 = new MySqlCommand(sqlwaitlist, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@type", SecretaryCreate.Type);
+                    cmd1.Parameters.AddWithValue("@id", dbid);
+                    cmd1.ExecuteNonQuery();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
                     CloseConn(conn);
                 }
                 else
@@ -297,10 +332,21 @@ namespace DAL
         public void SecretaryPrint()
         {
             MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            string sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
             string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_date, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_id = r.account_id AND hr.housing_id = h.id AND r.account_id = a.id ORDER BY a.username;";
-            MySqlCommand TxtPrint = new MySqlCommand(cmd_TxtPrint, conn);
-            conn.Open();
-            MySqlDataReader rdr = TxtPrint.ExecuteReader();
+            cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
+
+            MySqlDataReader rdr = cmd1.ExecuteReader();
 
             string filePath = @"..\..\..\txts\Residencies.txt";
             using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
@@ -323,7 +369,13 @@ namespace DAL
                 writer.Close();
             }
             rdr.Close();
-            conn.Close();
+
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            CloseConn(conn);
             MessageBox.Show($"File Downloaded To: {filePath[9..]}");
         }
         #endregion

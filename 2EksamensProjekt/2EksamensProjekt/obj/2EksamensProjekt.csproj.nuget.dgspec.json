@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bound\\iCloudDrive\\DMVE2SemesterProjekt\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {}
+    "C:\\Users\\bound\\Desktop\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bound\\iCloudDrive\\DMVE2SemesterProjekt\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
+    "C:\\Users\\bound\\Desktop\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bound\\iCloudDrive\\DMVE2SemesterProjekt\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+        "projectUniqueName": "C:\\Users\\bound\\Desktop\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
         "projectName": "2EksamensProjekt",
-        "projectPath": "C:\\Users\\bound\\iCloudDrive\\DMVE2SemesterProjekt\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+        "projectPath": "C:\\Users\\bound\\Desktop\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
         "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bound\\iCloudDrive\\DMVE2SemesterProjekt\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
+        "outputPath": "C:\\Users\\bound\\Desktop\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",

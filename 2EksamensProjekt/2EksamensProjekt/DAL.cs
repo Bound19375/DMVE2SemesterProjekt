@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using _2EksamensProjekt.FORMS.secretary;
+using MySql.Data.MySqlClient;
 using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -21,7 +22,6 @@ namespace DAL
 
         #region Open/Close-Conn
         private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-        private static MySqlConnection conn = new MySqlConnection(ConnStr);
         //Open Connection Method 
         private MySqlConnection OpenConn(MySqlConnection conn)
         {
@@ -61,16 +61,15 @@ namespace DAL
 
         #region Datagridview Threading Update
         //DataGridView Thread Refresh Method
-        public DateTime lastUpdateTime;
-        public DateTime time;
-        private DataTable tbl = new DataTable();
-        public async Task <DataTable> Refresh_conn(string DataTableSql)
+        public async Task<DateTime> DBUpdateCheck()
         {
+            MySqlConnection conn = new MySqlConnection(ConnStr);
             try
             {
-                string connSql = $"SELECT UPDATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA = 'FlerbrugerEksperiment' AND TABLE_NAME = 'FlightSeats2';";
+                string connSql = $"SELECT UPDATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA = '2SemesterEksamen' ORDER BY UPDATE_TIME DESC LIMIT 1;";
                 MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
                 MySqlDataReader reader = cmd.ExecuteReader();
+                DateTime DBTime = DateTime.MaxValue;
                 while (reader.Read())
                 {
                     try
@@ -80,10 +79,8 @@ namespace DAL
                         {
                             string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd" };
                             #pragma warning disable CS8604 // Possible null reference argument.
-                            string DBTime = DateTime.ParseExact(s: timeString, formats: dateFormats, provider: DateTimeFormatInfo.InvariantInfo, style: DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss");
+                            DBTime = Convert.ToDateTime(DateTime.ParseExact(s: timeString, formats: dateFormats, provider: DateTimeFormatInfo.InvariantInfo, style: DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss"));
                             #pragma warning restore CS8604 // Possible null reference argument.
-                            time = Convert.ToDateTime(DBTime);
-                            lastUpdateTime = Convert.ToDateTime(lastUpdateTime.ToString("dd-MM-yyyy HH:mm:ss"));
                         }
                     }
                     catch (FormatException ex)
@@ -93,20 +90,23 @@ namespace DAL
                 }
                 reader.Close();
                 CloseConn(conn);
-                if (time > lastUpdateTime)
-                {
-                    tbl.Clear();
-                    lastUpdateTime = time;
-                    MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
-                    tbl.Load(cmd1.ExecuteReader());
-                    CloseConn(conn);
-                    return await Task.FromResult(tbl);
-                }
+                return await Task.FromResult(DBTime);
             }
             catch (MySqlException ex)
             {
                 MessageBox.Show(ex.Message.ToString());
             }
+            return await Task.FromResult(DateTime.MinValue);
+        }
+
+        public async Task<DataTable> Datatable(string DataTableSql)
+        {
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+            DataTable tbl = new DataTable();
+            tbl.Clear();
+            MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
+            tbl.Load(cmd1.ExecuteReader());
+            CloseConn(conn);
             return await Task.FromResult(tbl);
         }
         #endregion Datagridview Threading Update
@@ -162,6 +162,7 @@ namespace DAL
         {
             try
             {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
                 string connSql = $"SELECT Username, Password, Privilege, id FROM account WHERE username = @username";
                 MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
@@ -184,6 +185,7 @@ namespace DAL
                         dbid = Convert.ToInt32(reader.GetString(3));
                     }
                     reader.Close();
+                    CloseConn(conn);
 
                     if (dbusername == username && dbpassword == password)
                     {

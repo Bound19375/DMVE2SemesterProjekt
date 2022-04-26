@@ -64,7 +64,6 @@ namespace DAL
         //DataGridView Thread Refresh Method
         public async Task<DateTime> DBUpdateCheck()
         {
-            MySqlConnection conn = new MySqlConnection(ConnStr);
             try
             {
                 string connSql = $"SELECT UPDATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA = '2SemesterEksamen' ORDER BY UPDATE_TIME DESC LIMIT 1;";
@@ -95,67 +94,49 @@ namespace DAL
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show(ex.Message.ToString());
+                throw new Exception(ex.ToString());
             }
-            return await Task.FromResult(DateTime.MinValue);
         }
 
-        public async Task<DataTable> Datatable(string DataTableSql)
+        private async Task<DataTable> Datatable(string DataTableSql)
         {
-            MySqlConnection conn = new MySqlConnection(ConnStr);
-            DataTable tbl = new DataTable();
-            tbl.Clear();
-            MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
-            tbl.Load(cmd1.ExecuteReader());
-            CloseConn(conn);
-            return await Task.FromResult(tbl);
+            try
+            {
+                DataTable tbl = new DataTable();
+                tbl.Clear();
+                MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
+                tbl.Load(cmd1.ExecuteReader());
+                CloseConn(conn);
+                return await Task.FromResult(tbl);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+
+        public void Gridview(DataGridView gv, string sql)
+        {
+            try
+            {
+                if (DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-1000) || gv.DataSource == null)
+                {
+                    if (gv.InvokeRequired)
+                    {
+                        gv.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            gv.DataSource = Datatable(sql).Result;
+                            gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
         }
         #endregion Datagridview Threading Update
-
-        #region GetOffMeLawn
-        //public void CreateSubject()
-        //{
-        //    // opret en (eller flere tabeller, med indhold, remote)
-
-        //    string createSQL = "create table FlightSeats2 (flightNo int,seatsFree int)";
-
-        //    MySqlCommand cmd2 = new MySqlCommand(createSQL, OpenConn()); cmd2.ExecuteNonQuery();
-
-        //    string insertSQL;
-
-        //    insertSQL = "insert into FlightSeats2 values (1,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    insertSQL = "insert into FlightSeats2 values (2,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    insertSQL = "insert into FlightSeats2 values (3,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    insertSQL = "insert into FlightSeats2 values (4,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    insertSQL = "insert into FlightSeats2 values (5,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    insertSQL = "insert into FlightSeats2 values (6,100);";
-
-        //    cmd2 = new MySqlCommand(insertSQL, OpenConn());
-        //    cmd2.ExecuteNonQuery();
-
-        //    CloseConn();
-        //}
-        #endregion
 
         #region Login
         public string Username { get; set; } = "user";
@@ -244,7 +225,7 @@ namespace DAL
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                throw new Exception(ex.ToString());
             }
             return await Task.FromResult("NONE");
         }
@@ -315,15 +296,15 @@ namespace DAL
                 }
                 CloseConn(conn);
             }
-            catch (MySqlException e)
+            catch (MySqlException ex)
             {
-                if (e.Number == 1062)
+                if (ex.Number == 1062)
                 {
-                    MessageBox.Show("Username Already Exists!\nSet Another Username");
+                    throw new Exception("Username Already Exists!\nSet Another Username");
                 }
                 else
                 {
-                    MessageBox.Show(e.Number.ToString() + "\nContact Admin");
+                    throw new Exception(ex.ToString());
                 }
             }
         }
@@ -343,6 +324,7 @@ namespace DAL
             cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
             cmd1.ExecuteNonQuery();
 
+            //Write To txt file
             string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_date, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_id = r.account_id AND hr.housing_id = h.id AND r.account_id = a.id ORDER BY a.username;";
             cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
 
@@ -387,88 +369,7 @@ namespace DAL
         #region Resident
         #endregion Resident
 
-        /*
-        public async Task IsolationLevel()
-        {
-            Task task = new Task(() => {
-                try
-                {
-                    string FlightSeatsTable = "FlightSeats2";
 
-                    /// Flight choice:
-                    int flightNo = _2EksamensProjekt.Login.Flightnumber;
-
-                    /// Menu: isolation level choice
-                    string level = _2EksamensProjekt.Login.conn;
-
-                    /// Menu: Seats Choice
-                    int seats = _2EksamensProjekt.Login.Seats;
-
-                    /// SET TRANSACTION
-                    String sqlString = $"\nSET TRANSACTION ISOLATION LEVEL {level}";
-                    MySqlCommand cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                    cmd.ExecuteNonQuery();
-
-                    /// BEGIN TRANSACTION
-                    sqlString = "START TRANSACTION";
-                    cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                    cmd.ExecuteNonQuery();
-
-                    /// UPDATE FlightSeats                   
-                    sqlString = $"UPDATE {FlightSeatsTable} SET seatsFree = seatsFree - {seats} WHERE flightNo = {flightNo}";
-                    cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                    cmd.ExecuteNonQuery();
-
-                    while (true)
-                    {
-                        if (YESNO.Check == "COMMIT" || YESNO.Check == "ROLLBACK")
-                        {
-                            sqlString = YESNO.Check;
-                            cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                            cmd.ExecuteNonQuery();
-                            CloseConn(conn);
-                            if (sqlString == "COMMIT")
-                            {
-                                MessageBox.Show("Transaction Completed!");
-                            }
-                            else
-                            {
-                                MessageBox.Show("ROLLBACK");
-                            }
-                            YESNO.Check = null;
-                            break;
-                        }
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    if (ex.Code == 0)
-                    {
-                        MessageBox.Show($"Error: {ex.Code}" + "\nYou've Reserved Too Many Seats" + "\n\nPick Another Flight" + $"\n + {ex}"); //Deadlock Detection
-                    }
-                    else if (ex.Code == 1213)
-                    {
-                        String sqlString = $"ROLLBACK";
-                        MySqlCommand cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                        cmd.ExecuteNonQuery();
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Error: {ex.Code}" + $"\n{ex}" + "\n\nTry again"); //Deadlock Detection
-                    }
-                }
-                try
-                {
-                    CloseConn(conn);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString());
-                }
-            });
-            task.Start();
-            await task;
-        }
-        */
+       
     }
 }

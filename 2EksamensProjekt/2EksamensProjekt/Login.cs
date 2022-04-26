@@ -60,7 +60,7 @@ namespace _2EksamensProjekt
             if (result == "admin")
             {
                 this.Hide();
-                adminSP obj = new adminSP();
+                adminSP obj = adminSP.GetInstance();
                 //obj.Closed += (s, args) => this.Close();
                 obj.Show();
             }
@@ -74,7 +74,7 @@ namespace _2EksamensProjekt
             else if (result == "youth" || result == "senior" || result == "normal")
             {
                 this.Hide();
-                residentSP obj = new residentSP();
+                residentSP obj = residentSP.GetInstance();
                 //obj.Closed += (s, args) => this.Close();
                 obj.Show();
             }

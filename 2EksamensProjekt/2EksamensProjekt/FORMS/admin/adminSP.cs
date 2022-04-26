@@ -6,10 +6,24 @@
     {
         DAL dal = DAL.Getinstance();
         API api = API.Getinstance();
-        public adminSP()
+
+        private static adminSP singleton = new adminSP();
+        private adminSP()
         {
             InitializeComponent();
             textBox1.Text = $"Welcome: {dal.Username}";
+        }
+
+        public static adminSP GetInstance()
+        {
+            return singleton;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            Login obj = Login.GetInstance();
+            obj.Show();
+            this.Hide();
         }
 
 

@@ -7012,19 +7012,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Tim\\.nuget\\packages\\": {}
+    "C:\\Users\\bound\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\2EksamensProjektTests.csproj",
+      "projectUniqueName": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\2EksamensProjektTests.csproj",
       "projectName": "2EksamensProjektTests",
-      "projectPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\2EksamensProjektTests.csproj",
-      "packagesPath": "C:\\Users\\Tim\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\obj\\",
+      "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\2EksamensProjektTests.csproj",
+      "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjektTests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Tim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7038,8 +7038,8 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "projectReferences": {
-            "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
-              "projectPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
+            "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
+              "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
             }
           }
         }
@@ -7086,7 +7086,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

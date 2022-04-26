@@ -10,7 +10,7 @@
     <Compile Update="FORMS\resident\residentSP.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FORMS\secretary\Form1.cs">
+    <Compile Update="FORMS\secretary\secretaryCreate.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FORMS\secretary\secretarySP.cs">

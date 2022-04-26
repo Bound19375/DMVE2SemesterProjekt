@@ -78,9 +78,9 @@ namespace DAL
                         if (timeString != null || timeString != "NULL" || timeString != "[NULL]")
                         {
                             string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd" };
-                            #pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
                             DBTime = Convert.ToDateTime(DateTime.ParseExact(s: timeString, formats: dateFormats, provider: DateTimeFormatInfo.InvariantInfo, style: DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss"));
-                            #pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
                         }
                     }
                     catch (FormatException ex)
@@ -164,7 +164,7 @@ namespace DAL
             {
                 MySqlConnection conn = new MySqlConnection(ConnStr);
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                string connSql = $"SELECT Username, Password, Privilege, id FROM account WHERE username = @username";
+                string connSql = $"SELECT Username, AES_DECRYPT(Password, 'key'), Privilege, id FROM account WHERE username = @username";
                 MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
 
                 if (regex.IsMatch(username)) //Input Validation Check
@@ -231,6 +231,109 @@ namespace DAL
             return await Task.FromResult("NONE");
         }
         #endregion
+
+        #region SecretaryMethods
+        #region Secretary Create User
+        public void SecretaryCreateUser()
+        {
+            try 
+            {
+                Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+                string sqlcommand = "INSERT INTO account (username, password, privilege) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist');";
+                MySqlCommand cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@username", SecretaryCreate.Username);
+                cmd1.Parameters.AddWithValue("@password", SecretaryCreate.Password);
+
+                #pragma warning disable CS8604 // Possible null reference argument.
+                if (regex.IsMatch(SecretaryCreate.Username) && regex.IsMatch(SecretaryCreate.Password))
+                #pragma warning restore CS8604 // Possible null reference argument.
+                {
+                    cmd1.ExecuteNonQuery();
+
+                    string sql = "SELECT * FROM account WHERE username = @username";
+                    MySqlCommand cmd2 = new MySqlCommand(sql, OpenConn(conn));
+                    cmd2.Parameters.AddWithValue("@username", SecretaryCreate.Username);
+                    MySqlDataReader reader = cmd2.ExecuteReader();
+                    string dbusername = "NONE";
+                    string dbpassword = "NONE";
+                    string dbprivilege = "NONE";
+                    int dbid = 0;
+                    while (reader.Read())
+                    {
+                        dbid = Convert.ToInt32(reader.GetString(0));
+                        dbusername = reader.GetString(1);
+                        dbpassword = reader.GetString(2);
+                        dbprivilege = reader.GetString(3);
+                    }
+                    reader.Close();
+                    string sqlwaitlist = "INSERT INTO waitlist(`type`, account_id) VALUES(@type, @id);";
+                    MySqlCommand cmd3 = new MySqlCommand(sqlwaitlist, OpenConn(conn));
+                    cmd3.Parameters.AddWithValue("@type", SecretaryCreate.Type);
+                    cmd3.Parameters.AddWithValue("@id", dbid);
+                    cmd3.ExecuteNonQuery();
+                    CloseConn(conn);
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect Username Format!\nOnly Accepts A-Z & 0-9");
+                }
+                CloseConn(conn);
+            }
+            catch (MySqlException e)
+            {
+                if (e.Number == 1062)
+                {
+                    MessageBox.Show("Username Already Exists!\nSet Another Username");
+                }
+                else
+                {
+                    MessageBox.Show(e.Number.ToString() + "\nContact Admin");
+                }
+            }
+        }
+        #endregion
+        #region Secretary Print Resident (txt)
+        public void SecretaryPrint()
+        {
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+            string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_date, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_id = r.account_id AND hr.housing_id = h.id AND r.account_id = a.id ORDER BY a.username;";
+            MySqlCommand TxtPrint = new MySqlCommand(cmd_TxtPrint, conn);
+            conn.Open();
+            MySqlDataReader rdr = TxtPrint.ExecuteReader();
+
+            string filePath = @"..\..\..\txts\Residencies.txt";
+            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+                
+                while (rdr.Read())
+                {
+                    writer.WriteLine(
+                        "{\n" +
+                        $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                        $"\tType: {Convert.ToString(rdr[1])}\n" +
+                        $"\tName: {Convert.ToString(rdr[2])}\n" +
+                        $"\tStart_Date: {Convert.ToString(rdr[3])}\n" +
+                        $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                        $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                        "}\n" +
+                        "\n");
+                }
+                writer.Close();
+            }
+            rdr.Close();
+            conn.Close();
+            MessageBox.Show($"File Downloaded To: {filePath[9..]}");
+        }
+        #endregion
+        #endregion SecretaryMethods
+
+        #region AdminMethods
+        #endregion AdminMethods
+
+        #region Resident
+        #endregion Resident
 
         /*
         public async Task IsolationLevel()
@@ -313,54 +416,6 @@ namespace DAL
             });
             task.Start();
             await task;
-        }
-
-        public void ResetDB()
-        {
-            string sqlString = string.Empty;
-            try
-            {
-                /// Menu: isolation level choice
-                string level = _2EksamensProjekt.Login.conn;
-                /// SET TRANSACTION
-                sqlString = $"SET TRANSACTION ISOLATION LEVEL {level};";
-                MySqlCommand cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                cmd.ExecuteNonQuery();
-
-                /// BEGIN TRANSACTION
-                sqlString = "START TRANSACTION;";
-                cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                cmd.ExecuteNonQuery();
-
-                /// UPDATE FlightSeats
-                for (int i = 1; i <= 6; i++)
-                {
-                    sqlString = $"UPDATE FlightSeats2 SET seatsFree = 100 WHERE flightNo = {i}";
-                    if (i == 6)
-                    {
-                        sqlString += ";";
-                    }
-                    cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                    cmd.ExecuteNonQuery();
-                }
-
-                // COMMIT or ROLLBACK:
-                if (MessageBox.Show("Do You Wish To Commit?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    sqlString = "COMMIT;";
-                }
-                else
-                {
-                    sqlString = "ROLLBACK;";
-                }
-                cmd = new MySqlCommand(sqlString, OpenConn(conn));
-                cmd.ExecuteNonQuery();
-                CloseConn(conn);
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message + ex.Code + sqlString);
-            }
         }
         */
     }

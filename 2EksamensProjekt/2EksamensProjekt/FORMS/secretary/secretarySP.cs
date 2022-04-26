@@ -11,17 +11,28 @@ using System.Windows.Forms;
 namespace _2EksamensProjekt.FORMS.secretary
 {
     using DAL;
-
     public partial class secretarySP : Form
     {
+        static secretarySP singleton = new secretarySP();
         DAL dal = DAL.Getinstance();
-
-        public secretarySP()
+        private secretarySP()
         {
             InitializeComponent();
             textBox1.Text = $"Welcome: {dal.Username}";
             Task t1 = new Task(() => GV());
             t1.Start();
+        }
+
+        public static secretarySP GetInstance()
+        {
+            return singleton;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            Login obj = Login.GetInstance();
+            obj.Show();
+            this.Hide();
         }
 
         private void GV()
@@ -56,7 +67,13 @@ namespace _2EksamensProjekt.FORMS.secretary
 
         private void button1_Click(object sender, EventArgs e)
         {
+            SecretaryCreate obj = new SecretaryCreate();
+            obj.Show();
+        }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dal.SecretaryPrint();
         }
     }
 }

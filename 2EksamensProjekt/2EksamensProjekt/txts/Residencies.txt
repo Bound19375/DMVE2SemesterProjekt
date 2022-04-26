@@ -1,0 +1,30 @@
+﻿{
+	Username: BoundSoul
+	Type: youth
+	Name: Filip
+	Start_Date: 01-01-2022 00:00:00
+	M2: 45
+	Rental_Price: 4600
+}
+
+
+{
+	Username: Haurum69
+	Type: normal
+	Name: Haakon
+	Start_Date: 01-04-2021 00:00:00
+	M2: 52
+	Rental_Price: 8700
+}
+
+
+{
+	Username: R
+	Type: senior
+	Name: TestResident
+	Start_Date: 26-04-2022 14:16:55
+	M2: 80
+	Rental_Price: 9000
+}
+
+

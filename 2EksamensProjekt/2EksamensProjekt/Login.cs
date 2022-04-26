@@ -67,7 +67,7 @@ namespace _2EksamensProjekt
             else if (result == "secretary")
             {
                 this.Hide();
-                secretarySP obj = new secretarySP();
+                secretarySP obj = secretarySP.GetInstance();
                 //obj.Closed += (s, args) => this.Close();
                 obj.Show();
             }

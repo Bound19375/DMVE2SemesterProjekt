@@ -11,14 +11,14 @@ using System.Windows.Forms;
 namespace _2EksamensProjekt.FORMS.secretary
 {
     using DAL;
-    public partial class SecretaryCreate : Form
+    public partial class UserCreateWaitlist : Form
     {
         public static string? Username { get; set; }
         public static string? Password { get; set; }
         public static string? Type { get; set; }
         DAL dal = DAL.Getinstance();
 
-        public SecretaryCreate()
+        public UserCreateWaitlist()
         {
             InitializeComponent();
             comboBox1.Text = "normal";
@@ -29,7 +29,7 @@ namespace _2EksamensProjekt.FORMS.secretary
             Username = textBox1.Text;
             Password = textBox2.Text;
             Type = comboBox1.Text;
-            dal.SecretaryCreateUser();
+            dal.CreateUser_Waitlist();
             this.Close();
         }
     }

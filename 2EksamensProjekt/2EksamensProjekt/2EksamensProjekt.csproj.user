@@ -4,13 +4,22 @@
     <Compile Update="API.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="FORMS\admin\Account_Waitlist_Panel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="FORMS\admin\adminSP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FORMS\admin\Resources.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FORMS\admin\Waitlist_Housing.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FORMS\resident\residentSP.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FORMS\secretary\secretaryCreate.cs">
+    <Compile Update="FORMS\UserCreateWaitlist.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FORMS\secretary\secretarySP.cs">

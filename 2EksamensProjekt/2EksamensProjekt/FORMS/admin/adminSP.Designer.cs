@@ -33,13 +33,16 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(12, 39);
+            this.panel1.Location = new System.Drawing.Point(12, 51);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1119, 699);
+            this.panel1.Size = new System.Drawing.Size(1119, 760);
             this.panel1.TabIndex = 0;
             // 
             // label2
@@ -86,11 +89,44 @@
             this.label1.Size = new System.Drawing.Size(0, 24);
             this.label1.TabIndex = 16;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(982, 12);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(149, 34);
+            this.button2.TabIndex = 19;
+            this.button2.Text = "Account/Waitlist";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(821, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(155, 34);
+            this.button1.TabIndex = 20;
+            this.button1.Text = "Waitlist/Housing";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(703, 12);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(112, 34);
+            this.button3.TabIndex = 21;
+            this.button3.Text = "Resources";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // adminSP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1143, 750);
+            this.ClientSize = new System.Drawing.Size(1143, 823);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
@@ -112,5 +148,8 @@
         private Label label5;
         private Label label4;
         private Label label1;
+        private Button button2;
+        private Button button1;
+        private Button button3;
     }
 }

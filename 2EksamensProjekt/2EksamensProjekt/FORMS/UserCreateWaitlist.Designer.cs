@@ -1,6 +1,6 @@
 ﻿namespace _2EksamensProjekt.FORMS.secretary
 {
-    partial class SecretaryCreate
+    partial class UserCreateWaitlist
     {
         /// <summary>
         /// Required designer variable.

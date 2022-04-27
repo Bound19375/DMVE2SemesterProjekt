@@ -1,5 +1,6 @@
 ﻿namespace _2EksamensProjekt.FORMS.admin
 {
+    using _2EksamensProjekt.FORMS.secretary;
     using DAL;
     using UnikAPI;
     public partial class adminSP : Form
@@ -8,10 +9,11 @@
         API api = API.Getinstance();
 
         private static adminSP singleton = new adminSP();
+
         private adminSP()
         {
             InitializeComponent();
-            textBox1.Text = $"Welcome: {dal.Username}";
+            label5.Text = $"{dal.Username}";
         }
 
         public static adminSP GetInstance()
@@ -21,17 +23,40 @@
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            e.Cancel = true;
+            this.Hide();
             Login obj = Login.GetInstance();
             obj.Show();
-            this.Hide();
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            Account_Waitlist_Panel myForm = Account_Waitlist_Panel.GetInstance();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            panel1.Controls.Add(myForm);
+            myForm.Show();
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
-            Login.GetInstance().Show();
+            panel1.Controls.Clear();
+            Waitlist_Housing myForm = Waitlist_Housing.GetInstance();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            panel1.Controls.Add(myForm);
+            myForm.Show();
+        }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            Resources myForm = Resources.GetInstance();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            panel1.Controls.Add(myForm);
+            myForm.Show();
         }
     }
 }

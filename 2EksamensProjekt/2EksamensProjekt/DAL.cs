@@ -22,7 +22,6 @@ namespace DAL
 
         #region Open/Close-Conn
         private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-        private static MySqlConnection conn = new MySqlConnection(ConnStr);
         //Open Connection Method 
         private MySqlConnection OpenConn(MySqlConnection conn)
         {
@@ -66,6 +65,7 @@ namespace DAL
         {
             try
             {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
                 string connSql = $"SELECT UPDATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA = '2SemesterEksamen' ORDER BY UPDATE_TIME DESC LIMIT 1;";
                 MySqlCommand cmd = new MySqlCommand(connSql, OpenConn(conn));
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -102,6 +102,7 @@ namespace DAL
         {
             try
             {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
                 DataTable tbl = new DataTable();
                 tbl.Clear();
                 MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
@@ -157,7 +158,7 @@ namespace DAL
                 cmd.ExecuteNonQuery();
 
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                string connSql = $"SELECT Username, AES_DECRYPT(Password, 'key'), Privilege, id FROM account WHERE username = @username";
+                string connSql = $"SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
                 cmd = new MySqlCommand(connSql, OpenConn(conn));
 
                 if (regex.IsMatch(username)) //Input Validation Check
@@ -169,13 +170,11 @@ namespace DAL
                     string dbusername = "NONE";
                     string dbpassword = "NONE";
                     string dbprivilege = "NONE";
-                    int dbid = 0;
                     while (reader.Read())
                     {
                         dbusername = reader.GetString(0);
                         dbpassword = reader.GetString(1);
                         dbprivilege = reader.GetString(2);
-                        dbid = Convert.ToInt32(reader.GetString(3));
                     }
                     reader.Close();
 
@@ -231,12 +230,12 @@ namespace DAL
         }
         #endregion
 
-        #region SecretaryMethods
-        #region Secretary Create User
-        public void SecretaryCreateUser()
+        #region Create User And Waitlist
+        public void CreateUser_Waitlist()
         {
-            try 
+            try
             {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
                 //Set Isolation Level
                 string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
                 MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
@@ -250,37 +249,35 @@ namespace DAL
                 //Create User
                 string sqlcommand = "INSERT INTO account (username, password, privilege) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist');";
                 cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", SecretaryCreate.Username);
-                cmd1.Parameters.AddWithValue("@password", SecretaryCreate.Password);
+                cmd1.Parameters.AddWithValue("@username", UserCreateWaitlist.Username);
+                cmd1.Parameters.AddWithValue("@password", UserCreateWaitlist.Password);
 
-                #pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                if (regex.IsMatch(SecretaryCreate.Username) && regex.IsMatch(SecretaryCreate.Password))
-                #pragma warning restore CS8604 // Possible null reference argument.
+                if (regex.IsMatch(UserCreateWaitlist.Username) && regex.IsMatch(UserCreateWaitlist.Password))
+#pragma warning restore CS8604 // Possible null reference argument.
                 {
                     cmd1.ExecuteNonQuery();
 
                     //Append Created User To Waitlist
                     string sql = "SELECT * FROM account WHERE username = @username";
                     cmd1 = new MySqlCommand(sql, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@username", SecretaryCreate.Username);
+                    cmd1.Parameters.AddWithValue("@username", UserCreateWaitlist.Username);
                     MySqlDataReader reader = cmd1.ExecuteReader();
                     string dbusername = "NONE";
                     string dbpassword = "NONE";
                     string dbprivilege = "NONE";
-                    int dbid = 0;
                     while (reader.Read())
                     {
-                        dbid = Convert.ToInt32(reader.GetString(0));
                         dbusername = reader.GetString(1);
                         dbpassword = reader.GetString(2);
                         dbprivilege = reader.GetString(3);
                     }
                     reader.Close();
-                    string sqlwaitlist = "INSERT INTO waitlist(`type`, account_id) VALUES(@type, @id);";
+                    string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
                     cmd1 = new MySqlCommand(sqlwaitlist, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@type", SecretaryCreate.Type);
-                    cmd1.Parameters.AddWithValue("@id", dbid);
+                    cmd1.Parameters.AddWithValue("@type", UserCreateWaitlist.Type);
+                    cmd1.Parameters.AddWithValue("@dbusername", dbusername);
                     cmd1.ExecuteNonQuery();
 
                     //COMMIT
@@ -309,6 +306,8 @@ namespace DAL
             }
         }
         #endregion
+
+        #region SecretaryMethods
         #region Secretary Print Resident (txt)
         public void SecretaryPrint()
         {
@@ -325,7 +324,7 @@ namespace DAL
             cmd1.ExecuteNonQuery();
 
             //Write To txt file
-            string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_date, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_id = r.account_id AND hr.housing_id = h.id AND r.account_id = a.id ORDER BY a.username;";
+            string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
             cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
 
             MySqlDataReader rdr = cmd1.ExecuteReader();
@@ -342,7 +341,7 @@ namespace DAL
                         $"\tUsername: {Convert.ToString(rdr[0])}\n" +
                         $"\tType: {Convert.ToString(rdr[1])}\n" +
                         $"\tName: {Convert.ToString(rdr[2])}\n" +
-                        $"\tStart_Date: {Convert.ToString(rdr[3])}\n" +
+                        $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
                         $"\tM2: {Convert.ToString(rdr[4])}\n" +
                         $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
                         "}\n" +

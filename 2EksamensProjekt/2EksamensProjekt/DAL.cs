@@ -1,4 +1,6 @@
-﻿using _2EksamensProjekt.FORMS.secretary;
+﻿using _2EksamensProjekt;
+using _2EksamensProjekt.FORMS.admin;
+using _2EksamensProjekt.FORMS.secretary;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Globalization;
@@ -23,7 +25,7 @@ namespace DAL
         #region Open/Close-Conn
         private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
         //Open Connection Method 
-        private MySqlConnection OpenConn(MySqlConnection conn)
+        public MySqlConnection OpenConn(MySqlConnection conn)
         {
             string state = conn.State.ToString();
             if (state == "Closed")
@@ -41,7 +43,7 @@ namespace DAL
         }
 
         //Close Connection Method
-        private MySqlConnection CloseConn(MySqlConnection conn)
+        public MySqlConnection CloseConn(MySqlConnection conn)
         {
             string state = conn.State.ToString();
             if (state == "Open")
@@ -107,6 +109,8 @@ namespace DAL
                 DataTable tbl = new DataTable();
                 tbl.Clear();
                 MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@min", Housing.MIN);
+                cmd1.Parameters.AddWithValue("@max", Housing.MAX);
                 tbl.Load(cmd1.ExecuteReader());
                 CloseConn(conn);
                 return await Task.FromResult(tbl);
@@ -143,6 +147,8 @@ namespace DAL
                 throw new Exception(ex.ToString());
             }
         }
+
+        
         #endregion Datagridview Threading Update
 
         #region Login
@@ -275,9 +281,9 @@ namespace DAL
                     string dbprivilege = "NONE";
                     while (reader.Read())
                     {
-                        dbusername = reader.GetString(1);
-                        dbpassword = reader.GetString(2);
-                        dbprivilege = reader.GetString(3);
+                        dbusername = reader.GetString(0);
+                        dbpassword = reader.GetString(1);
+                        dbprivilege = reader.GetString(2);
                     }
                     reader.Close();
                     string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
@@ -313,10 +319,11 @@ namespace DAL
         }
         #endregion
 
-        #region WaitList Usernames
-        public List<string> WaitlistUsernames()
+        #region ComboBoxFill
+        public void ComboBoxFill(ComboBox combo, string sql)
         {
             List<string> usernames = new List<string>();
+            usernames.Clear();
 
             MySqlConnection conn = new MySqlConnection(ConnStr);
 
@@ -330,8 +337,7 @@ namespace DAL
             cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
             cmd1.ExecuteNonQuery();
 
-            //Write To txt file
-            string sql = "SELECT w.account_name FROM waitlist w";
+            //Append To List
             cmd1 = new MySqlCommand(sql, OpenConn(conn));
 
             MySqlDataReader rdr = cmd1.ExecuteReader();
@@ -349,10 +355,72 @@ namespace DAL
             cmd1 = new MySqlCommand(commit, OpenConn(conn));
             cmd1.ExecuteNonQuery();
             CloseConn(conn);
-            return usernames;
+
+            if (combo.InvokeRequired)
+            {
+                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    foreach (string arg in usernames)
+                    {
+                        combo.Items.Add(arg);
+                    }
+                });
+            }
         }
-    
-        #endregion WaitList Usernames
+
+        #endregion ComboBoxFill
+
+        #region Special Collection Method
+        public class Houses
+        {
+            public int id { get; set; }
+            public string? housetype { get; set; }
+            public int m2 { get; set; }
+            public int price { get; set; }
+        }
+        public List<Houses> SpecialCollectionGridView()
+        {
+            List<Houses> collection = new List<Houses>();
+            collection.Clear();
+
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string sql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+            MySqlCommand cmd1 = new MySqlCommand(sql, OpenConn(conn));
+            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            string sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Append To List
+            cmd1 = new MySqlCommand(sql, OpenConn(conn));
+
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                Houses house = new Houses();
+
+                house.id = rdr.GetInt32(0);
+                house.housetype = rdr.GetString(1);
+                house.m2 = rdr.GetInt32(2);
+                house.price = rdr.GetInt32(3);
+                collection.Add(house);
+            }
+            rdr.Close();
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+            CloseConn(conn);
+            return collection;
+        }
+        #endregion Special Collection Method
 
         #region SecretaryMethods
         #region Secretary Print Resident (txt)
@@ -410,12 +478,208 @@ namespace DAL
         #endregion SecretaryMethods
 
         #region AdminMethods
+        #region Grant Housing
+        public void GrantHousing()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                string type = String.Empty;
+                string housetype = String.Empty;
+
+                //Check User Type
+                string sqlcommand = "SELECT w.`type` FROM waitlist w WHERE w.account_username = @username;";
+                MySqlCommand cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                MySqlDataReader reader = cmd1.ExecuteReader();
+                while (reader.Read())
+                {
+                    type = reader.GetString(0);
+                }
+                reader.Close();
+
+                //Check House Type
+                sqlcommand = "SELECT h.`type` FROM housing h WHERE h.id = @id;";
+                cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(Housing.HouseID));
+                reader = cmd1.ExecuteReader();
+                while (reader.Read())
+                {
+                    housetype = reader.GetString(0);
+                }
+                reader.Close();
+                if (type == housetype && Housing.AccountUsername != null && Housing.AccountUsername != String.Empty)
+                {
+                    //Set Isolation Level
+                    string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                    cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Begin Transation
+                    sqlString = "START TRANSACTION;";
+                    cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Insert Into Residents
+                    sqlcommand = "INSERT INTO residents (name, account_username) VALUES (@name, @username);";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@name", Housing.AccountName);
+                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1.ExecuteNonQuery();
+
+                    //Insert Into Housing_Residents
+                    sqlcommand = "INSERT INTO housing_residents (housing_id, residents_username, start_contract) VALUES (@id, @username, CURRENT_TIMESTAMP);";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@id", Housing.HouseID);
+                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1.ExecuteNonQuery();
+
+                    //Remove From Waitlist
+                    sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1.ExecuteNonQuery();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    CloseConn(conn);
+                }
+                else
+                {
+                    MessageBox.Show($"House type: {housetype} is not available for Member type: {type}");
+                }
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1062)
+                {
+                    throw new Exception("Username Already Exists!\nSet Another Username");
+                }
+                else
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+           
+        }
+        #endregion Grant Housing
+        #region Create New Housing
+        public void CreateNewHouse()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+
+                if (AdminCreateHouse.HouseType != string.Empty && AdminCreateHouse.M2 != 0 && AdminCreateHouse.Price != 0)
+                {
+                    //Set Isolation Level
+                    string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                    MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Begin Transation
+                    sqlString = "START TRANSACTION;";
+                    cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Insert Into Residents
+                    string sqlcommand = "INSERT INTO housing (type, m2, rental_price) VALUES (@type, @m2, @price);";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@type", AdminCreateHouse.HouseType);
+                    cmd1.Parameters.AddWithValue("@m2", AdminCreateHouse.M2);
+                    cmd1.Parameters.AddWithValue("@price", AdminCreateHouse.Price);
+                    cmd1.ExecuteNonQuery();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    CloseConn(conn);
+                }
+                else
+                {
+                    MessageBox.Show($"Fill Out All Information!");
+                }
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1062)
+                {
+                    throw new Exception("Username Already Exists!\nSet Another Username");
+                }
+                else
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+        #endregion Create New Housing
+        #region Delete Housing
+        public void DeleteHouse()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                if (Housing.HouseID != string.Empty)
+                {
+                    //Set Isolation Level
+                    string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                    MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Begin Transation
+                    sqlString = "START TRANSACTION;";
+                    cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    //Insert Into Residents
+                    string sqlcommand = "DELETE FROM housing WHERE id = @id;";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(Housing.HouseID));
+
+                    cmd1.ExecuteNonQuery();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                    cmd1.ExecuteNonQuery();
+
+                    CloseConn(conn);
+                }
+                else
+                {
+                    MessageBox.Show($"Select a house id!");
+                }
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1062)
+                {
+                    throw new Exception("Username Already Exists!\nSet Another Username");
+                }
+                else
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+        #endregion Delete Housing
         #endregion AdminMethods
 
         #region Resident
         #endregion Resident
 
 
-       
+
     }
 }

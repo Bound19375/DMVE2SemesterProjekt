@@ -43,7 +43,7 @@
             this.panel1.Location = new System.Drawing.Point(8, 31);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(798, 456);
+            this.panel1.Size = new System.Drawing.Size(798, 493);
             this.panel1.TabIndex = 0;
             // 
             // label2
@@ -112,7 +112,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(108, 20);
             this.button1.TabIndex = 20;
-            this.button1.Text = "Waitlist/Housing";
+            this.button1.Text = "Housing";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -131,7 +131,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 494);
+            this.ClientSize = new System.Drawing.Size(814, 535);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);

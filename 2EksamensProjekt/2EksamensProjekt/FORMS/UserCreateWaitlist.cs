@@ -30,6 +30,7 @@ namespace _2EksamensProjekt.FORMS.secretary
             Password = textBox2.Text;
             Type = comboBox1.Text;
             dal.CreateUser_Waitlist();
+            dal.bypassDatatableUpdate = true;
             this.Close();
         }
     }

@@ -14,6 +14,12 @@
         {
             InitializeComponent();
             label5.Text = $"{dal.Username}";
+            panel1.Controls.Clear();
+            Housing myForm = Housing.GetInstance();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            panel1.Controls.Add(myForm);
+            myForm.Show();
         }
 
         public static adminSP GetInstance()
@@ -42,7 +48,7 @@
         private void button1_Click(object sender, EventArgs e)
         {
             panel1.Controls.Clear();
-            Waitlist_Housing myForm = Waitlist_Housing.GetInstance();
+            Housing myForm = Housing.GetInstance();
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             panel1.Controls.Add(myForm);

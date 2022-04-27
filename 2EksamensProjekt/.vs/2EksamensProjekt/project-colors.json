@@ -20,7 +20,12 @@
       "ProjectGuid": "92a6eb51-1784-4a34-98d4-a66ac2a41fd5",
       "DisplayName": "UnitTestProject1",
       "ColorIndex": 2
+    },
+    "3e0a2a96-80eb-48f7-9063-e1bfb45e3eed": {
+      "ProjectGuid": "3e0a2a96-80eb-48f7-9063-e1bfb45e3eed",
+      "DisplayName": "ConsoleApp1",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 3
+  "NextColorIndex": 4
 }

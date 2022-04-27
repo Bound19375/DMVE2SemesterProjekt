@@ -61,6 +61,7 @@ namespace DAL
 
         #region Datagridview Threading Update
         //DataGridView Thread Refresh Method
+        public bool bypassDatatableUpdate;
         public async Task<DateTime> DBUpdateCheck()
         {
             try
@@ -116,12 +117,13 @@ namespace DAL
             }
         }
 
-        public void Gridview(DataGridView gv, string sql)
+        public void Gridview(DataGridView gv, string sql, bool bypass)
         {
             try
             {
-                if (DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-1000) || gv.DataSource == null)
+                if (DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-1000) || gv.DataSource == null || bypass == true)
                 {
+                    
                     if (gv.InvokeRequired)
                     {
                         gv.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
@@ -129,6 +131,10 @@ namespace DAL
                             gv.DataSource = Datatable(sql).Result;
                             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         });
+                    }
+                    if (bypassDatatableUpdate == true)
+                    {
+                        bypassDatatableUpdate = false;
                     }
                 }
             }
@@ -306,6 +312,47 @@ namespace DAL
             }
         }
         #endregion
+
+        #region WaitList Usernames
+        public List<string> WaitlistUsernames()
+        {
+            List<string> usernames = new List<string>();
+
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            string sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Write To txt file
+            string sql = "SELECT w.account_name FROM waitlist w";
+            cmd1 = new MySqlCommand(sql, OpenConn(conn));
+
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                for (int i = 0; i < rdr.FieldCount; i++)
+                {
+                    usernames.Add(rdr.GetString(i));
+                }
+            }
+            rdr.Close();
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+            CloseConn(conn);
+            return usernames;
+        }
+    
+        #endregion WaitList Usernames
 
         #region SecretaryMethods
         #region Secretary Print Resident (txt)

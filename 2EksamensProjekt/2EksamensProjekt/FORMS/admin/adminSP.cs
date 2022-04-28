@@ -2,11 +2,9 @@
 {
     using _2EksamensProjekt.FORMS.secretary;
     using DAL;
-    using UnikAPI;
     public partial class adminSP : Form
     {
         DAL dal = DAL.Getinstance();
-        API api = API.Getinstance();
 
         private static adminSP singleton = new adminSP();
 

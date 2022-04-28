@@ -16,7 +16,6 @@ namespace _2EksamensProjekt
         public static string HouseType { get; set; } = "NONE";
         public static int M2 { get; set; } = 0;
         public static int Price { get; set; } = 0;
-        public static bool UpdateComboBox { get; set; } = true;
 
         DAL dal = DAL.Getinstance();
         public AdminCreateHouse()
@@ -30,7 +29,6 @@ namespace _2EksamensProjekt
             M2 = Convert.ToInt32(textBox1.Text);
             Price = Convert.ToInt32(textBox2.Text);
             dal.CreateNewHouse();
-            UpdateComboBox = true;
             this.Close();
         }
     }

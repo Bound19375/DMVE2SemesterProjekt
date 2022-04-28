@@ -87,7 +87,6 @@ C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\ob
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.secretary.UserCreateWaitlist.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Resources.resources
-C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Waitlist_Housing.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.adminSP.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Resources.resources
@@ -97,3 +96,6 @@ C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2Eksame
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.Properties.Resources.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.AdminCreateHouse.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Housing.resources
+C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.AdminCreateHouse.resources
+C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Housing.resources
+C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.SpecialCollection.resources

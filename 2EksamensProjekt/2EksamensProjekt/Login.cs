@@ -4,11 +4,9 @@ namespace _2EksamensProjekt
     using _2EksamensProjekt.FORMS.resident;
     using _2EksamensProjekt.FORMS.secretary;
     using DAL;
-    using UnikAPI;
     public partial class Login : Form
     {
         DAL dal = DAL.Getinstance(); 
-        API api = API.Getinstance();
 
         private static Login singleton = new Login();
 
@@ -40,7 +38,7 @@ namespace _2EksamensProjekt
                     {
                         label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
                         {
-                            label1.Text = api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
+                            label1.Text = dal.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
                         });
                         await Task.Delay(1000); //Sleeping For X Seconds.
                     }

@@ -2,6 +2,7 @@
 using _2EksamensProjekt.FORMS.admin;
 using _2EksamensProjekt.FORMS.secretary;
 using MySql.Data.MySqlClient;
+using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -61,6 +62,31 @@ namespace DAL
         }
         #endregion Open/Close-Conn
 
+        #region Slogan Thread
+        public async Task<string> SloganT()
+        {
+            try
+            {
+                do
+                {
+                    List<string> list = new List<string>() { "Bo godt – bo hos Sønderbo", "test2", "test3", "test4", "test5", "test6", "test7" };
+
+                    Random r = new Random();
+                    int slogan = r.Next(0, list.Count);
+
+                    return await Task.FromResult(list[slogan]);
+                }
+                while (true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return await Task.FromResult("Slogan Error");
+        }
+    
+        #endregion Slogan Thread
+
         #region Datagridview Threading Update
         //DataGridView Thread Refresh Method
         public bool bypassDatatableUpdate;
@@ -111,6 +137,11 @@ namespace DAL
                 MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@min", Housing.MIN);
                 cmd1.Parameters.AddWithValue("@max", Housing.MAX);
+                cmd1.Parameters.AddWithValue("@user", Resources.User);
+                cmd1.Parameters.AddWithValue("@start", Resources.Start);
+                cmd1.Parameters.AddWithValue("@end", Resources.End);
+                cmd1.Parameters.AddWithValue("@unit", Resources.UnitID);
+
                 tbl.Load(cmd1.ExecuteReader());
                 CloseConn(conn);
                 return await Task.FromResult(tbl);
@@ -132,7 +163,8 @@ namespace DAL
                     {
                         gv.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                         {
-                            gv.DataSource = Datatable(sql).Result;
+                            var source = new BindingSource(Datatable(sql).Result, null);
+                            gv.DataSource = source;
                             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         });
                     }
@@ -146,6 +178,13 @@ namespace DAL
             {
                 throw new Exception(ex.ToString());
             }
+        }
+        public void GridviewCollection(DataGridView gv, string sql)
+        {
+            var bindingList = new BindingList<Houses>(SpecialCollectionList(sql)); //Raise an event if the underlying list changes 
+            var source = new BindingSource(bindingList, null);
+            gv.DataSource = source;
+            gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         
@@ -320,7 +359,8 @@ namespace DAL
         #endregion
 
         #region ComboBoxFill
-        public void ComboBoxFill(ComboBox combo, string sql)
+        public bool bypassComboBoxFillCount;
+        public void ComboBoxFill(ComboBox combo, string sql, bool bypass)
         {
             List<string> usernames = new List<string>();
             usernames.Clear();
@@ -356,15 +396,20 @@ namespace DAL
             cmd1.ExecuteNonQuery();
             CloseConn(conn);
 
-            if (combo.InvokeRequired)
+            if (combo.Items.Count < usernames.Count() || bypass)
             {
-                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                if (combo.InvokeRequired)
                 {
-                    foreach (string arg in usernames)
+                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                     {
-                        combo.Items.Add(arg);
-                    }
-                });
+                        combo.Items.Clear();
+                        foreach (string ele in usernames)
+                        {
+                            combo.Items.Add(ele);
+                        }
+                    });
+                }
+                bypassComboBoxFillCount = false;
             }
         }
 
@@ -378,7 +423,7 @@ namespace DAL
             public int m2 { get; set; }
             public int price { get; set; }
         }
-        public List<Houses> SpecialCollectionGridView()
+        public List<Houses> SpecialCollectionList(string sql)
         {
             List<Houses> collection = new List<Houses>();
             collection.Clear();
@@ -386,7 +431,6 @@ namespace DAL
             MySqlConnection conn = new MySqlConnection(ConnStr);
 
             //Set Isolation Level
-            string sql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
             MySqlCommand cmd1 = new MySqlCommand(sql, OpenConn(conn));
             string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
             cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
@@ -408,8 +452,8 @@ namespace DAL
 
                 house.id = rdr.GetInt32(0);
                 house.housetype = rdr.GetString(1);
-                house.m2 = rdr.GetInt32(2);
-                house.price = rdr.GetInt32(3);
+                house.m2 = rdr.GetInt32(3);
+                house.price = rdr.GetInt32(2);
                 collection.Add(house);
             }
             rdr.Close();

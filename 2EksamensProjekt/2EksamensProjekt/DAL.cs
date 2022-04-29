@@ -90,7 +90,6 @@ namespace DAL
 
         #region Datagridview Threading Update
         //DataGridView Thread Refresh Method
-        public bool bypassDatatableUpdate;
         public async Task<DateTime> DBUpdateCheck()
         {
             try
@@ -162,7 +161,7 @@ namespace DAL
 
                 CloseConn(conn);
 
-                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null)// || !SQL.SequenceEqual(CurrentTable))
+                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass == true)
                 {
                     if (gv.InvokeRequired)
                     {
@@ -173,6 +172,10 @@ namespace DAL
                             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         });
                     }
+                    if (bypass == true)
+                    {
+                        Task.Delay(5000);
+                    }
                 }
             }
             catch (MySqlException ex)
@@ -180,6 +183,108 @@ namespace DAL
                 throw new Exception(ex.ToString());
             }
         }
+
+        #region ComboBoxFill
+        public void ComboBoxFill(ComboBox combo, string sql)
+        {
+            try
+            {
+                List<string> usernames = new List<string>();
+                List<string> currentcomboelements = new List<string>();
+                usernames.Clear();
+                currentcomboelements.Clear();
+
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Append To List
+                cmd1 = new MySqlCommand(sql, OpenConn(conn));
+
+                MySqlDataReader rdr = cmd1.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    for (int i = 0; i < rdr.FieldCount; i++)
+                    {
+                        usernames.Add(rdr.GetString(i));
+                    }
+                }
+                rdr.Close();
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+
+                foreach (string items in combo.Items)
+                {
+                    currentcomboelements.Add(items);
+                }
+
+                if (combo.Items.Count < usernames.Count() || combo.Items.Count > usernames.Count() || !usernames.SequenceEqual(currentcomboelements))
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            combo.Items.Clear();
+                            foreach (string ele in usernames)
+                            {
+                                combo.Items.Add(ele);
+                            }
+                        });
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        public void ComboBoxFillNoSqlInt(ComboBox combo, int amount)
+        {
+            try
+            {
+                List<int> countlist = new List<int>();
+                countlist.Clear();
+
+                for (int i = 1; i <= amount; i++)
+                {
+                    countlist.Add(i);
+                }
+
+                if (combo.Items.Count != countlist.Count || DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-5000))
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            combo.Items.Clear();
+                            foreach (int i in countlist)
+                            {
+                                combo.Items.Add(i);
+                            }
+                        });
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
+
+        #endregion ComboBoxFill
 
         #region Special Collection Method
         public class Houses
@@ -332,109 +437,7 @@ namespace DAL
         }
         #endregion
 
-        #region ComboBoxFill
-        public bool bypassComboBoxFillCount;
-        public void ComboBoxFill(ComboBox combo, string sql)
-        {
-            try
-            {
-                List<string> usernames = new List<string>();
-                List<string> currentcomboelements = new List<string>();
-                usernames.Clear();
-                currentcomboelements.Clear();
-
-                MySqlConnection conn = new MySqlConnection(ConnStr);
-
-                //Set Isolation Level
-                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                //Begin Transation
-                string sqlString = "START TRANSACTION;";
-                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                //Append To List
-                cmd1 = new MySqlCommand(sql, OpenConn(conn));
-
-                MySqlDataReader rdr = cmd1.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    for (int i = 0; i < rdr.FieldCount; i++)
-                    {
-                        usernames.Add(rdr.GetString(i));
-                    }
-                }
-                rdr.Close();
-                //COMMIT
-                string commit = "COMMIT;";
-                cmd1 = new MySqlCommand(commit, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-                CloseConn(conn);
-
-                foreach (string items in combo.Items)
-                {
-                    currentcomboelements.Add(items);
-                }
-
-                if (combo.Items.Count < usernames.Count() || combo.Items.Count > usernames.Count() || !usernames.SequenceEqual(currentcomboelements))
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            combo.Items.Clear();
-                            foreach (string ele in usernames)
-                            {
-                                combo.Items.Add(ele);
-                            }
-                        });
-                    }
-                }
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
-        }
-        public void ComboBoxFillNoSqlInt(ComboBox combo, int amount)
-        {
-            try
-            {
-                List<int> countlist = new List<int>();
-                countlist.Clear();
-
-                for (int i = 1; i <= amount; i++)
-                {
-                    countlist.Add(i);
-                }
-
-                if (combo.Items.Count != countlist.Count || DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-5000))
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            combo.Items.Clear();
-                            foreach (int i in countlist)
-                            {
-                                combo.Items.Add(i);
-                            }
-                        });
-                    }
-                    bypassComboBoxFillCount = false;
-                }
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
-        }
         
-
-        #endregion ComboBoxFill
 
         #region SecretaryMethods
         #region Secretary Print Resident (txt)
@@ -862,7 +865,7 @@ namespace DAL
         }
         #endregion Booking
         #region Admin Statistics Print (txt)
-        public void AdminStatisticsPrint(string cmd_TxtPrint, DataGridView gridView)
+        public void AdminStatisticsPrint(string cmd_TxtPrint)
         {
             try
             {
@@ -879,19 +882,35 @@ namespace DAL
                 cmd1.ExecuteNonQuery();
 
                 //Write To txt file
-                DataTable tbl = new DataTable();
-                tbl.Clear();
                 cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
+
                 MySqlDataReader rdr = cmd1.ExecuteReader();
-                tbl.Load(rdr);
+                DataTable tbl = new DataTable();
+                tbl.Load(cmd1.ExecuteReader());
+                rdr.Close();
 
                 string filePath = @"..\..\..\txts\Resources.txt";
-                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 0, true))
                 {
                     StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+                    int i = 0;
+                    for (i = 0; i < tbl.Columns.Count; i++)
+                    {
+                        writer.Write(tbl.Columns[i].ColumnName + "\t\t");
+                    }
+                    writer.WriteLine("\n");
 
-                    
-                    rdr.Close();
+                    foreach (DataRow row in tbl.Rows)
+                    {
+                        object[] array = row.ItemArray;
+
+                        for (i = 0; i < array.Length; i++)
+                        {
+                            writer.Write(array[i].ToString() + ";");
+                        }
+                        writer.WriteLine();
+                    }
+                    writer.Close();
                 }
 
                 //COMMIT

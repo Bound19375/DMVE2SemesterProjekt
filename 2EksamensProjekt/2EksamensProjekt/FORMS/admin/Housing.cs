@@ -62,9 +62,7 @@ namespace _2EksamensProjekt.FORMS.admin
                 {
                     MIN = Convert.ToInt32(textBox3.Text);
                     MAX = Convert.ToInt32(textBox2.Text);
-                    dal.bypassDatatableUpdate = true;
                 }
-                dal.bypassDatatableUpdate = true;
             }
             catch (Exception)
             {
@@ -93,7 +91,7 @@ namespace _2EksamensProjekt.FORMS.admin
                         sql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
                     }
                     dal.Gridview(dataGridView1, "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;", false);
-                    dal.Gridview(dataGridView2, sql, dal.bypassDatatableUpdate);
+                    dal.Gridview(dataGridView2, sql, true);
                     dal.Gridview(dataGridView3, "SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username  FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;", false);
                     
                 }
@@ -133,7 +131,6 @@ namespace _2EksamensProjekt.FORMS.admin
                 {
                     MIN = Convert.ToInt32(textBox3.Text);
                     MAX = Convert.ToInt32(textBox2.Text);
-                    dal.bypassDatatableUpdate = true;
                 }
 
                 if (radioButton3.Checked)

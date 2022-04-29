@@ -858,11 +858,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+      "projectUniqueName": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
       "projectName": "2EksamensProjekt",
-      "projectPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+      "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
       "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
+      "outputPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -914,7 +914,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

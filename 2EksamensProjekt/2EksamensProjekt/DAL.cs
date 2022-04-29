@@ -4,6 +4,7 @@ using _2EksamensProjekt.FORMS.secretary;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -127,10 +128,15 @@ namespace DAL
             }
         }
 
-        private async Task<DataTable> Datatable(string DataTableSql)
+        public void Gridview(DataGridView gv, string DataTableSql, bool bypass)
         {
             try
             {
+                List<int> SQL = new List<int>();
+                List<int> CurrentTable = new List<int>();
+                SQL.Clear();
+                CurrentTable.Clear();
+
                 MySqlConnection conn = new MySqlConnection(ConnStr);
                 DataTable tbl = new DataTable();
                 tbl.Clear();
@@ -138,46 +144,92 @@ namespace DAL
                 cmd1.Parameters.AddWithValue("@min", Housing.MIN);
                 cmd1.Parameters.AddWithValue("@max", Housing.MAX);
                 cmd1.Parameters.AddWithValue("@user", Resources.User);
-                cmd1.Parameters.AddWithValue("@start", Resources.Start);
-                cmd1.Parameters.AddWithValue("@end", Resources.End);
-                cmd1.Parameters.AddWithValue("@unit", Resources.UnitID);
+                cmd1.Parameters.AddWithValue("@start", Resources.Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@end", Resources.End.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@unittype", Resources.UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
 
                 tbl.Load(cmd1.ExecuteReader());
+
+                for (int i = 0; i < tbl.Rows.Count; i++)
+                {
+                    SQL.Add(i);
+                    for (int j = 0; j < tbl.Columns.Count; j++)
+                    {
+                        SQL.Add(j);
+                    }
+                }
+
                 CloseConn(conn);
-                return await Task.FromResult(tbl);
+
+                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null)// || !SQL.SequenceEqual(CurrentTable))
+                {
+                    if (gv.InvokeRequired)
+                    {
+                        gv.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            var source = new BindingSource(tbl, null);
+                            gv.DataSource = source;
+                            gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        });
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (MySqlException ex)
             {
                 throw new Exception(ex.ToString());
             }
         }
 
-        public void Gridview(DataGridView gv, string sql, bool bypass)
+        #region Special Collection Method
+        public class Houses
         {
-            try
+            public int id { get; set; }
+            public string? housetype { get; set; }
+            public int m2 { get; set; }
+            public int price { get; set; }
+        }
+        public List<Houses> SpecialCollectionList(string dosql)
+        {
+            List<Houses> collection = new List<Houses>();
+            collection.Clear();
+
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Append To List
+            cmd1 = new MySqlCommand(dosql, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@min", Housing.MIN);
+            cmd1.Parameters.AddWithValue("@max", Housing.MAX);
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+            while (rdr.Read())
             {
-                if (DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-1000) || gv.DataSource == null || bypass == true)
-                {
-                    
-                    if (gv.InvokeRequired)
-                    {
-                        gv.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            var source = new BindingSource(Datatable(sql).Result, null);
-                            gv.DataSource = source;
-                            gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                        });
-                    }
-                    if (bypassDatatableUpdate == true)
-                    {
-                        bypassDatatableUpdate = false;
-                    }
-                }
+                Houses house = new Houses();
+
+                house.id = rdr.GetInt32(0);
+                house.housetype = rdr.GetString(1);
+                house.m2 = rdr.GetInt32(3);
+                house.price = rdr.GetInt32(2);
+                collection.Add(house);
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.ToString());
-            }
+            rdr.Close();
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+            CloseConn(conn);
+            return collection;
         }
         public void GridviewCollection(DataGridView gv, string sql)
         {
@@ -186,8 +238,7 @@ namespace DAL
             gv.DataSource = source;
             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
-
-        
+        #endregion Special Collection Method
         #endregion Datagridview Threading Update
 
         #region Login
@@ -281,6 +332,171 @@ namespace DAL
         }
         #endregion
 
+        #region ComboBoxFill
+        public bool bypassComboBoxFillCount;
+        public void ComboBoxFill(ComboBox combo, string sql)
+        {
+            try
+            {
+                List<string> usernames = new List<string>();
+                List<string> currentcomboelements = new List<string>();
+                usernames.Clear();
+                currentcomboelements.Clear();
+
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Append To List
+                cmd1 = new MySqlCommand(sql, OpenConn(conn));
+
+                MySqlDataReader rdr = cmd1.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    for (int i = 0; i < rdr.FieldCount; i++)
+                    {
+                        usernames.Add(rdr.GetString(i));
+                    }
+                }
+                rdr.Close();
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+
+                foreach (string items in combo.Items)
+                {
+                    currentcomboelements.Add(items);
+                }
+
+                if (combo.Items.Count < usernames.Count() || combo.Items.Count > usernames.Count() || !usernames.SequenceEqual(currentcomboelements))
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            combo.Items.Clear();
+                            foreach (string ele in usernames)
+                            {
+                                combo.Items.Add(ele);
+                            }
+                        });
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        public void ComboBoxFillNoSqlInt(ComboBox combo, int amount)
+        {
+            try
+            {
+                List<int> countlist = new List<int>();
+                countlist.Clear();
+
+                for (int i = 1; i <= amount; i++)
+                {
+                    countlist.Add(i);
+                }
+
+                if (combo.Items.Count != countlist.Count || DBUpdateCheck().Result > DateTime.Now.AddMilliseconds(-5000))
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            combo.Items.Clear();
+                            foreach (int i in countlist)
+                            {
+                                combo.Items.Add(i);
+                            }
+                        });
+                    }
+                    bypassComboBoxFillCount = false;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        
+
+        #endregion ComboBoxFill
+
+        #region SecretaryMethods
+        #region Secretary Print Resident (txt)
+        public void SecretaryPrint()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Write To txt file
+                string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+                cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
+
+                MySqlDataReader rdr = cmd1.ExecuteReader();
+
+                string filePath = @"..\..\..\txts\Residencies.txt";
+                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+
+                    while (rdr.Read())
+                    {
+                        writer.WriteLine(
+                            "{\n" +
+                            $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                            $"\tType: {Convert.ToString(rdr[1])}\n" +
+                            $"\tName: {Convert.ToString(rdr[2])}\n" +
+                            $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                            $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                            $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                            "}\n" +
+                            "\n");
+                    }
+                    writer.Close();
+                }
+                rdr.Close();
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                CloseConn(conn);
+                MessageBox.Show($"File Downloaded To: {filePath[9..]}");
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+        #endregion SecretaryMethods
         #region Create User And Waitlist
         public void CreateUser_Waitlist()
         {
@@ -357,170 +573,50 @@ namespace DAL
             }
         }
         #endregion
-
-        #region ComboBoxFill
-        public bool bypassComboBoxFillCount;
-        public void ComboBoxFill(ComboBox combo, string sql, bool bypass)
+        #region CancelReservation
+        public void CancelReservation()
         {
-            List<string> usernames = new List<string>();
-            usernames.Clear();
-
-            MySqlConnection conn = new MySqlConnection(ConnStr);
-
-            //Set Isolation Level
-            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Append To List
-            cmd1 = new MySqlCommand(sql, OpenConn(conn));
-
-            MySqlDataReader rdr = cmd1.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                for (int i = 0; i < rdr.FieldCount; i++)
-                {
-                    usernames.Add(rdr.GetString(i));
-                }
-            }
-            rdr.Close();
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new MySqlCommand(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-            CloseConn(conn);
+                MySqlConnection conn = new MySqlConnection(ConnStr);
 
-            if (combo.Items.Count < usernames.Count() || bypass)
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Delete Booking
+                string insert = "DELETE FROM resident_resource_reservations WHERE id = @id;";
+                cmd1 = new MySqlCommand(insert, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@id", Resources.CancelBookingID);
+                cmd1.ExecuteNonQuery();
+
+
+                //Alter Booking Count
+                /*
+                string altercount = "UPDATE resource SET times_reserved = times_reserved - 1 WHERE id = @unitid; ";
+                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
+                cmd1.ExecuteNonQuery();
+                */
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
             {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        combo.Items.Clear();
-                        foreach (string ele in usernames)
-                        {
-                            combo.Items.Add(ele);
-                        }
-                    });
-                }
-                bypassComboBoxFillCount = false;
+                MessageBox.Show(ex.Message.ToString());
             }
-        }
-
-        #endregion ComboBoxFill
-
-        #region Special Collection Method
-        public class Houses
-        {
-            public int id { get; set; }
-            public string? housetype { get; set; }
-            public int m2 { get; set; }
-            public int price { get; set; }
-        }
-        public List<Houses> SpecialCollectionList(string sql)
-        {
-            List<Houses> collection = new List<Houses>();
-            collection.Clear();
-
-            MySqlConnection conn = new MySqlConnection(ConnStr);
-
-            //Set Isolation Level
-            MySqlCommand cmd1 = new MySqlCommand(sql, OpenConn(conn));
-            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Append To List
-            cmd1 = new MySqlCommand(sql, OpenConn(conn));
-
-            MySqlDataReader rdr = cmd1.ExecuteReader();
-
-            while (rdr.Read())
-            {
-                Houses house = new Houses();
-
-                house.id = rdr.GetInt32(0);
-                house.housetype = rdr.GetString(1);
-                house.m2 = rdr.GetInt32(3);
-                house.price = rdr.GetInt32(2);
-                collection.Add(house);
-            }
-            rdr.Close();
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new MySqlCommand(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-            CloseConn(conn);
-            return collection;
-        }
-        #endregion Special Collection Method
-
-        #region SecretaryMethods
-        #region Secretary Print Resident (txt)
-        public void SecretaryPrint()
-        {
-            MySqlConnection conn = new MySqlConnection(ConnStr);
-
-            //Set Isolation Level
-            string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Write To txt file
-            string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
-            cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
-
-            MySqlDataReader rdr = cmd1.ExecuteReader();
-
-            string filePath = @"..\..\..\txts\Residencies.txt";
-            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
-            {
-                StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
-                
-                while (rdr.Read())
-                {
-                    writer.WriteLine(
-                        "{\n" +
-                        $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                        $"\tType: {Convert.ToString(rdr[1])}\n" +
-                        $"\tName: {Convert.ToString(rdr[2])}\n" +
-                        $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                        $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                        $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                        "}\n" +
-                        "\n");
-                }
-                writer.Close();
-            }
-            rdr.Close();
-
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new MySqlCommand(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            CloseConn(conn);
-            MessageBox.Show($"File Downloaded To: {filePath[9..]}");
         }
         #endregion
-        #endregion SecretaryMethods
-
         #region AdminMethods
         #region Grant Housing
         public void GrantHousing()
@@ -718,6 +814,100 @@ namespace DAL
             }
         }
         #endregion Delete Housing
+        #region Booking
+        public void Booking()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Insert Booking
+                string insert = "INSERT INTO resident_resource_reservations(residents_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
+                cmd1 = new MySqlCommand(insert, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@user", Resources.User);
+                cmd1.Parameters.AddWithValue("@start", Resources.Start);
+                cmd1.Parameters.AddWithValue("@unittype", Resources.UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
+                cmd1.Parameters.AddWithValue("@duration", Resources.Duration);
+                cmd1.ExecuteNonQuery();
+
+
+                //Alter Booking Count
+                string altercount = "UPDATE resource SET times_reserved = times_reserved + 1 WHERE id = @unitid; ";
+                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
+
+                cmd1.ExecuteNonQuery();
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        #endregion Booking
+        #region Admin Statistics Print (txt)
+        public void AdminStatisticsPrint(string cmd_TxtPrint, DataGridView gridView)
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Write To txt file
+                DataTable tbl = new DataTable();
+                tbl.Clear();
+                cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
+                MySqlDataReader rdr = cmd1.ExecuteReader();
+                tbl.Load(rdr);
+
+                string filePath = @"..\..\..\txts\Resources.txt";
+                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+
+                    
+                    rdr.Close();
+                }
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                CloseConn(conn);
+                MessageBox.Show($"File Downloaded To: {filePath[9..]}");
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion Admin Statistics Print (txt)
         #endregion AdminMethods
 
         #region Resident

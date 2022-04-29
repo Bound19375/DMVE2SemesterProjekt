@@ -48,8 +48,8 @@ namespace _2EksamensProjekt.FORMS.admin
         {
             do
             {
-                dal.ComboBoxFill(comboBox1, "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;", false);
-                dal.ComboBoxFill(comboBox2, "SELECT w.account_username FROM waitlist w", false);
+                dal.ComboBoxFill(comboBox1, "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;");
+                dal.ComboBoxFill(comboBox2, "SELECT w.account_username FROM waitlist w");
             }
             while (true);
         }
@@ -95,6 +95,7 @@ namespace _2EksamensProjekt.FORMS.admin
                     dal.Gridview(dataGridView1, "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;", false);
                     dal.Gridview(dataGridView2, sql, dal.bypassDatatableUpdate);
                     dal.Gridview(dataGridView3, "SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username  FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;", false);
+                    
                 }
                 catch (Exception ex)
                 {
@@ -142,6 +143,7 @@ namespace _2EksamensProjekt.FORMS.admin
                 else if (radioButton1.Checked)
                 {
                     SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+
                 }
                 else if (radioButton2.Checked)
                 {

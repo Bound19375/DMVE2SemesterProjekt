@@ -127,7 +127,7 @@ namespace DAL
             }
         }
 
-        public void Gridview(DataGridView gv, string DataTableSql, bool bypass)
+        public async Task Gridview(DataGridView gv, string DataTableSql, bool bypass)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace DAL
                     }
                     if (bypass == true)
                     {
-                        Task.Delay(5000);
+                        await Task.Delay(5000);
                     }
                 }
             }

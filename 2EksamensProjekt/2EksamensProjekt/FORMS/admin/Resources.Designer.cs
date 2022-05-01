@@ -73,11 +73,11 @@
             // 
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(911, 43);
+            this.dataGridView1.Location = new System.Drawing.Point(1140, 43);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(623, 365);
+            this.dataGridView1.Size = new System.Drawing.Size(394, 365);
             this.dataGridView1.TabIndex = 0;
             // 
             // dataGridView4
@@ -212,14 +212,14 @@
             this.dataGridView5.Name = "dataGridView5";
             this.dataGridView5.RowHeadersWidth = 62;
             this.dataGridView5.RowTemplate.Height = 33;
-            this.dataGridView5.Size = new System.Drawing.Size(636, 365);
+            this.dataGridView5.Size = new System.Drawing.Size(864, 365);
             this.dataGridView5.TabIndex = 44;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label11.Location = new System.Drawing.Point(540, 5);
+            this.label11.Location = new System.Drawing.Point(679, 8);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(114, 32);
             this.label11.TabIndex = 54;
@@ -409,7 +409,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(1139, 5);
+            this.label2.Location = new System.Drawing.Point(1238, 8);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(240, 32);
             this.label2.TabIndex = 70;

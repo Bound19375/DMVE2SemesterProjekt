@@ -30,7 +30,7 @@ namespace _2EksamensProjekt.FORMS.admin
             comboBox4.Enabled = false;
             comboBox5.Enabled = false;
             groupBox2.Text = "washingmachine";
-            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh");
+            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh:mm");
             Task t2 = new Task(() => Worker());
             t2.Start();
         }
@@ -199,13 +199,13 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button3_Click(object sender, EventArgs e)
         {
-            try
+            if (comboBox3.Text != String.Empty && comboBox1.Text != String.Empty && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
             {
                 dal.Booking();
             }
-            catch (Exception)
+            else
             {
-                MessageBox.Show($"User: {dal.User}\nStart Date: {dal.Start}\nUnit ID: {dal.UnitID}\nDuration: {dal.Duration}\n\nARE REQUIRED TO BOOK!");
+                MessageBox.Show($"User: {dal.AccountUsername}\nStart Date: {dal.Start}\nUnit ID: {dal.UnitID}\nDuration: {dal.Duration}\n\nARE REQUIRED TO BOOK!");
             }
         }
 
@@ -219,7 +219,7 @@ namespace _2EksamensProjekt.FORMS.admin
             {
                 if (radioButton1.Checked)
                 {
-                    MessageBox.Show($"User: {dal.User}\nStart Date: {dal.Start}\nEnd Date: {dal.End}\nUnit Type: {dal.UnitType}\nARE REQUIRED TO SORT BY USER");
+                    MessageBox.Show($"User: {dal.AccountUsername}\nStart Date: {dal.Start}\nEnd Date: {dal.End}\nUnit Type: {dal.UnitType}\nARE REQUIRED TO SORT BY USER");
                 }
                 else if (radioButton2.Checked)
                 {
@@ -230,13 +230,13 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button7_Click(object sender, EventArgs e)
         {
-            try
-            {
-                dal.CancelReservation();
-            }
-            catch
+            if (comboBox6.Text == String.Empty)
             {
                 MessageBox.Show("Select ID");
+            }
+            else
+            {
+                dal.CancelReservation();
             }
         }
     }

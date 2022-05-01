@@ -16,10 +16,11 @@ namespace DAL
         public int MIN { get; set; }
         public int MAX { get; set; }
         public string? AccountUsername { get; set; }
+        public string? NewAccountUsername { get; set; }
         public string? HouseID { get; set; }
         public string? AccountName { get; set; }
         public string? SpecialCollectionSql { get; set; }
-        public string? User { get; set; }
+        //public string? User { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public DateTime Duration { get; set; }
@@ -28,6 +29,7 @@ namespace DAL
         public string? StatisticSQL { get; set; }
         public int CancelBookingID { get; set; }
         public string? AvailableType { get; set; }
+        public string? Password { get; set; }
 
 
         #endregion Fields
@@ -79,6 +81,8 @@ namespace DAL
             public string EndDate = "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;";
             //Booking Cancel IDS
             public string BookingCancelIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+            //Resident Info
+            public string CurrentResidentInfo = "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege  FROM housing_residents hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.residents_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
         }
     
 
@@ -237,35 +241,20 @@ namespace DAL
         {
             try
             {
-                List<int> SQL = new List<int>();
-                List<int> CurrentTable = new List<int>();
-                SQL.Clear();
-                CurrentTable.Clear();
-
                 MySqlConnection conn = new MySqlConnection(ConnStr);
                 DataTable tbl = new DataTable();
                 tbl.Clear();
                 MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@min", MIN);
                 cmd1.Parameters.AddWithValue("@max", MAX);
-                cmd1.Parameters.AddWithValue("@user", User);
                 cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 cmd1.Parameters.AddWithValue("@unittype", UnitType);
                 cmd1.Parameters.AddWithValue("@unitid", UnitID);
                 cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
-                cmd1.Parameters.AddWithValue("@username", Username);
+                cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 tbl.Load(cmd1.ExecuteReader());
-
-                for (int i = 0; i < tbl.Rows.Count; i++)
-                {
-                    SQL.Add(i);
-                    for (int j = 0; j < tbl.Columns.Count; j++)
-                    {
-                        SQL.Add(j);
-                    }
-                }
 
                 CloseConn(conn);
 
@@ -314,13 +303,12 @@ namespace DAL
                 cmd1 = new MySqlCommand(sql, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@min", MIN);
                 cmd1.Parameters.AddWithValue("@max", MAX);
-                cmd1.Parameters.AddWithValue("@user", User);
                 cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 cmd1.Parameters.AddWithValue("@unittype", UnitType);
                 cmd1.Parameters.AddWithValue("@unitid", UnitID);
                 cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
-                cmd1.Parameters.AddWithValue("@username", Username);
+                cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
 
 
@@ -365,6 +353,8 @@ namespace DAL
                 MessageBox.Show(ex.Message.ToString());
             }
         }
+        
+
         public void ComboBoxFillNoSqlInt(ComboBox combo, int amount)
         {
             try
@@ -518,7 +508,7 @@ namespace DAL
                     {
                         combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                         {
-                            User = combo.Text;
+                            AccountUsername = combo.Text;
                         });
                     }
                 }
@@ -549,6 +539,28 @@ namespace DAL
                                 CancelBookingID = result;
                             else
                                 CancelBookingID = 0;
+                        });
+                    }
+                }
+
+                if (WhichField == "NewAccountUsername")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            NewAccountUsername = combo.Text;
+                        });
+                    }
+                }
+
+                if (WhichField == "Password")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            Password = combo.Text;
                         });
                     }
                 }
@@ -654,7 +666,6 @@ namespace DAL
         #endregion Threading
 
         #region Login
-        public string Username { get; set; }
         public async Task<string> Login(string username, string password)
         {
             try
@@ -701,7 +712,7 @@ namespace DAL
 
                     if (dbusername == username && dbpassword == password)
                     {
-                        Username = dbusername;
+                        AccountUsername = dbusername;
                         if (dbprivilege == "secretary")
                         {
                             return await Task.FromResult("secretary");
@@ -743,6 +754,64 @@ namespace DAL
             return await Task.FromResult("NONE");
         }
         #endregion
+        #region GetPassword
+        public async Task<string> GetPassword(string username)
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd.ExecuteNonQuery();
+
+                Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
+                string connSql = $"SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
+                cmd = new MySqlCommand(connSql, OpenConn(conn));
+
+                if (regex.IsMatch(username)) //Input Validation Check
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+
+                    string dbusername = "NONE";
+                    string dbpassword = "NONE";
+                    string dbprivilege = "NONE";
+                    while (reader.Read())
+                    {
+                        dbusername = reader.GetString(0);
+                        dbpassword = reader.GetString(1);
+                        dbprivilege = reader.GetString(2);
+                    }
+                    reader.Close();
+
+                    //COMMIT
+                    string commit = "COMMIT;";
+                    cmd = new MySqlCommand(commit, OpenConn(conn));
+                    cmd.ExecuteNonQuery();
+
+                    CloseConn(conn);
+
+                    return await Task.FromResult($"Username: {dbusername}\n Password: {dbpassword}\n Privilege: {dbprivilege}");
+                }
+                else
+                {
+                    return await Task.FromResult("Incorrect Username Format!\nOnly Accepts A-Z & 0-9");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+        #endregion GetPassword
 
         #region SecretaryMethods
         #region Secretary Print Resident (txt)
@@ -925,6 +994,53 @@ namespace DAL
             }
         }
         #endregion
+        #region Booking
+        public void Booking()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Insert Booking
+                string insert = "INSERT INTO resident_resource_reservations(residents_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
+                cmd1 = new MySqlCommand(insert, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@user", AccountUsername);
+                cmd1.Parameters.AddWithValue("@start", Convert.ToDateTime(Start));
+                cmd1.Parameters.AddWithValue("@unittype", UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
+                cmd1.Parameters.AddWithValue("@duration", Duration);
+                cmd1.ExecuteNonQuery();
+
+
+                //Alter Booking Count
+                string altercount = "UPDATE resource SET times_reserved = times_reserved + 1 WHERE id = @unitid; ";
+                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
+
+                cmd1.ExecuteNonQuery();
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        #endregion Booking
         #region AdminMethods
         #region Grant Housing
         public void GrantHousing()
@@ -1128,53 +1244,7 @@ namespace DAL
             }
         }
         #endregion Delete Housing
-        #region Booking
-        public void Booking()
-        {
-            try
-            {
-                MySqlConnection conn = new MySqlConnection(ConnStr);
-
-                //Set Isolation Level
-                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                //Begin Transation
-                string sqlString = "START TRANSACTION;";
-                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                //Insert Booking
-                string insert = "INSERT INTO resident_resource_reservations(residents_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
-                cmd1 = new MySqlCommand(insert, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@user", User);
-                cmd1.Parameters.AddWithValue("@start", Convert.ToDateTime(Start));
-                cmd1.Parameters.AddWithValue("@unittype", UnitType);
-                cmd1.Parameters.AddWithValue("@unitid", UnitID);
-                cmd1.Parameters.AddWithValue("@duration", Duration);
-                cmd1.ExecuteNonQuery();
-
-
-                //Alter Booking Count
-                string altercount = "UPDATE resource SET times_reserved = times_reserved + 1 WHERE id = @unitid; ";
-                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@unitid", UnitID);
-
-                cmd1.ExecuteNonQuery();
-
-                //COMMIT
-                string commit = "COMMIT;";
-                cmd1 = new MySqlCommand(commit, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-                CloseConn(conn);
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
-        }
-        #endregion Booking
+        
         #region Admin Statistics Print (txt)
         public void AdminStatisticsPrint(string cmd_TxtPrint)
         {
@@ -1239,6 +1309,80 @@ namespace DAL
         #endregion AdminMethods
 
         #region Resident
+        #region UpdateUsername
+        public void UpdateUsername()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Update Username
+                string altercount = "UPDATE account SET username = @newaccountusername WHERE username = @username; ";
+                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@newaccountusername", NewAccountUsername);
+                cmd1.Parameters.AddWithValue("@username", AccountUsername);
+
+                cmd1.ExecuteNonQuery();
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        #endregion Booking
+        #region UpdatePassword
+        public void UpdatePassword()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(ConnStr);
+
+                //Set Isolation Level
+                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                MySqlCommand cmd1 = new MySqlCommand(StartTransaction, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Begin Transation
+                string sqlString = "START TRANSACTION;";
+                cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                //Update Username
+                string altercount = "UPDATE account SET password = AES_ENCRYPT(@newpassword, 'key') WHERE username = @username; ";
+                cmd1 = new MySqlCommand(altercount, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@newpassword", Password);
+                cmd1.Parameters.AddWithValue("@username", AccountUsername);
+
+                cmd1.ExecuteNonQuery();
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new MySqlCommand(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+                CloseConn(conn);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+        #endregion UpdatePassword
         #endregion Resident
 
 

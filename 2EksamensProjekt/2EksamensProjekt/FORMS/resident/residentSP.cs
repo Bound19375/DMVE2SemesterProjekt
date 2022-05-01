@@ -9,9 +9,9 @@
         private residentSP()
         {
             InitializeComponent();
-            label5.Text = $"{dal.Username}";
+            label5.Text = $"{dal.AccountUsername}";
             radioButton3.Checked = true;
-            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh");
+            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh:mm");
             groupBox2.Text = "washingmachine";
             Task t2 = new Task(() => Worker());
             t2.Start();
@@ -44,6 +44,18 @@
                     dal.ComboBoxReader(comboBox5, "Duration");
                     //CancelBookingID
                     dal.ComboBoxReader(comboBox6, "CancelBookingID");
+                    //AccountNameUpdater
+                    dal.ComboBoxReader(comboBox2, "NewAccountUsername");
+                    //Password
+                    dal.ComboBoxReader(comboBox3, "Password");
+
+                    if (label1.InvokeRequired)
+                    {
+                        label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
+                        {
+                            label5.Text = dal.AccountUsername; //Calling Async Task SloganT Method From Api Class.
+                        });
+                    }
 
                     //StartDate
                     dal.ComboBoxFill(comboBox1, dal.sqlcmds.StartDate);
@@ -70,8 +82,8 @@
                     dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked);
                     //Available
                     dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType);
-
-                   
+                    //Resident Information
+                    dal.Gridview(dataGridView5, dal.sqlcmds.CurrentResidentInfo);
                 }
                 catch (Exception ex)
                 {
@@ -85,12 +97,51 @@
         {
             try
             {
-                dal.CancelBookingID = Convert.ToInt32(comboBox6.Text);
                 dal.CancelReservation();
             }
             catch
             {
                 MessageBox.Show("Select ID");
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (comboBox2.Text != String.Empty && comboBox3.Text != String.Empty)
+            {
+                dal.UpdateUsername();
+                dal.UpdatePassword();
+                MessageBox.Show("Account Updated Successfully\n\nLogging Out!");
+                Login obj = Login.GetInstance();
+                obj.Show();
+                this.Hide();
+            }
+            else
+            {
+                if (comboBox2.Text == String.Empty && comboBox3.Text != String.Empty)
+                {
+                    MessageBox.Show("Account Field Cannot Be Empty");
+                }
+                if (comboBox3.Text == String.Empty && comboBox2.Text != String.Empty)
+                {
+                    MessageBox.Show("Password Field Cannot Be Empty");
+                }
+                if (comboBox3.Text == String.Empty && comboBox2.Text == String.Empty)
+                {
+                    MessageBox.Show("Both Fields Must Be Filled");
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.Text != String.Empty && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
+            {
+                dal.Booking();
+            }
+            else
+            {
+                MessageBox.Show($"User: {dal.AccountUsername}\nStart Date: {dal.Start}\nUnit ID: {dal.UnitID}\nDuration: {dal.Duration}\n\nARE REQUIRED TO BOOK!");
             }
         }
     }

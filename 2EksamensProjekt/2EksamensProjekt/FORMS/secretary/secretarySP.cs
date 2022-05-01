@@ -18,7 +18,7 @@ namespace _2EksamensProjekt.FORMS.secretary
         private secretarySP()
         {
             InitializeComponent();
-            label5.Text = $"{dal.Username}";
+            label5.Text = $"{dal.AccountUsername}";
             Task t2 = new Task(() => gridViewTimer());
             t2.Start();
         }

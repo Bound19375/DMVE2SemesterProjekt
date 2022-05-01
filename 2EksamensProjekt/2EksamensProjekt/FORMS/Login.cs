@@ -79,5 +79,16 @@ namespace _2EksamensProjekt
             
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != String.Empty)
+            {
+                MessageBox.Show(dal.GetPassword(textBox1.Text).Result);
+            }
+            else
+            {
+                MessageBox.Show("Enter Username");
+            }
+        }
     }
 }

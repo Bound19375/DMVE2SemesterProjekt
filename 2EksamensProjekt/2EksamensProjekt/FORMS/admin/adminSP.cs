@@ -11,7 +11,7 @@
         private adminSP()
         {
             InitializeComponent();
-            label5.Text = $"{dal.Username}";
+            label5.Text = $"{dal.AccountUsername}";
             panel1.Controls.Clear();
             Housing myForm = Housing.GetInstance();
             myForm.TopLevel = false;

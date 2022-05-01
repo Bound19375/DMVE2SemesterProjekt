@@ -37,7 +37,6 @@
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.button7 = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -52,6 +51,13 @@
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.comboBox6 = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
@@ -106,11 +112,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(1144, 9);
+            this.label3.Location = new System.Drawing.Point(388, 415);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(240, 32);
+            this.label3.Size = new System.Drawing.Size(109, 32);
             this.label3.TabIndex = 97;
-            this.label3.Text = "Available Resources";
+            this.label3.Text = "Booking";
             // 
             // radioButton5
             // 
@@ -137,7 +143,7 @@
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(11, 27);
+            this.radioButton3.Location = new System.Drawing.Point(11, 30);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(168, 29);
             this.radioButton3.TabIndex = 0;
@@ -147,30 +153,20 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(1427, 729);
+            this.button7.Location = new System.Drawing.Point(1473, 301);
             this.button7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(97, 38);
+            this.button7.Size = new System.Drawing.Size(76, 31);
             this.button7.TabIndex = 96;
             this.button7.Text = "Cancel";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label6.Location = new System.Drawing.Point(1419, 609);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(105, 21);
-            this.label6.TabIndex = 95;
-            this.label6.Text = "Booking ID";
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label7.Location = new System.Drawing.Point(8, 599);
+            this.label7.Location = new System.Drawing.Point(337, 715);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(230, 21);
             this.label7.TabIndex = 89;
@@ -178,21 +174,22 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(4, 662);
+            this.button3.Location = new System.Drawing.Point(340, 791);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(254, 35);
+            this.button3.Size = new System.Drawing.Size(210, 35);
             this.button3.TabIndex = 88;
             this.button3.Text = "Book";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.radioButton5);
             this.groupBox2.Controls.Add(this.radioButton4);
             this.groupBox2.Controls.Add(this.radioButton3);
-            this.groupBox2.Location = new System.Drawing.Point(19, 332);
+            this.groupBox2.Location = new System.Drawing.Point(337, 448);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(245, 132);
+            this.groupBox2.Size = new System.Drawing.Size(211, 132);
             this.groupBox2.TabIndex = 87;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Unit";
@@ -201,7 +198,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label8.Location = new System.Drawing.Point(92, 527);
+            this.label8.Location = new System.Drawing.Point(411, 643);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 21);
             this.label8.TabIndex = 86;
@@ -211,9 +208,9 @@
             // 
             this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(8, 551);
+            this.comboBox4.Location = new System.Drawing.Point(340, 667);
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(248, 33);
+            this.comboBox4.Size = new System.Drawing.Size(208, 33);
             this.comboBox4.TabIndex = 85;
             // 
             // comboBox5
@@ -225,16 +222,16 @@
             "2",
             "3",
             "4"});
-            this.comboBox5.Location = new System.Drawing.Point(8, 623);
+            this.comboBox5.Location = new System.Drawing.Point(340, 739);
             this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(250, 33);
+            this.comboBox5.Size = new System.Drawing.Size(210, 33);
             this.comboBox5.TabIndex = 90;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label11.Location = new System.Drawing.Point(545, 9);
+            this.label11.Location = new System.Drawing.Point(743, 12);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(61, 32);
             this.label11.TabIndex = 82;
@@ -244,7 +241,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label10.Location = new System.Drawing.Point(811, 561);
+            this.label10.Location = new System.Drawing.Point(725, 182);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(100, 32);
             this.label10.TabIndex = 81;
@@ -254,7 +251,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label13.Location = new System.Drawing.Point(87, 467);
+            this.label13.Location = new System.Drawing.Point(388, 583);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(91, 21);
             this.label13.TabIndex = 76;
@@ -263,61 +260,135 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(13, 491);
+            this.comboBox1.Location = new System.Drawing.Point(340, 607);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(248, 33);
+            this.comboBox1.Size = new System.Drawing.Size(208, 33);
             this.comboBox1.TabIndex = 75;
             // 
             // dataGridView5
             // 
             this.dataGridView5.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView5.Location = new System.Drawing.Point(275, 47);
+            this.dataGridView5.Location = new System.Drawing.Point(12, 47);
             this.dataGridView5.Name = "dataGridView5";
             this.dataGridView5.RowHeadersWidth = 62;
             this.dataGridView5.RowTemplate.Height = 33;
-            this.dataGridView5.Size = new System.Drawing.Size(636, 365);
+            this.dataGridView5.Size = new System.Drawing.Size(1535, 132);
             this.dataGridView5.TabIndex = 73;
             // 
             // dataGridView4
             // 
             this.dataGridView4.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Location = new System.Drawing.Point(275, 601);
+            this.dataGridView4.Location = new System.Drawing.Point(12, 217);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 62;
             this.dataGridView4.RowTemplate.Height = 33;
-            this.dataGridView4.Size = new System.Drawing.Size(1116, 203);
+            this.dataGridView4.Size = new System.Drawing.Size(1454, 195);
             this.dataGridView4.TabIndex = 72;
             // 
             // dataGridView1
             // 
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(916, 47);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 448);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(623, 365);
+            this.dataGridView1.Size = new System.Drawing.Size(301, 378);
             this.dataGridView1.TabIndex = 71;
             // 
             // comboBox6
             // 
             this.comboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(1427, 657);
+            this.comboBox6.Location = new System.Drawing.Point(1473, 253);
             this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(94, 33);
+            this.comboBox6.Size = new System.Drawing.Size(74, 33);
             this.comboBox6.TabIndex = 94;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label6.Location = new System.Drawing.Point(101, 415);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(118, 32);
+            this.label6.TabIndex = 98;
+            this.label6.Text = "Available";
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(979, 591);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(198, 33);
+            this.comboBox2.TabIndex = 99;
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(979, 654);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(198, 33);
+            this.comboBox3.TabIndex = 100;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label9.Location = new System.Drawing.Point(979, 528);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(198, 32);
+            this.label9.TabIndex = 101;
+            this.label9.Text = "Update Account";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label12.Location = new System.Drawing.Point(1026, 567);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(100, 21);
+            this.label12.TabIndex = 102;
+            this.label12.Text = "Username";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label14.Location = new System.Drawing.Point(1026, 630);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(96, 21);
+            this.label14.TabIndex = 103;
+            this.label14.Text = "Password";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(979, 693);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(198, 35);
+            this.button1.TabIndex = 104;
+            this.button1.Text = "Update";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // residentSP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1559, 838);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.comboBox6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.button3);
@@ -360,7 +431,6 @@
         private RadioButton radioButton4;
         private RadioButton radioButton3;
         private Button button7;
-        private Label label6;
         private Label label7;
         private Button button3;
         private GroupBox groupBox2;
@@ -375,5 +445,12 @@
         private DataGridView dataGridView4;
         private DataGridView dataGridView1;
         private ComboBox comboBox6;
+        private Label label6;
+        private ComboBox comboBox2;
+        private ComboBox comboBox3;
+        private Label label9;
+        private Label label12;
+        private Label label14;
+        private Button button1;
     }
 }

@@ -12,17 +12,78 @@ namespace DAL
 {
     public class DAL
     {
+        #region Fields
+        public int MIN { get; set; }
+        public int MAX { get; set; }
+        public string? AccountUsername { get; set; }
+        public string? HouseID { get; set; }
+        public string? AccountName { get; set; }
+        public string? SpecialCollectionSql { get; set; }
+        public string? User { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public DateTime Duration { get; set; }
+        public string? UnitType { get; set; }
+        public int UnitID { get; set; }
+        public string? StatisticSQL { get; set; }
+        public int CancelBookingID { get; set; }
+        public string? AvailableType { get; set; }
+
+
+        #endregion Fields
+
         #region Singleton
         static DAL singleton = new DAL();
-        private DAL() //Private Due to Singleton ^^
-        {
-        }
+        private DAL() { } //Private Due to Singleton ^^
+
         //Singleton
         public static DAL Getinstance()
         {
             return singleton;
         }
+        public SQLCMDS sqlcmds = SQLCMDS.GetInstance();
         #endregion Singleton
+
+        #region SQLCMDS
+        public class SQLCMDS
+        {
+            static SQLCMDS singelton = new SQLCMDS();
+            private SQLCMDS() { }
+            public static SQLCMDS GetInstance()
+            {
+                return singelton;
+            }
+            //Waitlist
+            public string Waitlist { get; } = "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
+            //Residents
+            public string CurrentResidents = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username  = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+            //ReservationIDs
+            public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            //WashingMachines
+            public string WMSORTALL = "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
+            //PartyHall
+            public string PHSortAll = "SELECT r.id FROM resource r WHERE r.type = 'partyhall';";
+            //ParkingSpace
+            public string PSSortAll = "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
+            //Booked By User
+            public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            //Booked Overall
+            public string AllResourcesBooked = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+            //Available
+            public string AvailableResourceIDS = "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+            public string AvailableResourcesByType = "SELECT r.id, r.`type` FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+            //Usernames
+            public string Usernames = "SELECT r.account_username FROM residents r ORDER BY r.account_username;";
+            //StartDate & EndDate
+            public string StartDate = "SELECT DISTINCT rrr.start_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.start_timestamp;";
+            public string EndDate = "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;";
+            //Booking Cancel IDS
+            public string BookingCancelIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+        }
+    
+
+
+        #endregion SQLCMDS
 
         #region Open/Close-Conn
         private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
@@ -85,10 +146,11 @@ namespace DAL
             }
             return await Task.FromResult("Slogan Error");
         }
-    
+
         #endregion Slogan Thread
 
-        #region Datagridview Threading Update
+        #region Threading
+        #region Database Update Information
         //DataGridView Thread Refresh Method
         public async Task<DateTime> DBUpdateCheck()
         {
@@ -104,7 +166,11 @@ namespace DAL
                     try
                     {
                         string? timeString = Convert.ToString(reader[0]);
-                        if (timeString != null || timeString != "NULL" || timeString != "[NULL]")
+                        if (timeString == string.Empty)
+                        {
+                            timeString = Convert.ToString(DateTime.MinValue);
+                        }
+                        if (timeString != null || timeString != string.Empty || timeString != "NULL" || timeString != "[NULL]")
                         {
                             string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd" };
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -127,7 +193,47 @@ namespace DAL
             }
         }
 
-        public async Task Gridview(DataGridView gv, string DataTableSql, bool bypass)
+        public async Task<bool> ForceUpdateDB()
+        {
+            try
+            {
+                do
+                {
+                    List<int> Saved = new List<int>();
+                    List<int> Current = new List<int>();
+                    Current.Clear();
+
+                    //Current Bookings
+                    string available = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                    MySqlConnection conn = new MySqlConnection(ConnStr);
+                    MySqlCommand cmd1 = new MySqlCommand(available, OpenConn(conn));
+
+                    MySqlDataReader reader = cmd1.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Current.Add(Convert.ToInt32(reader.GetString(0)));
+                    }
+                    CloseConn(conn);
+
+                    if (Current.Count != Saved.Count)
+                    {
+                        Saved = Current;
+                        return await Task.FromResult(true);
+                    }
+                    return await Task.FromResult(false);
+                }
+                while (true);
+            }
+            catch (MySqlException ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+        #endregion Database Update Information
+        #region GridviewFill
+        public void Gridview(DataGridView gv, string DataTableSql)
         {
             try
             {
@@ -140,14 +246,16 @@ namespace DAL
                 DataTable tbl = new DataTable();
                 tbl.Clear();
                 MySqlCommand cmd1 = new MySqlCommand(DataTableSql, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@min", Housing.MIN);
-                cmd1.Parameters.AddWithValue("@max", Housing.MAX);
-                cmd1.Parameters.AddWithValue("@user", Resources.User);
-                cmd1.Parameters.AddWithValue("@start", Resources.Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
-                cmd1.Parameters.AddWithValue("@end", Resources.End.ToString("yy-MM-dd HH:mm:ss.ffff"));
-                cmd1.Parameters.AddWithValue("@unittype", Resources.UnitType);
-                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
-
+                cmd1.Parameters.AddWithValue("@min", MIN);
+                cmd1.Parameters.AddWithValue("@max", MAX);
+                cmd1.Parameters.AddWithValue("@user", User);
+                cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@unittype", UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
+                cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
+                cmd1.Parameters.AddWithValue("@username", Username);
+                cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
                 tbl.Load(cmd1.ExecuteReader());
 
                 for (int i = 0; i < tbl.Rows.Count; i++)
@@ -161,7 +269,7 @@ namespace DAL
 
                 CloseConn(conn);
 
-                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass == true)
+                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || ForceUpdateDB().Result == true)
                 {
                     if (gv.InvokeRequired)
                     {
@@ -172,10 +280,6 @@ namespace DAL
                             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         });
                     }
-                    if (bypass == true)
-                    {
-                        await Task.Delay(5000);
-                    }
                 }
             }
             catch (MySqlException ex)
@@ -183,7 +287,7 @@ namespace DAL
                 throw new Exception(ex.ToString());
             }
         }
-
+        #endregion GridviewFill
         #region ComboBoxFill
         public void ComboBoxFill(ComboBox combo, string sql)
         {
@@ -208,6 +312,17 @@ namespace DAL
 
                 //Append To List
                 cmd1 = new MySqlCommand(sql, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@min", MIN);
+                cmd1.Parameters.AddWithValue("@max", MAX);
+                cmd1.Parameters.AddWithValue("@user", User);
+                cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
+                cmd1.Parameters.AddWithValue("@unittype", UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
+                cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
+                cmd1.Parameters.AddWithValue("@username", Username);
+                cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
+
 
                 MySqlDataReader rdr = cmd1.ExecuteReader();
 
@@ -282,10 +397,202 @@ namespace DAL
                 MessageBox.Show(ex.Message.ToString());
             }
         }
-
-
         #endregion ComboBoxFill
+        #region ButtonComboBoxInvoker
+        public void ButtonInvoker(Button btn, bool BtnEnableDisable)
+        {
+            if (btn.InvokeRequired)
+            {
+                btn.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    if (BtnEnableDisable)
+                        btn.Enabled = true;
+                    else 
+                        btn.Enabled = false;
+                });
+            }
+        }
+        public void ComboBoxInvoker(ComboBox combo, bool CBEnableDisable)
+        {
+            if (combo.InvokeRequired)
+            {
+                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    if (CBEnableDisable)
+                        combo.Enabled = true;
+                    else
+                        combo.Enabled = false;
+                });
+            }
+        }
+        public void GroupBoxInvoker(GroupBox gb, bool GBEnableDisable)
+        {
+            if (gb.InvokeRequired)
+            {
+                gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    if (GBEnableDisable)
+                        gb.Enabled = true;
+                    else
+                        gb.Enabled = false;
+                });
+            }
+        }
+        #endregion ButtonComboBoxInvoker
+        #region GroupBoxReader
+        public void groupboxReader(GroupBox gb, string WhichField)
+        {
+            try
+            {
+                if (WhichField == "AvailableType")
+                {
+                    if (gb.InvokeRequired)
+                    {
+                        gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            AvailableType = gb.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
+        }
+        #endregion GroupBoxReader
+        #region ComboBoxReader
+        public void ComboBoxReader(ComboBox combo, string WhichField)
+        {
+            try
+            {
+                if (WhichField == "Start")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                            if (success)
+                            {
+                                Start = result;
+                            }
+                        });
+                    }
+                }
 
+                if (WhichField == "End")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                            if (success)
+                            {
+                                End = result;
+                            }
+                        });
+                    }
+                }
+
+                if (WhichField == "Duration")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            bool success = Int32.TryParse(combo.Text, out int result);
+                            if (success)
+                            {
+                                Duration = Start.AddHours(Convert.ToDouble(result));
+                            }
+                        });
+                    }
+                }
+
+                if (WhichField == "User")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            User = combo.Text;
+                        });
+                    }
+                }
+
+                if (WhichField == "UnitID")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            bool success = int.TryParse(combo.Text, out int result);
+                            if (success)
+                                UnitID = result;
+                            else 
+                                UnitID = 0;
+                        });
+                    }
+                }
+
+                if (WhichField == "CancelBookingID")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            bool success = int.TryParse(combo.Text, out int result);
+                            if (success)
+                                CancelBookingID = result;
+                            else
+                                CancelBookingID = 0;
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion ComboBoxReader
+        #region TextBoxReader
+        public void TextboxReader(TextBox txtbox, string WhichField)
+        {
+            if (WhichField == "MIN")
+            {
+                if (txtbox.InvokeRequired)
+                {
+                    txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                    {
+                        bool success = int.TryParse(txtbox.Text, out int result);
+                        if (success)
+                            MIN = result;
+                        else
+                            MIN = 0;
+                    });
+                }
+            }
+
+            if (WhichField == "MAX")
+            {
+                if (txtbox.InvokeRequired)
+                {
+                    txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                    {
+                        bool success = int.TryParse(txtbox.Text, out int result);
+                        if (success)
+                            MAX = result;
+                        else
+                            MAX = int.MaxValue;
+                    });
+                }
+            }
+        }
+        #endregion TextBoxReader
         #region Special Collection Method
         public class Houses
         {
@@ -314,8 +621,8 @@ namespace DAL
 
             //Append To List
             cmd1 = new MySqlCommand(dosql, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@min", Housing.MIN);
-            cmd1.Parameters.AddWithValue("@max", Housing.MAX);
+            cmd1.Parameters.AddWithValue("@min", MIN);
+            cmd1.Parameters.AddWithValue("@max", MAX);
             MySqlDataReader rdr = cmd1.ExecuteReader();
 
             while (rdr.Read())
@@ -344,10 +651,10 @@ namespace DAL
             gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
         #endregion Special Collection Method
-        #endregion Datagridview Threading Update
+        #endregion Threading
 
         #region Login
-        public string Username { get; set; } = "user";
+        public string Username { get; set; }
         public async Task<string> Login(string username, string password)
         {
             try
@@ -436,8 +743,6 @@ namespace DAL
             return await Task.FromResult("NONE");
         }
         #endregion
-
-        
 
         #region SecretaryMethods
         #region Secretary Print Resident (txt)
@@ -596,7 +901,7 @@ namespace DAL
                 //Delete Booking
                 string insert = "DELETE FROM resident_resource_reservations WHERE id = @id;";
                 cmd1 = new MySqlCommand(insert, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@id", Resources.CancelBookingID);
+                cmd1.Parameters.AddWithValue("@id", CancelBookingID);
                 cmd1.ExecuteNonQuery();
 
 
@@ -634,7 +939,7 @@ namespace DAL
                 //Check User Type
                 string sqlcommand = "SELECT w.`type` FROM waitlist w WHERE w.account_username = @username;";
                 MySqlCommand cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 MySqlDataReader reader = cmd1.ExecuteReader();
                 while (reader.Read())
                 {
@@ -645,14 +950,14 @@ namespace DAL
                 //Check House Type
                 sqlcommand = "SELECT h.`type` FROM housing h WHERE h.id = @id;";
                 cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(Housing.HouseID));
+                cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(HouseID));
                 reader = cmd1.ExecuteReader();
                 while (reader.Read())
                 {
                     housetype = reader.GetString(0);
                 }
                 reader.Close();
-                if (type == housetype && Housing.AccountUsername != null && Housing.AccountUsername != String.Empty)
+                if (type == housetype && AccountUsername != null && AccountUsername != String.Empty)
                 {
                     //Set Isolation Level
                     string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
@@ -667,21 +972,27 @@ namespace DAL
                     //Insert Into Residents
                     sqlcommand = "INSERT INTO residents (name, account_username) VALUES (@name, @username);";
                     cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@name", Housing.AccountName);
-                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1.Parameters.AddWithValue("@name", AccountName);
+                    cmd1.Parameters.AddWithValue("@username", AccountUsername);
                     cmd1.ExecuteNonQuery();
 
                     //Insert Into Housing_Residents
                     sqlcommand = "INSERT INTO housing_residents (housing_id, residents_username, start_contract) VALUES (@id, @username, CURRENT_TIMESTAMP);";
-                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@id", Housing.HouseID);
-                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn)); 
+                    cmd1.Parameters.AddWithValue("@id", HouseID);
+                    cmd1.Parameters.AddWithValue("@username", AccountUsername);
                     cmd1.ExecuteNonQuery();
+
+                    //Update Account Status
+                    sqlcommand = "UPDATE account SET privilege = @housetype WHERE username = @username";
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
+                    cmd1.Parameters.AddWithValue("@housetype", housetype);
+                    cmd1.Parameters.AddWithValue("@username", AccountUsername);
 
                     //Remove From Waitlist
                     sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";
                     cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@username", Housing.AccountUsername);
+                    cmd1.Parameters.AddWithValue("@username", AccountUsername);
                     cmd1.ExecuteNonQuery();
 
                     //COMMIT
@@ -772,7 +1083,7 @@ namespace DAL
             {
                 MySqlConnection conn = new MySqlConnection(ConnStr);
 
-                if (Housing.HouseID != string.Empty)
+                if (HouseID != string.Empty)
                 {
                     //Set Isolation Level
                     string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
@@ -787,7 +1098,7 @@ namespace DAL
                     //Insert Into Residents
                     string sqlcommand = "DELETE FROM housing WHERE id = @id;";
                     cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(Housing.HouseID));
+                    cmd1.Parameters.AddWithValue("@id", Convert.ToInt32(HouseID));
 
                     cmd1.ExecuteNonQuery();
 
@@ -837,18 +1148,18 @@ namespace DAL
                 //Insert Booking
                 string insert = "INSERT INTO resident_resource_reservations(residents_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
                 cmd1 = new MySqlCommand(insert, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@user", Resources.User);
-                cmd1.Parameters.AddWithValue("@start", Resources.Start);
-                cmd1.Parameters.AddWithValue("@unittype", Resources.UnitType);
-                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
-                cmd1.Parameters.AddWithValue("@duration", Resources.Duration);
+                cmd1.Parameters.AddWithValue("@user", User);
+                cmd1.Parameters.AddWithValue("@start", Convert.ToDateTime(Start));
+                cmd1.Parameters.AddWithValue("@unittype", UnitType);
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
+                cmd1.Parameters.AddWithValue("@duration", Duration);
                 cmd1.ExecuteNonQuery();
 
 
                 //Alter Booking Count
                 string altercount = "UPDATE resource SET times_reserved = times_reserved + 1 WHERE id = @unitid; ";
                 cmd1 = new MySqlCommand(altercount, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
+                cmd1.Parameters.AddWithValue("@unitid", UnitID);
 
                 cmd1.ExecuteNonQuery();
 
@@ -883,11 +1194,9 @@ namespace DAL
 
                 //Write To txt file
                 cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
-
-                MySqlDataReader rdr = cmd1.ExecuteReader();
+                cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
                 DataTable tbl = new DataTable();
                 tbl.Load(cmd1.ExecuteReader());
-                rdr.Close();
 
                 string filePath = @"..\..\..\txts\Resources.txt";
                 using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 0, true))

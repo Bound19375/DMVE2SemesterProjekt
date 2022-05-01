@@ -14,20 +14,8 @@ namespace MyApp // Note: actual namespace depends on the project name.
             Methods methods = new Methods();
             DAL dal = DAL.Getinstance();
 
-            List<string> usernames = new List<string>();
-            List<string> currentcomboelements = new List<string>();
-            usernames.Add("hej");
-            currentcomboelements.Add("hej");
-
-            if (dal.DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000))
-            {
-                Console.WriteLine("Update now");
-            }
-            else
-            {
-                Console.WriteLine("dont update");
-            }
-
+            //Task t1 = new Task(() => methods.ForceUpdateDB());
+            //t1.Start();
         }
 
         public class Houses
@@ -44,7 +32,47 @@ namespace MyApp // Note: actual namespace depends on the project name.
             private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
             DAL dal = DAL.Getinstance();
 
-            
+            public async Task<bool> ForceUpdateDB()
+            {
+                try
+                {
+                    do
+                    {
+                        List<int> Saved = new List<int>();
+                        List<int> Current = new List<int>();
+                        Current.Clear();
+
+                        //Current Bookings
+                        string available = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                        MySqlConnection conn = new MySqlConnection(ConnStr);
+                        MySqlCommand cmd1 = new MySqlCommand(available, dal.OpenConn(conn));
+
+                        MySqlDataReader reader = cmd1.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            Current.Add(Convert.ToInt32(reader.GetString(0)));
+                        }
+                        dal.CloseConn(conn);
+
+                        if (Current.Count != Saved.Count)
+                        {
+                            Console.WriteLine("true");
+                            Saved = Current;
+                            return await Task.FromResult(true);
+                        }
+                        Saved.Clear();
+                        Console.WriteLine("false");
+                        return await Task.FromResult(false);
+                    }
+                    while (true);
+                }
+                catch (MySqlException ex)
+                {
+                    throw new Exception(ex.ToString());
+                }
+            }
 
 
         }

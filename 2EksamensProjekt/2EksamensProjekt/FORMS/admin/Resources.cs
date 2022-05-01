@@ -16,14 +16,6 @@ namespace _2EksamensProjekt.FORMS.admin
         DAL dal = DAL.Getinstance();
         private static Resources singleton = new Resources();
 
-        public static string? User { get; set; }
-        public static DateTime Start { get; set; }
-        public static DateTime End { get; set; }
-        public static DateTime Duration { get; set; }
-        public static string? UnitType { get; set; }
-        public static int UnitID { get; set; }
-        public static string? StatisticSQL { get; set; }
-        public static int CancelBookingID { get; set; }
 
         public Resources()
         {
@@ -32,9 +24,14 @@ namespace _2EksamensProjekt.FORMS.admin
             radioButton6.Checked = true;
             radioButton8.Checked = true;
             button3.Enabled = false;
-            Task t1 = new Task(() => UpdateComboBox());
-            Task t2 = new Task(() => gridViewTimer());
-            t1.Start();
+            comboBox3.Enabled = false;
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+            comboBox4.Enabled = false;
+            comboBox5.Enabled = false;
+            groupBox2.Text = "washingmachine";
+            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh");
+            Task t2 = new Task(() => Worker());
             t2.Start();
         }
 
@@ -49,102 +46,147 @@ namespace _2EksamensProjekt.FORMS.admin
             this.Hide();
         }
 
-        string activeRButton = "NONE";
-        private void UpdateComboBox()
-        {
-            do
-            {
-                //Usernames
-                dal.ComboBoxFill(comboBox3, "SELECT r.account_username FROM residents r ORDER BY r.account_username;");
-                //StartDate
-                dal.ComboBoxFill(comboBox1, "SELECT DISTINCT rrr.start_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.start_timestamp;");
-                //EndDate
-                dal.ComboBoxFill(comboBox2, "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;");
-                //Booking Cancel IDS
-                dal.ComboBoxFill(comboBox6, "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;");
-                
-                if (radioButton3.Checked) //WashingMachines
-                {
-                    if (activeRButton != "radioButton3")
-                    {
-                        activeRButton = "radioButton3";
-                    }
-                    if (radioButton8.Checked == true)//Sort
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';");
-                    }
-                    else if (radioButton9.Checked == true)//Book
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = 'washingmachine' AND ((r.id = rrr.resource_id AND NOW() >= rrr.end_timestamp) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;");
-                    }
-                    dal.ComboBoxFillNoSqlInt(comboBox5, 4);
-                }
-                else if (radioButton4.Checked) //PartyHall
-                {
-                    if(activeRButton != "radioButton4")
-                    {
-                        activeRButton = "radioButton4";
-                    }
-                    if (radioButton8.Checked == true)//Sort
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resource r WHERE r.type = 'partyhall';");
-                    }
-                    else if (radioButton9.Checked == true)//Book
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = 'partyhall' AND ((r.id = rrr.resource_id AND NOW() >= rrr.end_timestamp) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;");
-                    }
-                    dal.ComboBoxFillNoSqlInt(comboBox5, 24);
-                }
-                else if (radioButton5.Checked) // ParkingSpace
-                {
-                    if (activeRButton != "radioButton5")
-                    {
-                        activeRButton = "radioButton5";
-                    }
-                    if (radioButton8.Checked == true)//Sort
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';");
-                    }
-                    else if (radioButton9.Checked == true)//Book
-                    {
-                        dal.ComboBoxFill(comboBox4, "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = 'parkingspace' AND ((r.id = rrr.resource_id AND NOW() >= rrr.end_timestamp) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;");
-                    }
-                    dal.ComboBoxFillNoSqlInt(comboBox5, 48);
-                }
-            }
-            while (true);
-        }
-
-        private void gridViewTimer()
+        private void Worker()
         {
             do
             {
                 try
                 {
+                    //GroupBoxUnitChoice
+                    dal.groupboxReader(groupBox2, "AvailableType");
+                    //StartDate
+                    dal.ComboBoxReader(comboBox1, "Start");
+                    //EndDate
+                    dal.ComboBoxReader(comboBox2, "End");
+                    //User
+                    dal.ComboBoxReader(comboBox3, "User");
+                    //UnitID
+                    dal.ComboBoxReader(comboBox4, "UnitID");
+                    //DurationTime
+                    dal.ComboBoxReader(comboBox5, "Duration");
+                    //CancelBookingID
+                    dal.ComboBoxReader(comboBox6, "CancelBookingID");
+
+                    //Usernames
+                    dal.ComboBoxFill(comboBox3, dal.sqlcmds.Usernames);
+                    //StartDate
+                    dal.ComboBoxFill(comboBox1, dal.sqlcmds.StartDate);
+                    //EndDate
+                    dal.ComboBoxFill(comboBox2, dal.sqlcmds.EndDate);
+                    //Booking Cancel IDS
+                    dal.ComboBoxFill(comboBox6, dal.sqlcmds.BookingCancelIDs);
+
+                    if (radioButton3.Checked) //WashingMachines
+                    {
+                        if (radioButton8.Checked == true)//Sort
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.WMSORTALL);
+                        }
+                        else if (radioButton9.Checked == true)//Book
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.AvailableResourceIDS);
+                        }
+                        dal.ComboBoxFillNoSqlInt(comboBox5, 4);
+                    }
+                    else if (radioButton4.Checked) //PartyHall
+                    {
+                        if (radioButton8.Checked == true)//Sort
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.PHSortAll);
+                        }
+                        else if (radioButton9.Checked == true)//Book
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.AvailableResourceIDS);
+                        }
+                        dal.ComboBoxFillNoSqlInt(comboBox5, 24);
+                    }
+                    else if (radioButton5.Checked) // ParkingSpace
+                    {
+                        if (radioButton8.Checked == true)//Sort
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.PSSortAll);
+                        }
+                        else if (radioButton9.Checked == true)//Book
+                        {
+                            dal.ComboBoxFill(comboBox4, dal.sqlcmds.AvailableResourceIDS);
+                        }
+                        dal.ComboBoxFillNoSqlInt(comboBox5, 48);
+                    }
+
                     //Booked
-                    dal.Gridview(dataGridView4, "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;", true);
+                    dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked);
                     //Available
-                    dal.Gridview(dataGridView1, "SELECT r.id, r.`type` FROM resident_resource_reservations rrr, resource r WHERE ((r.id = rrr.resource_id AND NOW() >= rrr.end_timestamp) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;", true);
+                    dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType);
 
                     if (radioButton6.Checked) //All User
                     {
-                        StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
-                        dal.Gridview(dataGridView5, StatisticSQL, true);
+                        dal.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL);
                     }
                     else if (radioButton7.Checked) //All Per Unit (Count)
                     {
-                        StatisticSQL = StatisticSQL = "SELECT * FROM resource r;";
-                        dal.Gridview(dataGridView5, StatisticSQL, true);
+                        dal.StatisticSQL = "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL);
                     }
                     else if (radioButton1.Checked) //Per User
                     {
-                        StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @user AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
-                        dal.Gridview(dataGridView5, StatisticSQL, true);
+                        dal.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @user AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL);
                     }
                     else if (radioButton2.Checked) //Per Unit
                     {
-                        StatisticSQL = "SELECT * FROM resource r WHERE id = @unitid; ";
-                        dal.Gridview(dataGridView5, StatisticSQL, true);
+                        dal.StatisticSQL = "SELECT * FROM resource r WHERE id = @unitid; ";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL);
+                    }
+                    
+                    //Invokers
+                    if (radioButton8.Checked) //Sort
+                    {
+                        dal.ButtonInvoker(button3, false);
+                        dal.GroupBoxInvoker(groupBox1, true);
+                        dal.ComboBoxInvoker(comboBox3, false);
+                        dal.ComboBoxInvoker(comboBox1, false);
+                        dal.ComboBoxInvoker(comboBox2, false);
+                        dal.ComboBoxInvoker(comboBox4, false);
+                        dal.ComboBoxInvoker(comboBox5, false);
+
+                        if (radioButton1.Checked) // Per User
+                        {
+                            dal.ComboBoxInvoker(comboBox3, true);
+                            dal.ComboBoxInvoker(comboBox1, true);
+                            dal.ComboBoxInvoker(comboBox2, true);
+                        }
+
+                        if (radioButton2.Checked) // Per Unit
+                        {
+                            dal.ComboBoxInvoker(comboBox4, true);
+                            dal.ComboBoxInvoker(comboBox1, true);
+                            dal.ComboBoxInvoker(comboBox2, true);
+                        }
+
+                        if (radioButton6.Checked || radioButton7.Checked) //All
+                        {
+                            dal.ComboBoxInvoker(comboBox3, false);
+                            dal.ComboBoxInvoker(comboBox4, false);
+
+                            if (radioButton7.Checked)
+                            {
+                                dal.GroupBoxInvoker(groupBox2, true);
+                                dal.groupboxReader(groupBox2, "AvailableType");
+                            }
+                        }
+                    }
+
+                    if (radioButton9.Checked) //Book
+                    {
+                        dal.ButtonInvoker(button3, true);
+                        dal.ComboBoxInvoker(comboBox2, false);
+                        dal.ComboBoxInvoker(comboBox3, true);
+                        dal.ComboBoxInvoker(comboBox5, true);
+                        dal.ComboBoxInvoker(comboBox1, true);
+                        dal.ComboBoxInvoker(comboBox4, true);
+                        dal.GroupBoxInvoker(groupBox1, false);
+                        dal.GroupBoxInvoker(groupBox2, true);
                     }
                 }
                 catch (Exception ex)
@@ -155,57 +197,15 @@ namespace _2EksamensProjekt.FORMS.admin
             while (true);
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (radioButton1.Checked)
-                {
-                    User = comboBox3.Text;
-                    Start = Convert.ToDateTime(comboBox1.Text);
-                    End = Convert.ToDateTime(comboBox2.Text);
-                    UnitType = groupBox2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                }
-                else if (radioButton2.Checked)
-                {
-                    Start = Convert.ToDateTime(comboBox1.Text);
-                    End = Convert.ToDateTime(comboBox2.Text);
-                    UnitType = groupBox2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                    UnitID = Convert.ToInt32(comboBox4.Text);
-                }
-            }
-            catch (Exception)
-            {
-                if (radioButton1.Checked)
-                {
-                    MessageBox.Show($"User: {User}\nStart Date: {Start}\nEnd Date: {End}\nUnit Type: {UnitType}\nARE REQUIRED TO SORT BY USER");
-                }
-                else if (radioButton2.Checked)
-                {
-                    MessageBox.Show($"Start Date: {Start}\nEnd Date: {End}\nUnit Type: {UnitType}\nUnit ID: {UnitID}\nARE REQUIRED TO SORT BY UNIT");
-                }
-            }
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
             try
             {
-                User = comboBox3.Text;
-                Start = Convert.ToDateTime(comboBox1.Text);
-                UnitType = groupBox2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                UnitID = Convert.ToInt32(comboBox4.Text);
-                Duration = Start.AddHours(Convert.ToDouble(comboBox5.Text));
-
                 dal.Booking();
             }
             catch (Exception)
             {
-                MessageBox.Show($"User: {User}\nStart Date: {Start}\nUnit ID: {UnitID}\nDuration: {Duration}\n\nARE REQUIRED TO BOOK!");
+                MessageBox.Show($"User: {dal.User}\nStart Date: {dal.Start}\nUnit ID: {dal.UnitID}\nDuration: {dal.Duration}\n\nARE REQUIRED TO BOOK!");
             }
         }
 
@@ -213,53 +213,18 @@ namespace _2EksamensProjekt.FORMS.admin
         {
             try
             {
-                if (radioButton1.Checked)
-                {
-                    User = comboBox3.Text;
-                    Start = Convert.ToDateTime(comboBox1.Text);
-                    End = Convert.ToDateTime(comboBox2.Text);
-                    UnitType = groupBox2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                }
-                else if (radioButton2.Checked)
-                {
-                    Start = Convert.ToDateTime(comboBox1.Text);
-                    End = Convert.ToDateTime(comboBox2.Text);
-                    UnitType = groupBox2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                    UnitID = Convert.ToInt32(comboBox4.Text);
-                }
-                dal.AdminStatisticsPrint(StatisticSQL);
+                dal.AdminStatisticsPrint(dal.StatisticSQL);
             }
             catch (Exception)
             {
                 if (radioButton1.Checked)
                 {
-                    MessageBox.Show($"User: {User}\nStart Date: {Start}\nEnd Date: {End}\nUnit Type: {UnitType}\nARE REQUIRED TO SORT BY USER");
+                    MessageBox.Show($"User: {dal.User}\nStart Date: {dal.Start}\nEnd Date: {dal.End}\nUnit Type: {dal.UnitType}\nARE REQUIRED TO SORT BY USER");
                 }
                 else if (radioButton2.Checked)
                 {
-                    MessageBox.Show($"Start Date: {Start}\nEnd Date: {End}\nUnit Type: {UnitType}\nUnit ID: {UnitID}\nARE REQUIRED TO SORT BY UNIT");
+                    MessageBox.Show($"Start Date: {dal.Start}\nEnd Date: {dal.End}\nUnit Type: {dal.UnitType}\nUnit ID: {dal.UnitID}\nARE REQUIRED TO SORT BY UNIT");
                 }
-            }
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            comboBox1.Text = DateTime.Now.ToString();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (radioButton8.Checked == true)
-            {
-                button2.Enabled = true;
-                button3.Enabled = false;
-                activeRButton = "NONE";
-            }
-            else if (radioButton9.Checked == true)
-            {
-                button2.Enabled = false;
-                button3.Enabled = true;
-                activeRButton = "NONE";
             }
         }
 
@@ -267,7 +232,6 @@ namespace _2EksamensProjekt.FORMS.admin
         {
             try
             {
-                CancelBookingID = Convert.ToInt32(comboBox6.Text);
                 dal.CancelReservation();
             }
             catch

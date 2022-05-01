@@ -17,7 +17,7 @@ namespace _2EksamensProjekt.FORMS.admin
         public SpecialCollection()
         {
             InitializeComponent();
-            dal.GridviewCollection(dataGridView1, Housing.SpecialCollectionSql);
+            dal.GridviewCollection(dataGridView1, dal.SpecialCollectionSql);
         }
     }
 }

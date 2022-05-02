@@ -1,7 +1,4 @@
-﻿using _2EksamensProjekt.FORMS.secretary;
-using DAL;
-
-namespace _2EksamensProjekt.FORMS.admin
+﻿namespace _2EksamensProjekt.FORMS.admin
 {
     public partial class adminSP : Form
     {

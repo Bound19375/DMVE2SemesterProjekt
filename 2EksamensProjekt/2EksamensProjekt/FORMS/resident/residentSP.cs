@@ -1,7 +1,4 @@
-﻿using _2EksamensProjekt.FORMS.admin;
-using DAL;
-
-namespace _2EksamensProjekt.FORMS.resident
+﻿namespace _2EksamensProjekt.FORMS.resident
 {
     
     public partial class residentSP : Form

@@ -1,11 +1,4 @@
-﻿using _2EksamensProjekt;
-using MySql.Data.MySqlClient;
-using System.ComponentModel;
-using System.Data;
-using System.Globalization;
-using System.Text.RegularExpressions;
-
-namespace DAL
+﻿namespace _2EksamensProjekt.DAL
 {
     public class API
     {

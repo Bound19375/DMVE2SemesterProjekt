@@ -1,4 +1,4 @@
-using DAL;
+using _2EksamensProjekt.DAL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySql.Data.MySqlClient;
 

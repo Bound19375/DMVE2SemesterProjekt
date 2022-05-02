@@ -1,8 +1,3 @@
-using _2EksamensProjekt.FORMS.admin;
-using _2EksamensProjekt.FORMS.resident;
-using _2EksamensProjekt.FORMS.secretary;
-using DAL;
-
 namespace _2EksamensProjekt
 {
     public partial class Login : Form

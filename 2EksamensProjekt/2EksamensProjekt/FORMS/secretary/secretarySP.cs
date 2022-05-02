@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAL;
+
 
 namespace _2EksamensProjekt.FORMS.secretary
 {
-    using API;
     public partial class secretarySP : Form
     {
         static secretarySP singleton = new secretarySP();

@@ -7,15 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAL;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
     public partial class Resources : Form
     {
         API api = API.Getinstance();
         private static Resources singleton = new Resources();
-
 
         public Resources()
         {

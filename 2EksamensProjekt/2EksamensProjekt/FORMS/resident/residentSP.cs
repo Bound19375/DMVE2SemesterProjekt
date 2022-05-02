@@ -1,7 +1,9 @@
-﻿namespace _2EksamensProjekt.FORMS.resident
+﻿using _2EksamensProjekt.FORMS.admin;
+using DAL;
+
+namespace _2EksamensProjekt.FORMS.resident
 {
-    using _2EksamensProjekt.FORMS.admin;
-    using API;
+    
     public partial class residentSP : Form
     {
         API api = API.Getinstance();

@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAL;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
     public partial class SpecialCollection : Form
     {
         API api = API.Getinstance();

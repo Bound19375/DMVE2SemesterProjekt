@@ -8,10 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAL;
+
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
     public partial class Account_Waitlist_Panel : Form
     {
         private static Account_Waitlist_Panel singleton = new Account_Waitlist_Panel();

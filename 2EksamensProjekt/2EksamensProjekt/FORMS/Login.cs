@@ -1,9 +1,10 @@
+using _2EksamensProjekt.FORMS.admin;
+using _2EksamensProjekt.FORMS.resident;
+using _2EksamensProjekt.FORMS.secretary;
+using DAL;
+
 namespace _2EksamensProjekt
 {
-    using _2EksamensProjekt.FORMS.admin;
-    using _2EksamensProjekt.FORMS.resident;
-    using _2EksamensProjekt.FORMS.secretary;
-    using API;
     public partial class Login : Form
     {
         API api = API.Getinstance(); 
@@ -53,7 +54,7 @@ namespace _2EksamensProjekt
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string result = api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From API Class.
+            string result = api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
             MessageBox.Show(result);
             if (result == "admin")
             {

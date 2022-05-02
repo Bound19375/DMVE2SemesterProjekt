@@ -7,16 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAL;
+
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
     public partial class Housing : Form
     {
         API api = API.Getinstance();
         private static Housing singleton = new Housing();
-
-        
 
         public Housing()
         {

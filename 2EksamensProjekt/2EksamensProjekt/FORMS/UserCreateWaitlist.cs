@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.secretary
 {
-    using API;
+    using DAL;
     public partial class UserCreateWaitlist : Form
     {
         public static string? Username { get; set; }

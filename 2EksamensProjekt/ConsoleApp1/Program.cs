@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace MyApp // Note: actual namespace depends on the project name.
 {
-    using API;
+    using DAL;
     using System.Data;
     using System.Globalization;
 

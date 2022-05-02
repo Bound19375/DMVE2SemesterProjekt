@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace API
+namespace DAL
 {
     public class API
     {

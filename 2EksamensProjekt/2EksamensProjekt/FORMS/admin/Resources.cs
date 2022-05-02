@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
+    using DAL;
     public partial class Resources : Form
     {
         API api = API.Getinstance();

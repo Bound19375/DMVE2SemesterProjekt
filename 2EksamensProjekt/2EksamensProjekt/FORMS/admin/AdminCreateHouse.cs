@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt
 {
-    using API;
+    using DAL;
     public partial class AdminCreateHouse : Form
     {
         public static string HouseType { get; set; } = "NONE";

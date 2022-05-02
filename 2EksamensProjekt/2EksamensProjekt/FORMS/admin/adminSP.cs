@@ -1,7 +1,7 @@
 ﻿namespace _2EksamensProjekt.FORMS.admin
 {
     using _2EksamensProjekt.FORMS.secretary;
-    using API;
+    using DAL;
     public partial class adminSP : Form
     {
         API api = API.Getinstance();

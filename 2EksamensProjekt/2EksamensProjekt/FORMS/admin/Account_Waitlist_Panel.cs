@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using API;
+    using DAL;
     public partial class Account_Waitlist_Panel : Form
     {
         private static Account_Waitlist_Panel singleton = new Account_Waitlist_Panel();

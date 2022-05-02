@@ -3,7 +3,7 @@ namespace _2EksamensProjekt
     using _2EksamensProjekt.FORMS.admin;
     using _2EksamensProjekt.FORMS.resident;
     using _2EksamensProjekt.FORMS.secretary;
-    using API;
+    using DAL;
     public partial class Login : Form
     {
         API api = API.Getinstance(); 

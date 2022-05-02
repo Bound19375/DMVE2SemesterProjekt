@@ -8,9 +8,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace DAL
+namespace API
 {
-    public class DAL
+    public class API
     {
         #region Fields
 
@@ -36,11 +36,11 @@ namespace DAL
         #endregion Fields
 
         #region Singleton
-        static DAL singleton = new DAL();
-        private DAL() { } //Private Due to Singleton ^^
+        static API singleton = new API();
+        private API() { } //Private Due to Singleton ^^
 
         //Singleton
-        public static DAL Getinstance()
+        public static API Getinstance()
         {
             return singleton;
         }

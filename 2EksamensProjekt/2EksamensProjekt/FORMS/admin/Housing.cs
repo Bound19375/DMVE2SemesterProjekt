@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using DAL;
+    using API;
     public partial class Housing : Form
     {
-        DAL dal = DAL.Getinstance();
+        API api = API.Getinstance();
         private static Housing singleton = new Housing();
 
         
@@ -69,18 +69,18 @@ namespace _2EksamensProjekt.FORMS.admin
                     {
                         sql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
                     }
-                    dal.Gridview(dataGridView1, "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;", false);
-                    dal.Gridview(dataGridView2, sql, true);
-                    dal.Gridview(dataGridView3, "SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username  FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;", false);
+                    api.Gridview(dataGridView1, "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;", false);
+                    api.Gridview(dataGridView2, sql, true);
+                    api.Gridview(dataGridView3, "SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username  FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;", false);
 
 
-                    dal.ComboBoxFill(comboBox1, "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;");
-                    dal.ComboBoxFill(comboBox2, "SELECT w.account_username FROM waitlist w");
+                    api.ComboBoxFill(comboBox1, "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;");
+                    api.ComboBoxFill(comboBox2, "SELECT w.account_username FROM waitlist w");
 
                     if (!radioButton3.Checked)
                     {
-                        dal.TextboxReader(textBox3, "MIN");
-                        dal.TextboxReader(textBox2, "MAX");
+                        api.TextboxReader(textBox3, "MIN");
+                        api.TextboxReader(textBox2, "MAX");
                     }
                 }
                 catch (Exception ex)
@@ -93,10 +93,10 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button1_Click(object sender, EventArgs e)
         {
-            dal.AccountUsername = comboBox2.Text;
-            dal.HouseID = comboBox1.Text;
-            dal.AccountName = textBox1.Text;
-            dal.GrantHousing();
+            api.AccountUsername = comboBox2.Text;
+            api.HouseID = comboBox1.Text;
+            api.AccountName = textBox1.Text;
+            api.GrantHousing();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -107,8 +107,8 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button4_Click(object sender, EventArgs e)
         {
-            dal.HouseID = comboBox1.Text;
-            dal.DeleteHouse();
+            api.HouseID = comboBox1.Text;
+            api.DeleteHouse();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -118,16 +118,16 @@ namespace _2EksamensProjekt.FORMS.admin
 
                 if (radioButton3.Checked)
                 {
-                    dal.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+                    api.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
                 }
                 else if (radioButton1.Checked)
                 {
-                    dal.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                    api.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
 
                 }
                 else if (radioButton2.Checked)
                 {
-                    dal.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                    api.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
                 }
                 SpecialCollection obj = new SpecialCollection();
                 obj.Show();

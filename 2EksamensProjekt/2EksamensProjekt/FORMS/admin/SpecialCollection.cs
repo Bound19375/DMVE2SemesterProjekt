@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using DAL;
+    using API;
     public partial class SpecialCollection : Form
     {
-        DAL dal = DAL.Getinstance();
+        API api = API.Getinstance();
         public SpecialCollection()
         {
             InitializeComponent();
-            dal.GridviewCollection(dataGridView1, dal.SpecialCollectionSql);
+            api.GridviewCollection(dataGridView1, api.SpecialCollectionSql);
         }
     }
 }

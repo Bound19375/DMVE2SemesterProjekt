@@ -3,10 +3,10 @@ namespace _2EksamensProjekt
     using _2EksamensProjekt.FORMS.admin;
     using _2EksamensProjekt.FORMS.resident;
     using _2EksamensProjekt.FORMS.secretary;
-    using DAL;
+    using API;
     public partial class Login : Form
     {
-        DAL dal = DAL.Getinstance(); 
+        API api = API.Getinstance(); 
 
         private static Login singleton = new Login();
 
@@ -38,7 +38,7 @@ namespace _2EksamensProjekt
                     {
                         label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
                         {
-                            label1.Text = dal.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
+                            label1.Text = api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
                         });
                         await Task.Delay(1000); //Sleeping For X Seconds.
                     }
@@ -53,7 +53,7 @@ namespace _2EksamensProjekt
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string result = dal.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
+            string result = api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From API Class.
             MessageBox.Show(result);
             if (result == "admin")
             {
@@ -83,7 +83,7 @@ namespace _2EksamensProjekt
         {
             if (textBox1.Text != String.Empty)
             {
-                MessageBox.Show(dal.GetPassword(textBox1.Text).Result);
+                MessageBox.Show(api.GetPassword(textBox1.Text).Result);
             }
             else
             {

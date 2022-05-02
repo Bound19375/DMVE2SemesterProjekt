@@ -10,13 +10,13 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.secretary
 {
-    using DAL;
+    using API;
     public partial class UserCreateWaitlist : Form
     {
         public static string? Username { get; set; }
         public static string? Password { get; set; }
         public static string? Type { get; set; }
-        DAL dal = DAL.Getinstance();
+        API api = API.Getinstance();
 
         public UserCreateWaitlist()
         {
@@ -29,7 +29,7 @@ namespace _2EksamensProjekt.FORMS.secretary
             Username = textBox1.Text;
             Password = textBox2.Text;
             Type = comboBox1.Text;
-            dal.CreateUser_Waitlist();
+            api.CreateUser_Waitlist();
             this.Close();
         }
     }

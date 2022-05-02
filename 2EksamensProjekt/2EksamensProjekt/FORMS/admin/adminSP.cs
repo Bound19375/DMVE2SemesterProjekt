@@ -1,17 +1,17 @@
 ﻿namespace _2EksamensProjekt.FORMS.admin
 {
     using _2EksamensProjekt.FORMS.secretary;
-    using DAL;
+    using API;
     public partial class adminSP : Form
     {
-        DAL dal = DAL.Getinstance();
+        API api = API.Getinstance();
 
         private static adminSP singleton = new adminSP();
 
         private adminSP()
         {
             InitializeComponent();
-            label5.Text = $"{dal.AccountUsername}";
+            label5.Text = $"{api.AccountUsername}";
             panel1.Controls.Clear();
             Housing myForm = Housing.GetInstance();
             myForm.TopLevel = false;

@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 namespace _2EksamensProjekt.FORMS.admin
 {
-    using DAL;
+    using API;
     public partial class Account_Waitlist_Panel : Form
     {
         private static Account_Waitlist_Panel singleton = new Account_Waitlist_Panel();
-        DAL dal = DAL.Getinstance();
+        API api = API.Getinstance();
         private Account_Waitlist_Panel()
         {
             InitializeComponent();
@@ -38,8 +38,8 @@ namespace _2EksamensProjekt.FORMS.admin
         {
             do
             {
-                dal.Gridview(dataGridView2, dal.sqlcmds.Waitlist, false);
-                dal.Gridview(dataGridView1, dal.sqlcmds.CurrentResidents, false);
+                api.Gridview(dataGridView2, api.sqlcmds.Waitlist, false);
+                api.Gridview(dataGridView1, api.sqlcmds.CurrentResidents, false);
             }
             while (true);
         }
@@ -52,7 +52,7 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button2_Click(object sender, EventArgs e)
         {
-            dal.SecretaryPrint();
+            api.SecretaryPrint();
         }
     }
 }

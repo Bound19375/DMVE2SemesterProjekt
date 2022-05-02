@@ -24,14 +24,6 @@ namespace _2EksamensProjekt.FORMS.secretary
             t2.Start();
         }
 
-        public UserCreateWaitlist UserCreateWaitlist
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
         public static secretarySP GetInstance()
         {
             return singleton;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DAL;
 
+
 namespace _2EksamensProjekt.FORMS.admin
 {
     public partial class Housing : Form
@@ -22,14 +23,6 @@ namespace _2EksamensProjekt.FORMS.admin
             Task t1 = new Task(() => Worker());
             radioButton3.Checked = true;
             t1.Start();
-        }
-
-        public SpecialCollection SpecialCollection
-        {
-            get => default;
-            set
-            {
-            }
         }
 
         public static Housing GetInstance()

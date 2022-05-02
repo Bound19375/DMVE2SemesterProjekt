@@ -5,9 +5,9 @@ using DAL;
 
 namespace _2EksamensProjekt
 {
-    public partial class Login
+    public partial class Login : Form
     {
-        API api = API.Getinstance();
+        API api = API.Getinstance(); 
 
         private static Login singleton = new Login();
 
@@ -16,30 +16,6 @@ namespace _2EksamensProjekt
             InitializeComponent();
             Task slogan = new Task(() => Slogan());
             slogan.Start(); //Create an instance of a Task & Start it
-        }
-
-        public adminSP adminSP
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public secretarySP secretarySP
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public residentSP residentSP
-        {
-            get => default;
-            set
-            {
-            }
         }
 
         public static Login GetInstance() //Login Form Made Singleton Due To Otherwise Disposion Of Objects --Garbage Collector--.
@@ -56,7 +32,7 @@ namespace _2EksamensProjekt
         private async void Slogan()
         {
             do
-            {
+            { 
                 if (label1.IsDisposed == false)
                 {
                     if (label1.InvokeRequired)
@@ -101,7 +77,7 @@ namespace _2EksamensProjekt
                 //obj.Closed += (s, args) => this.Close();
                 obj.Show();
             }
-
+            
         }
 
         private void button2_Click(object sender, EventArgs e)

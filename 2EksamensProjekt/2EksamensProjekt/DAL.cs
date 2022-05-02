@@ -87,7 +87,8 @@ namespace DAL
         #endregion SQLCMDS
 
         #region Open/Close-Conn
-        private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+        //private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+        private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
         //Open Connection Method 
         public MySqlConnection OpenConn(MySqlConnection conn)
         {

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical">
   <Class Name="_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel" Collapsed="true">
     <Position X="10.75" Y="5" Width="2" />
     <TypeIdentifier>
@@ -80,7 +80,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="DAL.API" Collapsed="true">
-    <Position X="8" Y="1" Width="1.75" />
+    <Position X="8" Y="0.5" Width="1.75" />
     <NestedTypes>
       <Class Name="DAL.API.SQLCMDS" Collapsed="true">
         <TypeIdentifier>

@@ -13,10 +13,11 @@ namespace DAL
     public class DAL
     {
         #region Fields
-        public int MIN { get; set; }
-        public int MAX { get; set; }
+
+        private int MIN { get; set; }
+        private int MAX { get; set; }
         public string? AccountUsername { get; set; }
-        public string? NewAccountUsername { get; set; }
+        private string? NewAccountUsername { get; set; }
         public string? HouseID { get; set; }
         public string? AccountName { get; set; }
         public string? SpecialCollectionSql { get; set; }
@@ -27,9 +28,9 @@ namespace DAL
         public string? UnitType { get; set; }
         public int UnitID { get; set; }
         public string? StatisticSQL { get; set; }
-        public int CancelBookingID { get; set; }
-        public string? AvailableType { get; set; }
-        public string? Password { get; set; }
+        private int CancelBookingID { get; set; }
+        private string? AvailableType { get; set; }
+        private string? Password { get; set; }
 
 
         #endregion Fields
@@ -154,7 +155,7 @@ namespace DAL
         #region Threading
         #region Database Update Information
         //DataGridView Thread Refresh Method
-        public async Task<DateTime> DBUpdateCheck()
+        private async Task<DateTime> DBUpdateCheck()
         {
             try
             {
@@ -572,7 +573,8 @@ namespace DAL
             public int m2 { get; set; }
             public int price { get; set; }
         }
-        public List<Houses> SpecialCollectionList(string dosql)
+
+        private List<Houses> SpecialCollectionList(string dosql)
         {
             List<Houses> collection = new List<Houses>();
             collection.Clear();

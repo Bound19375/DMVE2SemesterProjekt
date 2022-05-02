@@ -393,22 +393,23 @@ namespace DAL
         {
             try
             {
-                if (WhichField == "AvailableType")
+                switch (WhichField)
                 {
-                    if (gb.InvokeRequired)
-                    {
-                        gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                    case "AvailableType":
+                        if (gb.InvokeRequired)
                         {
-                            AvailableType = gb.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
-                        });
-                    }
+                            gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AvailableType = gb.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
+                            });
+                        }
+                        break;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            
         }
         #endregion GroupBoxReader
         #region ComboBoxReader
@@ -416,112 +417,118 @@ namespace DAL
         {
             try
             {
-                if (WhichField == "Start")
+                switch (WhichField)
                 {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                    case "Start":
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            if (combo.InvokeRequired)
                             {
-                                Start = result;
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                    if (success)
+                                    {
+                                        Start = result;
+                                    }
+                                });
                             }
-                        });
-                    }
-                }
 
-                if (WhichField == "End")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "End":
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            if (combo.InvokeRequired)
                             {
-                                End = result;
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                    if (success)
+                                    {
+                                        End = result;
+                                    }
+                                });
                             }
-                        });
-                    }
-                }
 
-                if (WhichField == "Duration")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "Duration":
                         {
-                            bool success = Int32.TryParse(combo.Text, out int result);
-                            if (success)
+                            if (combo.InvokeRequired)
                             {
-                                Duration = Start.AddHours(Convert.ToDouble(result));
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    bool success = Int32.TryParse(combo.Text, out int result);
+                                    if (success)
+                                    {
+                                        Duration = Start.AddHours(Convert.ToDouble(result));
+                                    }
+                                });
                             }
-                        });
-                    }
-                }
 
-                if (WhichField == "User")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "User":
                         {
-                            AccountUsername = combo.Text;
-                        });
-                    }
-                }
+                            if (combo.InvokeRequired)
+                            {
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    AccountUsername = combo.Text;
+                                });
+                            }
 
-                if (WhichField == "UnitID")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "UnitID":
                         {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            if (success)
-                                UnitID = result;
-                            else 
-                                UnitID = 0;
-                        });
-                    }
-                }
+                            if (combo.InvokeRequired)
+                            {
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    bool success = int.TryParse(combo.Text, out int result);
+                                    UnitID = success ? result : 0;
+                                });
+                            }
 
-                if (WhichField == "CancelBookingID")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "CancelBookingID":
                         {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            if (success)
-                                CancelBookingID = result;
-                            else
-                                CancelBookingID = 0;
-                        });
-                    }
-                }
+                            if (combo.InvokeRequired)
+                            {
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    bool success = int.TryParse(combo.Text, out int result);
+                                    CancelBookingID = success ? result : 0;
+                                });
+                            }
 
-                if (WhichField == "NewAccountUsername")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "NewAccountUsername":
                         {
-                            NewAccountUsername = combo.Text;
-                        });
-                    }
-                }
+                            if (combo.InvokeRequired)
+                            {
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    NewAccountUsername = combo.Text;
+                                });
+                            }
 
-                if (WhichField == "Password")
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            break;
+                        }
+                    case "Password":
                         {
-                            Password = combo.Text;
-                        });
-                    }
+                            if (combo.InvokeRequired)
+                            {
+                                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                                {
+                                    Password = combo.Text;
+                                });
+                            }
+
+                            break;
+                        }
                 }
 
                 if (WhichField == "CreateAccountUsername")
@@ -555,34 +562,34 @@ namespace DAL
         #region TextBoxReader
         public void TextboxReader(TextBox txtbox, string WhichField)
         {
-            if (WhichField == "MIN")
+            switch (WhichField)
             {
-                if (txtbox.InvokeRequired)
-                {
-                    txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                case "MIN":
                     {
-                        bool success = int.TryParse(txtbox.Text, out int result);
-                        if (success)
-                            MIN = result;
-                        else
-                            MIN = 0;
-                    });
-                }
-            }
+                        if (txtbox.InvokeRequired)
+                        {
+                            txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(txtbox.Text, out int result);
+                                MIN = success ? result : 0;
+                            });
+                        }
 
-            if (WhichField == "MAX")
-            {
-                if (txtbox.InvokeRequired)
-                {
-                    txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        break;
+                    }
+                case "MAX":
                     {
-                        bool success = int.TryParse(txtbox.Text, out int result);
-                        if (success)
-                            MAX = result;
-                        else
-                            MAX = int.MaxValue;
-                    });
-                }
+                        if (txtbox.InvokeRequired)
+                        {
+                            txtbox.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(txtbox.Text, out int result);
+                                MAX = success ? result : int.MaxValue;
+                            });
+                        }
+
+                        break;
+                    }
             }
         }
         #endregion TextBoxReader
@@ -646,7 +653,6 @@ namespace DAL
         }
         #endregion Special Collection Method
         #endregion Threading
-
         #region Login
         public async Task<string> Login(string username, string password)
         {

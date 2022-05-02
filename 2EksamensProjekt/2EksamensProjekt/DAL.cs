@@ -292,7 +292,9 @@ namespace DAL
                     currentcomboelements.Add(items);
                 }
 
-                if (combo.Items.Count < usernames.Count() || combo.Items.Count > usernames.Count() || !usernames.SequenceEqual(currentcomboelements))
+                bool isEqual = Enumerable.SequenceEqual(currentcomboelements.OrderBy(e => e), usernames.OrderBy(e => e)); //Sort Both Lists Using Lambda
+
+                if (isEqual == false)
                 {
                     if (combo.InvokeRequired)
                     {
@@ -347,7 +349,7 @@ namespace DAL
             }
         }
         #endregion ComboBoxFill
-        #region ButtonComboBoxInvoker
+        #region ButtonComboboxGroupboxInvoker
         public void ButtonInvoker(Button btn, bool BtnEnableDisable)
         {
             if (btn.InvokeRequired)

@@ -81,18 +81,6 @@
   </Class>
   <Class Name="DAL.API" Collapsed="true">
     <Position X="8" Y="0.5" Width="1.75" />
-    <NestedTypes>
-      <Class Name="DAL.API.SQLCMDS" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>DAL.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="DAL.API.Houses" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>DAL.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAIEAJKAAHACoCgBCJGEAAIAAQBmBBQSIESUAQIAoRA=</HashCode>
       <FileName>DAL.cs</FileName>

@@ -825,9 +825,10 @@ namespace DAL
                 cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
 
                 MySqlDataReader rdr = cmd1.ExecuteReader();
-
+                
+                Directory.CreateDirectory(@"..\..\..\txts");
                 string filePath = @"..\..\..\txts\Residencies.txt";
-                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
                 {
                     StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
 
@@ -1257,8 +1258,9 @@ namespace DAL
                 DataTable tbl = new DataTable();
                 tbl.Load(cmd1.ExecuteReader());
 
+                Directory.CreateDirectory(@"..\..\..\txts");
                 string filePath = @"..\..\..\txts\Resources.txt";
-                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 0, true))
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
                 {
                     StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
                     int i = 0;

@@ -1,70 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel">
-    <Position X="11.75" Y="4" Width="2.75" />
+    <Position X="19.75" Y="4.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\Account_Waitlist_Panel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.FORMS.admin.adminSP" Collapsed="true">
-    <Position X="8.75" Y="3" Width="2.25" />
+  <Class Name="_2EksamensProjekt.FORMS.admin.adminSP">
+    <Position X="9.5" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBUA4AAAAAHAAAQAAAAA=</HashCode>
       <FileName>FORMS\admin\adminSP.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.FORMS.admin.Housing" Collapsed="true">
-    <Position X="6.25" Y="4" Width="2.25" />
+  <Class Name="_2EksamensProjekt.FORMS.admin.Housing">
+    <Position X="7.25" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>ACAAABAAACAAABAQAACAAABCBfgoAAAAEHAMAAAAAAI=</HashCode>
       <FileName>FORMS\admin\Housing.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.SpecialCollection">
-    <Position X="6.25" Y="4.75" Width="2.25" />
+    <Position X="5" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAACAAAACAAgAAAAAACAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\SpecialCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.AdminCreateHouse">
-    <Position X="8.75" Y="4" Width="2.75" />
+    <Position X="17" Y="4.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAASAAABAQAACBACACAAAMAAAAEGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\AdminCreateHouse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.Login" Collapsed="true">
-    <Position X="8.75" Y="1.75" Width="2.25" />
+  <Class Name="_2EksamensProjekt.Login">
+    <Position X="11.75" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>ASAAAAAAACAAABAAAACAAgACBQAYAAAAEGAAAAAAAAA=</HashCode>
       <FileName>FORMS\Login.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.resident.residentSP">
-    <Position X="15" Y="4" Width="2.25" />
+    <Position X="22.5" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>8QAAABAAACAAABAQAACAAAACBcgqAAAAAHABAAAAAAI=</HashCode>
       <FileName>FORMS\resident\residentSP.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.FORMS.secretary.secretarySP" Collapsed="true">
-    <Position X="2.75" Y="4" Width="2.25" />
+  <Class Name="_2EksamensProjekt.FORMS.secretary.secretarySP">
+    <Position X="0.5" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\secretary\secretarySP.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.FORMS.secretary.UserCreateWaitlist">
-    <Position X="2.75" Y="4.75" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>ACAAAAAAACAAABAQAQCAAAACAAAIAAACEWAAAAAAAAA=</HashCode>
-      <FileName>FORMS\UserCreateWaitlist.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="DAL.API" Collapsed="true">
-    <Position X="8" Y="0.5" Width="3" />
+  <Class Name="DAL.API">
+    <Position X="14" Y="4.75" Width="3" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -81,8 +74,15 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAIEAJKAAHACoCgBCJGEAAIAAQBmBBQSIESUAQIAoRA=</HashCode>
+      <HashCode>AAIEAJKAAHACsSgBCJGEAAIAAQBmBBQSIESUAQIAoRA=</HashCode>
       <FileName>DAL.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="_2EksamensProjekt.UserCreateWaitlist">
+    <Position X="2.75" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAQABAQAACAAAACBQAIAAAAAGAAAAAAAAA=</HashCode>
+      <FileName>FORMS\UserCreateWaitlist.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

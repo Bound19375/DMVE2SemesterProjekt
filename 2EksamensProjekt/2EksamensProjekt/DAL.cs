@@ -84,9 +84,6 @@ namespace DAL
             //Resident Info
             public string CurrentResidentInfo = "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege  FROM housing_residents hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.residents_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
         }
-    
-
-
         #endregion SQLCMDS
 
         #region Open/Close-Conn
@@ -196,48 +193,9 @@ namespace DAL
                 throw new Exception(ex.ToString());
             }
         }
-
-        public async Task<bool> ForceUpdateDB()
-        {
-            try
-            {
-                do
-                {
-                    List<int> Saved = new List<int>();
-                    List<int> Current = new List<int>();
-                    Current.Clear();
-
-                    //Current Bookings
-                    string available = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
-
-                    MySqlConnection conn = new MySqlConnection(ConnStr);
-                    MySqlCommand cmd1 = new MySqlCommand(available, OpenConn(conn));
-
-                    MySqlDataReader reader = cmd1.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        Current.Add(Convert.ToInt32(reader.GetString(0)));
-                    }
-                    CloseConn(conn);
-
-                    if (Current.Count != Saved.Count)
-                    {
-                        Saved = Current;
-                        return await Task.FromResult(true);
-                    }
-                    return await Task.FromResult(false);
-                }
-                while (true);
-            }
-            catch (MySqlException ex)
-            {
-                throw new Exception(ex.ToString());
-            }
-        }
         #endregion Database Update Information
         #region GridviewFill
-        public void Gridview(DataGridView gv, string DataTableSql)
+        public void Gridview(DataGridView gv, string DataTableSql, bool bypass)
         {
             try
             {
@@ -258,7 +216,7 @@ namespace DAL
 
                 CloseConn(conn);
 
-                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || ForceUpdateDB().Result == true)
+                if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass == true)
                 {
                     if (gv.InvokeRequired)
                     {
@@ -1244,7 +1202,6 @@ namespace DAL
             }
         }
         #endregion Delete Housing
-        
         #region Admin Statistics Print (txt)
         public void AdminStatisticsPrint(string cmd_TxtPrint)
         {

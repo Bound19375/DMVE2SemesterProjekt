@@ -38,8 +38,8 @@ namespace _2EksamensProjekt.FORMS.admin
         {
             do
             {
-                dal.Gridview(dataGridView2, dal.sqlcmds.Waitlist);
-                dal.Gridview(dataGridView1, dal.sqlcmds.CurrentResidents);
+                dal.Gridview(dataGridView2, dal.sqlcmds.Waitlist, false);
+                dal.Gridview(dataGridView1, dal.sqlcmds.CurrentResidents, false);
             }
             while (true);
         }

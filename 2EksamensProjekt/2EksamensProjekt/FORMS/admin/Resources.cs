@@ -114,29 +114,29 @@ namespace _2EksamensProjekt.FORMS.admin
                     }
 
                     //Booked
-                    dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked);
+                    dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked, true);
                     //Available
-                    dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType);
+                    dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType, true);
 
                     if (radioButton6.Checked) //All User
                     {
                         dal.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
-                        dal.Gridview(dataGridView5, dal.StatisticSQL);
+                        dal.Gridview(dataGridView5, dal.StatisticSQL, true);
                     }
                     else if (radioButton7.Checked) //All Per Unit (Count)
                     {
                         dal.StatisticSQL = "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
-                        dal.Gridview(dataGridView5, dal.StatisticSQL);
+                        dal.Gridview(dataGridView5, dal.StatisticSQL, true);
                     }
                     else if (radioButton1.Checked) //Per User
                     {
-                        dal.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @user AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
-                        dal.Gridview(dataGridView5, dal.StatisticSQL);
+                        dal.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL, true);
                     }
                     else if (radioButton2.Checked) //Per Unit
                     {
-                        dal.StatisticSQL = "SELECT * FROM resource r WHERE id = @unitid; ";
-                        dal.Gridview(dataGridView5, dal.StatisticSQL);
+                        dal.StatisticSQL = "SELECT * FROM resource r WHERE id = @unitid;";
+                        dal.Gridview(dataGridView5, dal.StatisticSQL, true);
                     }
                     
                     //Invokers

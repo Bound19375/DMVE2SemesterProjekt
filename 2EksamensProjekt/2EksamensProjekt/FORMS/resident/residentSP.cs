@@ -79,11 +79,11 @@
                     }
 
                     //Booked
-                    dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked);
+                    dal.Gridview(dataGridView4, dal.sqlcmds.AllResourcesBooked, true);
                     //Available
-                    dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType);
+                    dal.Gridview(dataGridView1, dal.sqlcmds.AvailableResourcesByType, true);
                     //Resident Information
-                    dal.Gridview(dataGridView5, dal.sqlcmds.CurrentResidentInfo);
+                    dal.Gridview(dataGridView5, dal.sqlcmds.CurrentResidentInfo, true);
                 }
                 catch (Exception ex)
                 {

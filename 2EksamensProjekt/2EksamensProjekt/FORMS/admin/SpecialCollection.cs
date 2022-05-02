@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DAL;
+﻿namespace _2EksamensProjekt.FORMS.admin;
 
-namespace _2EksamensProjekt.FORMS.admin
+public partial class SpecialCollection : Form
 {
-    public partial class SpecialCollection : Form
+    API api = API.Getinstance();
+    public SpecialCollection()
     {
-        API api = API.Getinstance();
-        public SpecialCollection()
-        {
-            InitializeComponent();
-            api.GridviewCollection(dataGridView1, api.SpecialCollectionSql);
-        }
+        InitializeComponent();
+        api.GridviewCollection(dataGridView1, api.SpecialCollectionSql);
     }
 }

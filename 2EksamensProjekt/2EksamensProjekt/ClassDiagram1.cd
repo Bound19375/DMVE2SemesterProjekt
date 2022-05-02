@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel" Collapsed="true">
+    <Position X="10.75" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
+      <FileName>FORMS\admin\Account_Waitlist_Panel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.admin.adminSP" Collapsed="true">
+    <Position X="8" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAACAAABAAAACAAAACBUA4AAAQCHAAAQAAAAA=</HashCode>
+      <FileName>FORMS\admin\adminSP.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Housing" />
+      <Property Name="AdminCreateHouse" />
+      <Property Name="Account_Waitlist_Panel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.admin.Housing" Collapsed="true">
+    <Position X="5.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAABAAACAAABAQAACAAABCBfgoAAAAEHAMAAAAAAY=</HashCode>
+      <FileName>FORMS\admin\Housing.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SpecialCollection" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.admin.SpecialCollection" Collapsed="true">
+    <Position X="5.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAgAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>FORMS\admin\SpecialCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="_2EksamensProjekt.AdminCreateHouse" Collapsed="true">
+    <Position X="8" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAASAAABAQAACBACACAAAMAAAAEGAAAAAAAAA=</HashCode>
+      <FileName>FORMS\admin\AdminCreateHouse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="_2EksamensProjekt.Login" Collapsed="true">
+    <Position X="8" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gSEAAAAAASAAABAAAACAAgACBQAYAAAAEGAAAAAAAAA=</HashCode>
+      <FileName>FORMS\Login.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="adminSP" />
+      <Property Name="secretarySP" />
+      <Property Name="residentSP" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.resident.residentSP" Collapsed="true">
+    <Position X="13.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>8QAAABAAACAAABAQAACAAAACBcgqAAAAAHABAAAAAAI=</HashCode>
+      <FileName>FORMS\resident\residentSP.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.secretary.secretarySP" Collapsed="true">
+    <Position X="2.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAABAAAASAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
+      <FileName>FORMS\secretary\secretarySP.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="UserCreateWaitlist" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="_2EksamensProjekt.FORMS.secretary.UserCreateWaitlist" Collapsed="true">
+    <Position X="2.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACAAABAQAQCAAAACAAAIAAACEWAAAAAAAAA=</HashCode>
+      <FileName>FORMS\UserCreateWaitlist.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.API" Collapsed="true">
+    <Position X="8" Y="1" Width="1.75" />
+    <NestedTypes>
+      <Class Name="DAL.API.SQLCMDS" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DAL.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="DAL.API.Houses" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DAL.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAIEAJKAAHACoCgBCJGEAAIAAQBmBBQSIESUAQIAoRA=</HashCode>
+      <FileName>DAL.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

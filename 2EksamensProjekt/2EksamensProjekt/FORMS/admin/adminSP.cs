@@ -21,6 +21,30 @@ namespace _2EksamensProjekt.FORMS.admin
             myForm.Show();
         }
 
+        public Housing Housing
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public AdminCreateHouse AdminCreateHouse
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Account_Waitlist_Panel Account_Waitlist_Panel
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         public static adminSP GetInstance()
         {
             return singleton;

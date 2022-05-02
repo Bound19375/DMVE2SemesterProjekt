@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace DAL
 {
-    public class API
+    public class API : Login
     {
         #region Fields
 
@@ -313,7 +313,7 @@ namespace DAL
                 MessageBox.Show(ex.Message.ToString());
             }
         }
-        
+
 
         public void ComboBoxFillNoSqlInt(ComboBox combo, int amount)
         {
@@ -357,7 +357,7 @@ namespace DAL
                 {
                     if (BtnEnableDisable)
                         btn.Enabled = true;
-                    else 
+                    else
                         btn.Enabled = false;
                 });
             }
@@ -409,7 +409,7 @@ namespace DAL
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
         }
         #endregion GroupBoxReader
         #region ComboBoxReader
@@ -482,7 +482,7 @@ namespace DAL
                             bool success = int.TryParse(combo.Text, out int result);
                             if (success)
                                 UnitID = result;
-                            else 
+                            else
                                 UnitID = 0;
                         });
                     }
@@ -1055,7 +1055,7 @@ namespace DAL
 
                     //Insert Into Housing_Residents
                     sqlcommand = "INSERT INTO housing_residents (housing_id, residents_username, start_contract) VALUES (@id, @username, CURRENT_TIMESTAMP);";
-                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn)); 
+                    cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
                     cmd1.Parameters.AddWithValue("@id", HouseID);
                     cmd1.Parameters.AddWithValue("@username", AccountUsername);
                     cmd1.ExecuteNonQuery();
@@ -1096,7 +1096,7 @@ namespace DAL
                     throw new Exception(ex.Message);
                 }
             }
-           
+
         }
         #endregion Grant Housing
         #region Create New Housing
@@ -1342,10 +1342,9 @@ namespace DAL
                 MessageBox.Show(ex.Message.ToString());
             }
         }
+
         #endregion UpdatePassword
+
         #endregion Resident
-
-
-
     }
 }

@@ -1,4 +1,4 @@
-namespace _2EksamensProjekt
+namespace _2EksamensProjekt.FORMS
 {
     public partial class Login : Form
     {

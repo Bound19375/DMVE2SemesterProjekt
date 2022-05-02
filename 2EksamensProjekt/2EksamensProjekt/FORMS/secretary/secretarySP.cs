@@ -1,50 +1,49 @@
-﻿namespace _2EksamensProjekt.FORMS.secretary
+﻿namespace _2EksamensProjekt.FORMS.secretary;
+
+public partial class secretarySP : Form
 {
-    public partial class secretarySP : Form
+    static secretarySP singleton = new secretarySP();
+    API api = API.Getinstance();
+    private secretarySP()
     {
-        static secretarySP singleton = new secretarySP();
-        API api = API.Getinstance();
-        private secretarySP()
-        {
-            InitializeComponent();
-            label5.Text = $"{api.AccountUsername}";
-            Task t2 = new Task(() => gridViewTimer());
-            t2.Start();
-        }
+        InitializeComponent();
+        label5.Text = $"{api.AccountUsername}";
+        Task t2 = new Task(() => gridViewTimer());
+        t2.Start();
+    }
 
-        public static secretarySP GetInstance()
-        {
-            return singleton;
-        }
+    public static secretarySP GetInstance()
+    {
+        return singleton;
+    }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            this.Hide();
-            Login obj = Login.GetInstance();
-            obj.Show();
-        }
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        e.Cancel = true;
+        this.Hide();
+        Login obj = Login.GetInstance();
+        obj.Show();
+    }
 
-        private void gridViewTimer()
+    private void gridViewTimer()
+    {
+        do
         {
-            do
-            {
-                api.Gridview(dataGridView2, api.sqlcmds.Waitlist, false);
-                api.Gridview(dataGridView1, api.sqlcmds.CurrentResidents, false);
+            api.Gridview(dataGridView2, api.sqlcmds.Waitlist, false);
+            api.Gridview(dataGridView1, api.sqlcmds.CurrentResidents, false);
                 
-            }
-            while(true);
         }
+        while(true);
+    }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            UserCreateWaitlist obj = UserCreateWaitlist.GetInstance();
-            obj.Show();
-        }
+    private void button1_Click(object sender, EventArgs e)
+    {
+        UserCreateWaitlist obj = UserCreateWaitlist.GetInstance();
+        obj.Show();
+    }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            api.SecretaryPrint();
-        }
+    private void button2_Click(object sender, EventArgs e)
+    {
+        api.SecretaryPrint();
     }
 }

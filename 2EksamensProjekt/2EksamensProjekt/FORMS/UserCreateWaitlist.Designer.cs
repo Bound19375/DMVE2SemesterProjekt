@@ -1,4 +1,4 @@
-﻿namespace _2EksamensProjekt.FORMS.secretary
+﻿namespace _2EksamensProjekt
 {
     partial class UserCreateWaitlist
     {

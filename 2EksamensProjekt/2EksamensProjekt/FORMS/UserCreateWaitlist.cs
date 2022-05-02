@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DAL;
 
-namespace _2EksamensProjekt.FORMS.secretary
+namespace _2EksamensProjekt
 {
     public partial class UserCreateWaitlist : Form
     {        

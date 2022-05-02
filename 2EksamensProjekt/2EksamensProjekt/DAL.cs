@@ -995,6 +995,7 @@ namespace DAL
                 cmd1 = new MySqlCommand(commit, OpenConn(conn));
                 cmd1.ExecuteNonQuery();
                 CloseConn(conn);
+                
             }
             catch (MySqlException ex)
             {

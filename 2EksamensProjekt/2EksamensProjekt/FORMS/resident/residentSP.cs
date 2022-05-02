@@ -13,7 +13,7 @@ namespace _2EksamensProjekt.FORMS.resident
             InitializeComponent();
             label5.Text = $"{api.AccountUsername}";
             radioButton3.Checked = true;
-            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy hh:mm");
+            comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
             groupBox2.Text = "washingmachine";
             Task t2 = new Task(() => Worker());
             t2.Start();
@@ -137,13 +137,13 @@ namespace _2EksamensProjekt.FORMS.resident
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (comboBox1.Text != String.Empty && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
+            if (comboBox1.Text != String.Empty && Convert.ToDateTime(comboBox1.Text) >= DateTime.Now && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
             {
                 api.Booking();
             }
             else
             {
-                MessageBox.Show($"User: {api.AccountUsername}\nStart Date: {api.Start}\nUnit ID: {api.UnitID}\nDuration: {api.Duration}\n\nARE REQUIRED TO BOOK!");
+                MessageBox.Show($"Incorrect Information!");
             }
         }
     }

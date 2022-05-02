@@ -661,7 +661,7 @@ namespace DAL
                 MySqlConnection conn = new MySqlConnection(ConnStr);
 
                 //Set Isolation Level
-                string StartTransaction = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+                string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
                 MySqlCommand cmd = new MySqlCommand(StartTransaction, OpenConn(conn));
                 cmd.ExecuteNonQuery();
 
@@ -671,7 +671,7 @@ namespace DAL
                 cmd.ExecuteNonQuery();
 
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                string connSql = $"SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
+                string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
                 cmd = new MySqlCommand(connSql, OpenConn(conn));
 
                 if (regex.IsMatch(username)) //Input Validation Check
@@ -701,28 +701,27 @@ namespace DAL
                     if (dbusername == username && dbpassword == password)
                     {
                         AccountUsername = dbusername;
-                        if (dbprivilege == "secretary")
+                        switch (dbprivilege)
                         {
-                            return await Task.FromResult("secretary");
-                        }
-                        else if (dbprivilege == "admin")
-                        {
-                            return await Task.FromResult("admin");
-                        }
-                        else if (dbprivilege == "youth" || dbprivilege == "senior" || dbprivilege == "normal")
-                        {
-                            if (dbprivilege == "youth")
-                            {
-                                return await Task.FromResult("youth");
-                            }
-                            else if (dbprivilege == "senior")
-                            {
-                                return await Task.FromResult("senior");
-                            }
-                            else if (dbprivilege == "normal")
-                            {
-                                return await Task.FromResult("normal");
-                            }
+                            case "secretary":
+                                return await Task.FromResult("secretary");
+                            case "admin":
+                                return await Task.FromResult("admin");
+                            case "youth":
+                            case "senior":
+                            case "normal":
+                                {
+                                    switch (dbprivilege)
+                                    {
+                                        case "youth":
+                                            return await Task.FromResult("youth");
+                                        case "senior":
+                                            return await Task.FromResult("senior");
+                                        case "normal":
+                                            return await Task.FromResult("normal");
+                                    }
+                                    break;
+                                }
                         }
                     }
                     else

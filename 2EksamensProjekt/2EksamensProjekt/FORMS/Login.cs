@@ -55,7 +55,7 @@ namespace _2EksamensProjekt
         private void button1_Click(object sender, EventArgs e)
         {
             string result = api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
-            MessageBox.Show(result);
+            //MessageBox.Show(result);
             if (result == "admin")
             {
                 this.Hide();

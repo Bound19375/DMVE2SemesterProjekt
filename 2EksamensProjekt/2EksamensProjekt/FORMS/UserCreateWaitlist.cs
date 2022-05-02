@@ -12,25 +12,38 @@ using DAL;
 namespace _2EksamensProjekt.FORMS.secretary
 {
     public partial class UserCreateWaitlist : Form
-    {
-        public static string? Username { get; set; }
-        public static string? Password { get; set; }
-        public static string? Type { get; set; }
+    {        
         API api = API.Getinstance();
 
-        public UserCreateWaitlist()
+        private static UserCreateWaitlist singleton = new UserCreateWaitlist(); 
+        private UserCreateWaitlist()
         {
             InitializeComponent();
             comboBox1.Text = "normal";
+            Task t1 = new Task(() => worker());
+            t1.Start();
+        }
+
+        public static UserCreateWaitlist GetInstance()
+        {
+            return singleton;
+        }
+
+        private void worker()
+        {
+            do
+            {
+                api.ComboBoxReader(comboBox2, "CreateAccountUsername");
+                api.ComboBoxReader(comboBox3, "Password");
+                api.ComboBoxReader(comboBox1, "WaitlistType");
+            }
+            while (true);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Username = textBox1.Text;
-            Password = textBox2.Text;
-            Type = comboBox1.Text;
             api.CreateUser_Waitlist();
-            this.Close();
+            this.Hide();
         }
     }
 }

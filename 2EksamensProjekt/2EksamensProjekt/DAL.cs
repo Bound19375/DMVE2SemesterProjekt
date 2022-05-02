@@ -1,10 +1,7 @@
 ﻿using _2EksamensProjekt;
-using _2EksamensProjekt.FORMS.admin;
-using _2EksamensProjekt.FORMS.secretary;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -18,6 +15,7 @@ namespace DAL
         private int MAX { get; set; }
         public string? AccountUsername { get; set; }
         private string? NewAccountUsername { get; set; }
+        private string? CreateAccountUsername { get; set; }
         public string? HouseID { get; set; }
         public string? AccountName { get; set; }
         public string? SpecialCollectionSql { get; set; }
@@ -31,6 +29,7 @@ namespace DAL
         private int CancelBookingID { get; set; }
         private string? AvailableType { get; set; }
         private string? Password { get; set; }
+        private string? WaitlistType { get; set; }
 
 
         #endregion Fields
@@ -524,6 +523,28 @@ namespace DAL
                         });
                     }
                 }
+
+                if (WhichField == "CreateAccountUsername")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            CreateAccountUsername = combo.Text;
+                        });
+                    }
+                }
+
+                if (WhichField == "WaitlistType")
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            WaitlistType = combo.Text;
+                        });
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -854,12 +875,12 @@ namespace DAL
                 //Create User
                 string sqlcommand = "INSERT INTO account (username, password, privilege) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist');";
                 cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", UserCreateWaitlist.Username);
-                cmd1.Parameters.AddWithValue("@password", UserCreateWaitlist.Password);
+                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
+                cmd1.Parameters.AddWithValue("@password", Password);
 
 #pragma warning disable CS8604 // Possible null reference argument.
                 Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-                if (regex.IsMatch(UserCreateWaitlist.Username) && regex.IsMatch(UserCreateWaitlist.Password))
+                if (regex.IsMatch(AccountUsername) && regex.IsMatch(Password))
 #pragma warning restore CS8604 // Possible null reference argument.
                 {
                     cmd1.ExecuteNonQuery();
@@ -867,7 +888,7 @@ namespace DAL
                     //Append Created User To Waitlist
                     string sql = "SELECT * FROM account WHERE username = @username";
                     cmd1 = new MySqlCommand(sql, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@username", UserCreateWaitlist.Username);
+                    cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                     MySqlDataReader reader = cmd1.ExecuteReader();
                     string dbusername = "NONE";
                     string dbpassword = "NONE";
@@ -881,7 +902,7 @@ namespace DAL
                     reader.Close();
                     string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
                     cmd1 = new MySqlCommand(sqlwaitlist, OpenConn(conn));
-                    cmd1.Parameters.AddWithValue("@type", UserCreateWaitlist.Type);
+                    cmd1.Parameters.AddWithValue("@type", WaitlistType);
                     cmd1.Parameters.AddWithValue("@dbusername", dbusername);
                     cmd1.ExecuteNonQuery();
 

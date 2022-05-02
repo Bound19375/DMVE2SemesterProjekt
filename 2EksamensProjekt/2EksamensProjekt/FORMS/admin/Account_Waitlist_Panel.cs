@@ -47,7 +47,7 @@ namespace _2EksamensProjekt.FORMS.admin
 
         private void button1_Click(object sender, EventArgs e)
         {
-            UserCreateWaitlist obj = new UserCreateWaitlist();
+            UserCreateWaitlist obj = UserCreateWaitlist.GetInstance();
             obj.Show();
         }
 

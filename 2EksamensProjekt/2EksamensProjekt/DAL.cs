@@ -6,18 +6,18 @@ public class API
 
     private int MIN { get; set; }
     private int MAX { get; set; }
-    public string? AccountUsername { get; set; }
+    public string? AccountUsername { get; private set; }
     private string? NewAccountUsername { get; set; }
     private string? CreateAccountUsername { get; set; }
-    public string? HouseID { get; set; }
-    public string? AccountName { get; set; }
+    private string? HouseID { get; set; }
+    private string? AccountName { get; set; }
     public string? SpecialCollectionSql { get; set; }
     //public string? User { get; set; }
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
-    public DateTime Duration { get; set; }
+    public DateTime Start { get; private set; }
+    public DateTime End { get; private set; }
+    private DateTime Duration { get; set; }
     public string? UnitType { get; set; }
-    public int UnitID { get; set; }
+    public int UnitID { get; private set; }
     public string? StatisticSQL { get; set; }
     private int CancelBookingID { get; set; }
     private string? AvailableType { get; set; }
@@ -29,7 +29,8 @@ public class API
     #endregion Fields
 
     #region Singleton
-    static API singleton = new API();
+
+    private static readonly API singleton = new API();
     private API() { } //Private Due to Singleton ^^
 
     //Singleton
@@ -37,7 +38,7 @@ public class API
     {
         return singleton;
     }
-    public SQLCMDS sqlcmds = SQLCMDS.GetInstance();
+    public readonly SQLCMDS sqlcmds = SQLCMDS.GetInstance();
     #endregion Singleton
 
     #region SQLCMDS
@@ -127,16 +128,13 @@ public class API
     {
         try
         {
-            do
-            {
-                List<string> list = new List<string>() { "Bo godt – bo hos Sønderbo", "test2", "test3", "test4", "test5", "test6", "test7" };
+            List<string> list = new List<string>()
+                { "Bo godt – bo hos Sønderbo", "test2", "test3", "test4", "test5", "test6", "test7" };
 
-                Random r = new Random();
-                int slogan = r.Next(0, list.Count);
+            Random r = new Random();
+            int slogan = r.Next(0, list.Count);
 
-                return await Task.FromResult(list[slogan]);
-            }
-            while (true);
+            return await Task.FromResult(list[slogan]);
         }
         catch (Exception ex)
         {
@@ -213,7 +211,7 @@ public class API
 
             CloseConn(conn);
 
-            if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass == true)
+            if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass)
             {
                 if (gv.InvokeRequired)
                 {
@@ -307,7 +305,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
         
@@ -341,7 +339,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion ComboBoxFill
@@ -641,7 +639,6 @@ public class API
         //Set Isolation Level
         string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
         MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-        cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
         cmd1.ExecuteNonQuery();
 
         //Begin Transation
@@ -926,13 +923,9 @@ public class API
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 MySqlDataReader reader = cmd1.ExecuteReader();
                 string dbusername = "NONE";
-                string dbpassword = "NONE";
-                string dbprivilege = "NONE";
                 while (reader.Read())
                 {
                     dbusername = reader.GetString(0);
-                    dbpassword = reader.GetString(1);
-                    dbprivilege = reader.GetString(2);
                 }
                 reader.Close();
                 string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
@@ -1007,7 +1000,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion
@@ -1055,7 +1048,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion Booking
@@ -1291,7 +1284,7 @@ public class API
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
             {
                 StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
-                int i = 0;
+                int i;
                 for (i = 0; i < tbl.Columns.Count; i++)
                 {
                     writer.Write(tbl.Columns[i].ColumnName + "\t\t");
@@ -1304,7 +1297,7 @@ public class API
 
                     for (i = 0; i < array.Length; i++)
                     {
-                        writer.Write(array[i].ToString() + ";");
+                        writer.Write(array[i] + ";");
                     }
                     writer.WriteLine();
                 }
@@ -1464,7 +1457,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion Booking
@@ -1501,7 +1494,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion UpdatePassword

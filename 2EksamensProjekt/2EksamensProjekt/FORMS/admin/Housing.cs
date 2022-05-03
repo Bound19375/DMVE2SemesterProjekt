@@ -2,10 +2,10 @@
 
 public partial class Housing : Form
 {
-    API api = API.Getinstance();
-    private static Housing singleton = new Housing();
+    private readonly API api = API.Getinstance();
+    private static readonly Housing singleton = new Housing();
 
-    public Housing()
+    private Housing()
     {
         InitializeComponent();
         Task t1 = new Task(() => Worker());

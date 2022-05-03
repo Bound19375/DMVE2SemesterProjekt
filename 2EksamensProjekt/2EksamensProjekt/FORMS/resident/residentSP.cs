@@ -2,8 +2,8 @@
 
 public partial class residentSP : Form
 {
-    API api = API.Getinstance();
-    private static residentSP singleton = new residentSP();
+    private readonly API api = API.Getinstance();
+    private static readonly residentSP singleton = new residentSP();
     private residentSP()
     {
         InitializeComponent();

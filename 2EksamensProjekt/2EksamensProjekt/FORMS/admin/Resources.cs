@@ -2,8 +2,8 @@
 
 public partial class Resources : Form
 {
-    API api = API.Getinstance();
-    private static Resources singleton = new Resources();
+    private readonly API api = API.Getinstance();
+    private static readonly Resources singleton = new Resources();
 
     public Resources()
     {
@@ -66,11 +66,11 @@ public partial class Resources : Form
 
                 if (radioButton3.Checked) //WashingMachines
                 {
-                    if (radioButton8.Checked == true)//Sort
+                    if (radioButton8.Checked)//Sort
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.WMSORTALL);
                     }
-                    else if (radioButton9.Checked == true)//Book
+                    else if (radioButton9.Checked)//Book
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
                     }
@@ -78,11 +78,11 @@ public partial class Resources : Form
                 }
                 else if (radioButton4.Checked) //PartyHall
                 {
-                    if (radioButton8.Checked == true)//Sort
+                    if (radioButton8.Checked)//Sort
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.PHSortAll);
                     }
-                    else if (radioButton9.Checked == true)//Book
+                    else if (radioButton9.Checked)//Book
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
                     }
@@ -90,11 +90,11 @@ public partial class Resources : Form
                 }
                 else if (radioButton5.Checked) // ParkingSpace
                 {
-                    if (radioButton8.Checked == true)//Sort
+                    if (radioButton8.Checked)//Sort
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.PSSortAll);
                     }
-                    else if (radioButton9.Checked == true)//Book
+                    else if (radioButton9.Checked)//Book
                     {
                         api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
                     }

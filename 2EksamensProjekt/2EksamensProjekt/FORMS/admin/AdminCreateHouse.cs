@@ -2,11 +2,11 @@
 
 public partial class AdminCreateHouse : Form
 {
-    public static string HouseType { get; set; } = "NONE";
-    public static int M2 { get; set; } = 0;
-    public static int Price { get; set; } = 0;
+    public static string HouseType { get; private set; } = "NONE";
+    public static int M2 { get; private set; }
+    public static int Price { get; private set; }
 
-    API api = API.Getinstance();
+    private readonly API api = API.Getinstance();
     public AdminCreateHouse()
     {
         InitializeComponent();

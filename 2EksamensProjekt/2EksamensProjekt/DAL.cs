@@ -2,7 +2,7 @@
 
 public class API
 {
-    #region Fields
+    #region Properties
 
     private int MIN { get; set; }
     private int MAX { get; set; }
@@ -23,6 +23,7 @@ public class API
     private string? AvailableType { get; set; }
     private string? Password { get; set; }
     private string? WaitlistType { get; set; }
+    private string? DeleteFromSystemUsername { get; set; }
 
 
     #endregion Fields
@@ -49,11 +50,13 @@ public class API
             return singelton;
         }
         //Waitlist
-        public string Waitlist { get; } = "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
+        public string Waitlist = "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
         //Residents
         public string CurrentResidents = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username  = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+        //Residents Username
+        public string CurrentResidentsUsername = "SELECT residents_username FROM housing_residents;";
         //ReservationIDs
-        public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+        //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
         //WashingMachines
         public string WMSORTALL = "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
         //PartyHall
@@ -61,7 +64,7 @@ public class API
         //ParkingSpace
         public string PSSortAll = "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
         //Booked By User
-        public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
         //Booked Overall
         public string AllResourcesBooked = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
         //Available
@@ -521,7 +524,28 @@ public class API
                             Password = combo.Text;
                         });
                     }
-
+                    break;
+                }
+                case "HouseID":
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            HouseID = combo.Text;
+                        });
+                    }
+                    break;
+                }
+                case "AccountName":
+                {
+                    if (combo.InvokeRequired)
+                    {
+                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        {
+                            AccountName = combo.Text;
+                        });
+                    }
                     break;
                 }
             }
@@ -544,6 +568,16 @@ public class API
                     combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                     {
                         WaitlistType = combo.Text;
+                    });
+                }
+            }
+            if (WhichField == "DeleteFromSystemUsername")
+            {
+                if (combo.InvokeRequired)
+                {
+                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                    {
+                        DeleteFromSystemUsername = combo.Text;
                     });
                 }
             }
@@ -881,7 +915,7 @@ public class API
 
 #pragma warning disable CS8604 // Possible null reference argument.
             Regex regex = new Regex(@"^[a-zA-Z0-9]+$"); //Input Validation
-            if (regex.IsMatch(AccountUsername) && regex.IsMatch(Password))
+            if (regex.IsMatch(CreateAccountUsername) && regex.IsMatch(Password))
 #pragma warning restore CS8604 // Possible null reference argument.
             {
                 cmd1.ExecuteNonQuery();
@@ -1290,6 +1324,109 @@ public class API
         }
     }
     #endregion Admin Statistics Print (txt)
+    #region Delete Waitlist/Account
+    public void DeleteWaitlistAccount()
+    {
+        try
+        {
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Delete From Waitlist
+            sqlString = "DELETE FROM waitlist WHERE account_username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", AccountUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //Delete Account
+            sqlString = "DELETE FROM account WHERE username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", AccountUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            CloseConn(conn);
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+    #endregion
+    #region DeleteResident/Account
+    public void DeleteResidentAccount()
+    {
+        try
+        {
+            MySqlConnection conn = new MySqlConnection(ConnStr);
+
+            //Set Isolation Level
+            string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            sqlString = "START TRANSACTION;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Delete From Resource Reservations
+            sqlString = "DELETE FROM resident_resource_reservations WHERE residents_username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //Delete From Housing Residents
+            sqlString = "DELETE FROM housing_residents WHERE residents_username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //Delete From Residents
+            sqlString = "DELETE FROM residents WHERE account_username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //Delete Account
+            sqlString = "DELETE FROM account WHERE username = @accountusername;";
+            cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
+            cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
+
+            cmd1.ExecuteNonQuery();
+
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new MySqlCommand(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            CloseConn(conn);
+
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+    #endregion
     #endregion AdminMethods
 
     #region Resident

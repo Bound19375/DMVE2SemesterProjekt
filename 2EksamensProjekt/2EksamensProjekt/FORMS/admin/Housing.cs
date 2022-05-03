@@ -24,18 +24,6 @@ public partial class Housing : Form
         this.Hide();
     }
 
-    private void button2_Click(object sender, EventArgs e)
-    {
-        try
-        {
-                
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Input Values Into Min & Max");
-        }
-    }
-
     private void Worker()
     {
         do
@@ -63,12 +51,18 @@ public partial class Housing : Form
 
                 api.ComboBoxFill(comboBox1, "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;");
                 api.ComboBoxFill(comboBox2, "SELECT w.account_username FROM waitlist w");
+                api.ComboBoxFill(comboBox4, api.sqlcmds.CurrentResidentsUsername);
 
                 if (!radioButton3.Checked)
                 {
                     api.TextboxReader(textBox3, "MIN");
                     api.TextboxReader(textBox2, "MAX");
                 }
+                api.ComboBoxReader(comboBox1, "HouseID");
+                api.ComboBoxReader(comboBox2, "User");
+                api.ComboBoxReader(comboBox3, "AccountName");
+                api.ComboBoxReader(comboBox4, "DeleteFromSystemUsername");
+
             }
             catch (Exception ex)
             {
@@ -80,9 +74,7 @@ public partial class Housing : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
-        api.AccountUsername = comboBox2.Text;
-        api.HouseID = comboBox1.Text;
-        api.AccountName = textBox1.Text;
+        
         api.GrantHousing();
     }
 
@@ -94,7 +86,6 @@ public partial class Housing : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
-        api.HouseID = comboBox1.Text;
         api.DeleteHouse();
     }
 
@@ -129,6 +120,46 @@ public partial class Housing : Form
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+    }
+
+    private void button2_Click_1(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(comboBox2.Text))
+            {
+                api.DeleteWaitlistAccount();
+                comboBox2.Items.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Specify Username");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    private void button6_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(comboBox4.Text))
+            {
+                api.DeleteResidentAccount();
+                comboBox4.Items.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Specify Username");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
         }
     }
 }

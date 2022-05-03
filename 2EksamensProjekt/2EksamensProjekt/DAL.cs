@@ -1091,7 +1091,7 @@ public class API
                 housetype = reader.GetString(0);
             }
             reader.Close();
-            if (type == housetype && AccountUsername != null && AccountUsername != String.Empty)
+            if (type == housetype && !String.IsNullOrEmpty(AccountUsername))
             {
                 //Set Isolation Level
                 string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
@@ -1122,6 +1122,7 @@ public class API
                 cmd1 = new MySqlCommand(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@housetype", housetype);
                 cmd1.Parameters.AddWithValue("@username", AccountUsername);
+                cmd1.ExecuteNonQuery();
 
                 //Remove From Waitlist
                 sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";

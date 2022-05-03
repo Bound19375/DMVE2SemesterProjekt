@@ -3,8 +3,8 @@
 public partial class AdminCreateHouse : Form
 {
     public static string HouseType { get; set; } = "NONE";
-    public static int M2 { get; set; } = 0;
-    public static int Price { get; set; } = 0;
+    public static int M2 { get; set; }
+    public static int Price { get; set; }
 
     API api = API.Getinstance();
     public AdminCreateHouse()

@@ -18,11 +18,13 @@ public partial class Login : Form
         return singleton;
     }
 
+/*
     private void formClosing(object sender, FormClosingEventArgs e)
     {
         e.Cancel = true;
         Environment.Exit(0);
     }
+*/
 
     private async void Slogan()
     {

@@ -127,16 +127,13 @@ public class API
     {
         try
         {
-            do
-            {
-                List<string> list = new List<string>() { "Bo godt – bo hos Sønderbo", "test2", "test3", "test4", "test5", "test6", "test7" };
+            List<string> list = new List<string>()
+                { "Bo godt – bo hos Sønderbo", "test2", "test3", "test4", "test5", "test6", "test7" };
 
-                Random r = new Random();
-                int slogan = r.Next(0, list.Count);
+            Random r = new Random();
+            int slogan = r.Next(0, list.Count);
 
-                return await Task.FromResult(list[slogan]);
-            }
-            while (true);
+            return await Task.FromResult(list[slogan]);
         }
         catch (Exception ex)
         {
@@ -213,7 +210,7 @@ public class API
 
             CloseConn(conn);
 
-            if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass == true)
+            if (DBUpdateCheck().Result >= DateTime.Now.AddMilliseconds(-5000) || gv.DataSource == null || bypass)
             {
                 if (gv.InvokeRequired)
                 {
@@ -307,7 +304,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
         
@@ -341,7 +338,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion ComboBoxFill
@@ -641,7 +638,6 @@ public class API
         //Set Isolation Level
         string sqlString = $"\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
         MySqlCommand cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
-        cmd1 = new MySqlCommand(sqlString, OpenConn(conn));
         cmd1.ExecuteNonQuery();
 
         //Begin Transation
@@ -926,13 +922,9 @@ public class API
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 MySqlDataReader reader = cmd1.ExecuteReader();
                 string dbusername = "NONE";
-                string dbpassword = "NONE";
-                string dbprivilege = "NONE";
                 while (reader.Read())
                 {
                     dbusername = reader.GetString(0);
-                    dbpassword = reader.GetString(1);
-                    dbprivilege = reader.GetString(2);
                 }
                 reader.Close();
                 string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
@@ -1007,7 +999,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion
@@ -1055,7 +1047,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion Booking
@@ -1304,7 +1296,7 @@ public class API
 
                     for (i = 0; i < array.Length; i++)
                     {
-                        writer.Write(array[i].ToString() + ";");
+                        writer.Write(array[i] + ";");
                     }
                     writer.WriteLine();
                 }
@@ -1464,7 +1456,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion Booking
@@ -1501,7 +1493,7 @@ public class API
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message.ToString());
+            MessageBox.Show(ex.Message);
         }
     }
     #endregion UpdatePassword

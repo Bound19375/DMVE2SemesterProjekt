@@ -1,10 +1,10 @@
 ﻿namespace _2EksamensProjekt.FORMS;
 
 public partial class UserCreateWaitlist : Form
-{        
-    API api = API.Getinstance();
+{
+    private readonly API api = API.Getinstance();
 
-    private static UserCreateWaitlist singleton = new UserCreateWaitlist(); 
+    private static readonly UserCreateWaitlist singleton = new UserCreateWaitlist(); 
     private UserCreateWaitlist()
     {
         InitializeComponent();

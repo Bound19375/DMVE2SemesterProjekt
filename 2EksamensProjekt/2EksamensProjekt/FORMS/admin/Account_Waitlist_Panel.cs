@@ -2,8 +2,8 @@
 
 public partial class Account_Waitlist_Panel : Form
 {
-    private static Account_Waitlist_Panel singleton = new Account_Waitlist_Panel();
-    API api = API.Getinstance();
+    private static readonly Account_Waitlist_Panel singleton = new Account_Waitlist_Panel();
+    private readonly API api = API.Getinstance();
     private Account_Waitlist_Panel()
     {
         InitializeComponent();

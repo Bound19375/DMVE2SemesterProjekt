@@ -2,8 +2,8 @@
 
 public partial class Resources : Form
 {
-    API api = API.Getinstance();
-    private static Resources singleton = new Resources();
+    private readonly API api = API.Getinstance();
+    private static readonly Resources singleton = new Resources();
 
     public Resources()
     {

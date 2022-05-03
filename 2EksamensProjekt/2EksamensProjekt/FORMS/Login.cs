@@ -2,9 +2,9 @@ namespace _2EksamensProjekt.FORMS;
 
 public partial class Login : Form
 {
-    API api = API.Getinstance(); 
+    private readonly API api = API.Getinstance(); 
 
-    private static Login singleton = new Login();
+    private static readonly Login singleton = new Login();
 
     private Login()
     {

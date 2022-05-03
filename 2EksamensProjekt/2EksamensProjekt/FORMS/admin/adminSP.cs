@@ -2,9 +2,9 @@
 
 public partial class adminSP : Form
 {
-    API api = API.Getinstance();
+    private readonly API api = API.Getinstance();
 
-    private static adminSP singleton = new adminSP();
+    private static readonly adminSP singleton = new adminSP();
 
     private adminSP()
     {

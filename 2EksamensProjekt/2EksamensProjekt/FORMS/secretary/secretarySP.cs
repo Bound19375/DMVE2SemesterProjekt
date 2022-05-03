@@ -2,8 +2,8 @@
 
 public partial class secretarySP : Form
 {
-    static secretarySP singleton = new secretarySP();
-    API api = API.Getinstance();
+    private static readonly secretarySP singleton = new secretarySP();
+    private readonly API api = API.Getinstance();
     private secretarySP()
     {
         InitializeComponent();

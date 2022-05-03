@@ -6,18 +6,18 @@ public class API
 
     private int MIN { get; set; }
     private int MAX { get; set; }
-    public string? AccountUsername { get; set; }
+    public string? AccountUsername { get; private set; }
     private string? NewAccountUsername { get; set; }
     private string? CreateAccountUsername { get; set; }
-    public string? HouseID { get; set; }
-    public string? AccountName { get; set; }
+    private string? HouseID { get; set; }
+    private string? AccountName { get; set; }
     public string? SpecialCollectionSql { get; set; }
     //public string? User { get; set; }
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
-    public DateTime Duration { get; set; }
+    public DateTime Start { get; private set; }
+    public DateTime End { get; private set; }
+    private DateTime Duration { get; set; }
     public string? UnitType { get; set; }
-    public int UnitID { get; set; }
+    public int UnitID { get; private set; }
     public string? StatisticSQL { get; set; }
     private int CancelBookingID { get; set; }
     private string? AvailableType { get; set; }
@@ -29,7 +29,8 @@ public class API
     #endregion Fields
 
     #region Singleton
-    static API singleton = new API();
+
+    private static readonly API singleton = new API();
     private API() { } //Private Due to Singleton ^^
 
     //Singleton
@@ -37,7 +38,7 @@ public class API
     {
         return singleton;
     }
-    public SQLCMDS sqlcmds = SQLCMDS.GetInstance();
+    public readonly SQLCMDS sqlcmds = SQLCMDS.GetInstance();
     #endregion Singleton
 
     #region SQLCMDS
@@ -1283,7 +1284,7 @@ public class API
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
             {
                 StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
-                int i = 0;
+                int i;
                 for (i = 0; i < tbl.Columns.Count; i++)
                 {
                     writer.Write(tbl.Columns[i].ColumnName + "\t\t");

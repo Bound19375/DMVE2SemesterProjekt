@@ -1275,7 +1275,8 @@ public class API
 
             //Write To txt file
             cmd1 = new MySqlCommand(cmd_TxtPrint, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
+            cmd1.Parameters.AddWithValue("@min", MIN);
+            cmd1.Parameters.AddWithValue("@max", MAX);
             DataTable tbl = new DataTable();
             tbl.Load(cmd1.ExecuteReader());
 

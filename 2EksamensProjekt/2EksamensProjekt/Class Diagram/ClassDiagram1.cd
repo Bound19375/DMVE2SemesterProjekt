@@ -2,6 +2,9 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel">
     <Position X="19.75" Y="4.75" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\Account_Waitlist_Panel.cs</FileName>
@@ -9,6 +12,9 @@
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.adminSP">
     <Position X="9.5" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBUA4AAAAAHAAAQAAAAA=</HashCode>
       <FileName>FORMS\admin\adminSP.cs</FileName>
@@ -16,34 +22,49 @@
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.Housing">
     <Position X="7.25" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>ACAAABAAACAAABAQAACAAABCBfgoAAAAEHAMAAAAAAI=</HashCode>
+      <HashCode>ACAAABAAACAAABAQAACAAABCBfg5ABAAAHAOAAAAAAI=</HashCode>
       <FileName>FORMS\admin\Housing.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.SpecialCollection">
     <Position X="5" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAACAAAACAAgAAAAAACAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\SpecialCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.AdminCreateHouse">
+  <Class Name="_2EksamensProjekt.FORMS.admin.AdminCreateHouse">
     <Position X="17" Y="4.75" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>ACAAAAAAASAAABAQAACBACACAAAMAAAAEGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\AdminCreateHouse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.Login">
+  <Class Name="_2EksamensProjekt.FORMS.Login">
     <Position X="11.75" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>ASAAAAAAACAAABAAAACAAgACBQAYAAAAEGAAAAAAAAA=</HashCode>
+      <HashCode>ACAAAAAAACAAABAAAACAAgACBQAYAAAAEGAAAAAAAAA=</HashCode>
       <FileName>FORMS\Login.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.resident.residentSP">
     <Position X="22.5" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>8QAAABAAACAAABAQAACAAAACBcgqAAAAAHABAAAAAAI=</HashCode>
       <FileName>FORMS\resident\residentSP.cs</FileName>
@@ -51,35 +72,45 @@
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.secretary.secretarySP">
     <Position X="0.5" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\secretary\secretarySP.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DAL.API">
+  <Class Name="_2EksamensProjekt.DAL.API">
     <Position X="14" Y="4.75" Width="3" />
     <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="DAL.API.SQLCMDS">
+      <Class Name="_2EksamensProjekt.DAL.API.SQLCMDS">
+        <Compartments>
+          <Compartment Name="Methods" Collapsed="true" />
+        </Compartments>
         <TypeIdentifier>
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="DAL.API.Houses">
+      <Class Name="_2EksamensProjekt.DAL.API.Houses">
         <TypeIdentifier>
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAIEAJKAAHACsSgBCJGEAAIAAQBmBBQSIESUAQIAoRA=</HashCode>
+      <HashCode>AAIEQJKAAHAKsSgBCJGEAAIAAQBmBBQSIESUAQIAsRA=</HashCode>
       <FileName>DAL.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2EksamensProjekt.UserCreateWaitlist">
+  <Class Name="_2EksamensProjekt.FORMS.UserCreateWaitlist">
     <Position X="2.75" Y="4.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAQABAQAACAAAACBQAIAAAAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\UserCreateWaitlist.cs</FileName>

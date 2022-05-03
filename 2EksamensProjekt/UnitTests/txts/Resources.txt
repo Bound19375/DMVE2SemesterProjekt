@@ -1,0 +1,2 @@
+﻿id		type		rental_price		m2		
+

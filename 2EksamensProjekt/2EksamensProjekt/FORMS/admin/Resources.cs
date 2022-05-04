@@ -201,7 +201,7 @@ public partial class Resources : Form
     {
         try
         {
-            _api.AdminStatisticsPrint(_api.StatisticSQL);
+            api.AdminStatisticsPrint(api.StatisticSQL!);
         }
         catch (Exception)
         {

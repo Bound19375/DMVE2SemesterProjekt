@@ -4,6 +4,8 @@ public partial class secretarySP : Form
 {
     private static readonly secretarySP Singleton = new();
     private readonly API _api = API.GetInstance();
+    private readonly API.SQLCMDS _sqlCMDS = API.SQLCMDS.GetInstance();
+
     private secretarySP()
     {
         InitializeComponent();
@@ -29,8 +31,8 @@ public partial class secretarySP : Form
     {
         do
         {
-            _api.Gridview(dataGridView2, _api.sqlcmds.Waitlist, false);
-            _api.Gridview(dataGridView1, _api.sqlcmds.CurrentResidents, false);
+            _api.Gridview(dataGridView2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
+            _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
                 
         }
         while(true);

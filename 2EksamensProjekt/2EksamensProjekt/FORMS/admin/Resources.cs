@@ -3,6 +3,7 @@
 public partial class Resources : Form
 {
     private readonly API _api = API.GetInstance();
+    private readonly API.SQLCMDS _sqlCMDS = API.SQLCMDS.GetInstance();
     private static readonly Resources Singleton = new();
 
     private Resources()
@@ -32,6 +33,7 @@ public partial class Resources : Form
     {
         e.Cancel = true;
         Hide();
+        
     }
 
     private void Worker()
@@ -56,23 +58,23 @@ public partial class Resources : Form
                 _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
 
                 //Usernames
-                _api.ComboBoxFill(comboBox3, _api.sqlcmds.Usernames);
+                _api.ComboBoxFill(comboBox3, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Usernames));
                 //StartDate
-                _api.ComboBoxFill(comboBox1, _api.sqlcmds.StartDate);
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
                 //EndDate
-                _api.ComboBoxFill(comboBox2, _api.sqlcmds.EndDate);
+                _api.ComboBoxFill(comboBox2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.EndDate));
                 //Booking Cancel IDS
-                _api.ComboBoxFill(comboBox6, _api.sqlcmds.BookingCancelIDs);
+                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
                 if (radioButton3.Checked) //WashingMachines
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.WMSORTALL);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.WMSORTALL));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 4);
                 }
@@ -80,11 +82,11 @@ public partial class Resources : Form
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.PHSortAll);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.PHSortAll));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 24);
                 }
@@ -92,39 +94,36 @@ public partial class Resources : Form
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.PSSortAll);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.PSSortAll));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
 
                 //Booked
-                _api.Gridview(dataGridView4, _api.sqlcmds.AllResourcesBooked, true);
+                _api.Gridview(dataGridView4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
                 //Available
-                _api.Gridview(dataGridView1, _api.sqlcmds.AvailableResourcesByType, true);
+                _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
 
                 if (radioButton6.Checked) //All User
                 {
-                    _api.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
-                    _api.Gridview(dataGridView5, _api.StatisticSQL, true);
+                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
+
                 }
                 else if (radioButton7.Checked) //All Per Unit (Count)
                 {
-                    _api.StatisticSQL = "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
-                    _api.Gridview(dataGridView5, _api.StatisticSQL, true);
+                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
                 }
                 else if (radioButton1.Checked) //Per User
                 {
-                    _api.StatisticSQL = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
-                    _api.Gridview(dataGridView5, _api.StatisticSQL, true);
+                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
                 }
                 else if (radioButton2.Checked) //Per Unit
                 {
-                    _api.StatisticSQL = "SELECT * FROM resource r WHERE id = @unitid;";
-                    _api.Gridview(dataGridView5, _api.StatisticSQL, true);
+                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
                 }
                     
                 //Invokers
@@ -203,19 +202,19 @@ public partial class Resources : Form
         {
             if (radioButton6.Checked) //All User
             {
-                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.AllUsers);
+                _api.AdminStatisticsPrint(API.ResourceSort.AllUsers);
             }
             else if (radioButton7.Checked) //All Per Unit (Count)
             {
-                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.AllPerUnit);
+                _api.AdminStatisticsPrint(API.ResourceSort.AllPerUnit);
             }
             else if (radioButton1.Checked) //Per User
             {
-                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUser);
+                _api.AdminStatisticsPrint(API.ResourceSort.PerUser);
             }
             else if (radioButton2.Checked) //Per Unit
             {
-                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUnit);
+                _api.AdminStatisticsPrint(API.ResourceSort.PerUnit);
             }
         }
         catch (Exception)
@@ -223,18 +222,18 @@ public partial class Resources : Form
             if (radioButton1.Checked)
             {
                 MessageBox.Show($@"User: {_api.AccountUsername}
-Start Date: {_api.Start}
-End Date: {_api.End}
-Unit Type: {_api.UnitType}
-ARE REQUIRED TO SORT BY USER");
+                                Start Date: {_api.Start}
+                                End Date: {_api.End}
+                                Unit Type: {_api.UnitType}
+                                ARE REQUIRED TO SORT BY USER");
             }
             else if (radioButton2.Checked)
             {
                 MessageBox.Show($@"Start Date: {_api.Start}
-End Date: {_api.End}
-Unit Type: {_api.UnitType}
-Unit ID: {_api.UnitID}
-ARE REQUIRED TO SORT BY UNIT");
+                                End Date: {_api.End}
+                                Unit Type: {_api.UnitType}
+                                Unit ID: {_api.UnitID}
+                                ARE REQUIRED TO SORT BY UNIT");
             }
         }
     }

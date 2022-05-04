@@ -2,7 +2,6 @@
 public class API
 {
     #region Properties
-
     private int Min { get; set; }
     private int Max { get; set; }
     public string? AccountUsername { get; private set; }
@@ -23,8 +22,6 @@ public class API
     private string? Password { get; set; }
     private string? WaitlistType { get; set; }
     private string? DeleteFromSystemUsername { get; set; }
-
-
     #endregion Fields
 
     #region Singleton
@@ -37,11 +34,12 @@ public class API
     {
         return Singleton;
     }
-    public readonly SQLCMDS sqlcmds = SQLCMDS.GetInstance();
     #endregion Singleton
 
     #region SQLCMDS
-    public class SQLCMDS
+    private readonly SQLCMDS _sqlCMDS = SQLCMDS.GetInstance();
+
+    internal class SQLCMDS
     {
         private static readonly SQLCMDS Singleton = new();
         private SQLCMDS() { }
@@ -49,42 +47,143 @@ public class API
         {
             return Singleton;
         }
-        //Waitlist
-        public string Waitlist = "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
-        //Residents
-        public string CurrentResidents = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username  = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
-        //Residents Username
-        public string CurrentResidentsUsername = "SELECT residents_username FROM housing_residents;";
-        //ReservationIDs
-        //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
-        //WashingMachines
-        public string WMSORTALL = "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
-        //PartyHall
-        public string PHSortAll = "SELECT r.id FROM resource r WHERE r.type = 'partyhall';";
-        //ParkingSpace
-        public string PSSortAll = "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
-        //Booked By User
+
+
+        public enum SELECTSQLQUERY
+        {
+            //Waitlist
+            Waitlist = 1,
+            //Residents
+            CurrentResidents,
+            //Residents Username
+            CurrentResidentsUsername,
+            //ReservationIDs
+            //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            //WashingMachines
+            WMSORTALL,
+            //PartyHall
+            PHSortAll,
+            //ParkingSpace
+            PSSortAll,
+            //Booked By User
             //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
-        //Booked Overall
-        public string AllResourcesBooked = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
-        //Available
-        public string AvailableResourceIDS = "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
-        public string AvailableResourcesByType = "SELECT r.id, r.`type` FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
-        //Usernames
-        public string Usernames = "SELECT r.account_username FROM residents r ORDER BY r.account_username;";
-        //StartDate & EndDate
-        public string StartDate = "SELECT DISTINCT rrr.start_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.start_timestamp;";
-        public string EndDate = "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;";
-        //Booking Cancel IDS
-        public string BookingCancelIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
-        //Resident Info
-        public string CurrentResidentInfo = "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege  FROM housing_residents hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.residents_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
+            //Booked Overall
+            AllResourcesBooked,
+            //Available
+            AvailableResourceIDS,
+            AvailableResourcesByType,
+            //Usernames
+            Usernames,
+            //StartDate & EndDate
+            StartDate,
+            EndDate,
+            //Booking Cancel IDS
+            BookingCancelIDs,
+            //Resident Info
+            CurrentResidentInfo,
+            //ResourceSortAllUsers
+            ResourceSortAllUsers,
+            //ResourceSortAllPerUnit
+            ResourceSortAllPerUnit,
+            //ResourceSortPerUser
+            ResourceSortPerUser,
+            //ResourceSortPerUnit
+            ResourceSortPerUnit,
+            //AvailableHouseSortAll
+            AvailableHouseSortAll,
+            //AvailableHouseSortByM2
+            AvailableHouseSortByM2,
+            //AvailableHouseSortByPrice
+            AvailableHouseSortByPrice,
+
+            //Fillers
+            AvailableHouseIDs,
+            UsernamesOnWaitinglist
+        }
+
+        public string SQLCMD(SELECTSQLQUERY query)
+        {
+            switch(query)
+            {
+                case SELECTSQLQUERY.Waitlist: 
+                    return "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
+
+                case SELECTSQLQUERY.CurrentResidents: 
+                    return "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username  = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+                            //SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;
+                case SELECTSQLQUERY.CurrentResidentsUsername:
+                    return "SELECT residents_username FROM housing_residents;";
+
+                case SELECTSQLQUERY.WMSORTALL:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
+
+                case SELECTSQLQUERY.PHSortAll:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'partyhall';";
+
+                case SELECTSQLQUERY.PSSortAll:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
+
+                case SELECTSQLQUERY.AllResourcesBooked:
+                    return "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.AvailableResourceIDS:
+                    return "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+
+                case SELECTSQLQUERY.AvailableResourcesByType:
+                    return "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+
+                case SELECTSQLQUERY.Usernames:
+                    return "SELECT r.account_username FROM residents r ORDER BY r.account_username;";
+
+                case SELECTSQLQUERY.StartDate:
+                    return "SELECT DISTINCT rrr.start_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.start_timestamp;";
+
+                case SELECTSQLQUERY.EndDate:
+                    return "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.BookingCancelIDs:
+                    return "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.CurrentResidentInfo:
+                    return "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege  FROM housing_residents hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.residents_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
+
+                case SELECTSQLQUERY.ResourceSortAllUsers:
+                    return "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
+
+                case SELECTSQLQUERY.ResourceSortAllPerUnit:
+                    return "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+
+                case SELECTSQLQUERY.ResourceSortPerUser:
+                    return "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.ResourceSortPerUnit:
+                    return "SELECT * FROM resource r WHERE id = @unitid;";
+
+                case SELECTSQLQUERY.AvailableHouseSortAll:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseSortByM2:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseSortByPrice:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseIDs:
+                    return "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.UsernamesOnWaitinglist:
+                    return "SELECT w.account_username FROM waitlist w";
+
+                default:
+                    return "NONE";
+            }
+        }
     }
     #endregion SQLCMDS
 
     #region Open/Close-Conn
-    //private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-    private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+//private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
     //Open Connection Method 
     public MySqlConnection OpenConn(MySqlConnection conn)
     {
@@ -372,7 +471,7 @@ public class API
         }
     }
     #endregion ButtonComboBoxInvoker
-    #region SetFieldEnum
+    #region Enums
     public enum SetReaderField
     {
         Min = 1,
@@ -395,6 +494,13 @@ public class API
         Password,
         WaitlistType,
         DeleteFromSystemUsername
+    }
+    public enum ResourceSort
+    {
+        AllUsers = 1,
+        AllPerUnit,
+        PerUser,
+        PerUnit
     }
     #endregion
     #region GroupBoxReader
@@ -635,7 +741,7 @@ public class API
     }
     #endregion TextBoxReader
     #region Special Collection Method
-    public class Houses
+    internal class Houses
     {
         public int ID { get; set; }
         public string? Housetype { get; set; }
@@ -643,7 +749,14 @@ public class API
         public int Price { get; set; }
     }
 
-    private List<Houses> SpecialCollectionList(string? dosql)
+    public enum SPECIALCOLLECTION
+    {
+        SortByAll = 1,
+        SortByM2,
+        SortByPrice
+    }
+
+    public void SpecialCollectionList(DataGridView gv, SPECIALCOLLECTION specialcollection = 0)
     {
         List<Houses> collection = new();
         collection.Clear();
@@ -659,6 +772,23 @@ public class API
         sqlString = "START TRANSACTION;";
         cmd1 = new(sqlString, OpenConn(conn));
         cmd1.ExecuteNonQuery();
+
+        string dosql = "NONE";
+        switch (specialcollection)
+        {
+            case SPECIALCOLLECTION.SortByAll:
+                dosql = _sqlCMDS.SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
+                break;
+
+            case SPECIALCOLLECTION.SortByM2:
+                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
+
+                break;
+
+            case SPECIALCOLLECTION.SortByPrice:
+                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
+                break;
+        }
 
         //Append To List
         cmd1 = new(dosql, OpenConn(conn));
@@ -684,11 +814,8 @@ public class API
         cmd1 = new(commit, OpenConn(conn));
         cmd1.ExecuteNonQuery();
         CloseConn(conn);
-        return collection;
-    }
-    public void GridviewCollection(DataGridView gv, string? sql)
-    {
-        var bindingList = new BindingList<Houses>(SpecialCollectionList(sql)); //Raise an event if the underlying list changes 
+
+        var bindingList = new BindingList<Houses>(collection); //Raise an event if the underlying list changes 
         var source = new BindingSource(bindingList, null);
         gv.DataSource = source;
         gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -839,7 +966,7 @@ public class API
         }
     }
     #endregion GetPassword
-
+    //
     #region SecretaryMethods
     #region Secretary Print Resident (txt)
     public void SecretaryPrint()
@@ -902,6 +1029,7 @@ public class API
     }
     #endregion
     #endregion SecretaryMethods
+    //
     #region Create User And Waitlist
     public void CreateUser_Waitlist()
     {
@@ -1063,6 +1191,7 @@ Only Accepts A-Z & 0-9");
         }
     }
     #endregion Booking
+    //
     #region AdminMethods
     #region Grant Housing
     public void GrantHousing()
@@ -1262,14 +1391,7 @@ Only Accepts A-Z & 0-9");
     }
     #endregion Delete Housing
     #region Admin Statistics Print (txt)
-    public enum ADMINPRINTSQL
-    {
-        AllUsers = 1,
-        AllPerUnit,
-        PerUser,
-        PerUnit
-    }
-    public void AdminStatisticsPrint(ADMINPRINTSQL sql = 0)
+    public void AdminStatisticsPrint(ResourceSort sql = 0)
     {
         try
         {
@@ -1277,20 +1399,22 @@ Only Accepts A-Z & 0-9");
 
             switch (sql)
             {
-                case ADMINPRINTSQL.AllUsers:
-                    cmdTxtPrint = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
+                case ResourceSort.AllUsers:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers);
                     break;
 
-                case ADMINPRINTSQL.AllPerUnit:
-                    cmdTxtPrint = "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+                case ResourceSort.AllPerUnit:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
+
                     break;
 
-                case ADMINPRINTSQL.PerUser:
-                    cmdTxtPrint = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+                case ResourceSort.PerUser:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser);
+
                     break;
 
-                case ADMINPRINTSQL.PerUnit:
-                    cmdTxtPrint = "SELECT * FROM resource r WHERE id = @unitid;";
+                case ResourceSort.PerUnit:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit);
                     break;
             }
 
@@ -1344,7 +1468,7 @@ Only Accepts A-Z & 0-9");
                 {
                     switch (sql)
                     {
-                        case ADMINPRINTSQL.AllUsers:
+                        case ResourceSort.AllUsers:
                             writer.WriteLine(
                                "{\n" +
                                $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
@@ -1357,7 +1481,7 @@ Only Accepts A-Z & 0-9");
                                "\n");
                             break;
 
-                        case ADMINPRINTSQL.AllPerUnit:
+                        case ResourceSort.AllPerUnit:
                             writer.WriteLine(
                                "{\n" +
                                $" ID: {Convert.ToString(rdr[0])}\n" +
@@ -1367,7 +1491,7 @@ Only Accepts A-Z & 0-9");
                                "\n");
                             break;
 
-                        case ADMINPRINTSQL.PerUser:
+                        case ResourceSort.PerUser:
                             writer.WriteLine(
                                "{\n" +
                                $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
@@ -1380,7 +1504,7 @@ Only Accepts A-Z & 0-9");
                                "\n");
                             break;
 
-                        case ADMINPRINTSQL.PerUnit:
+                        case ResourceSort.PerUnit:
                             writer.WriteLine(
                                "{\n" +
                                $" ID: {Convert.ToString(rdr[0])}\n" +
@@ -1511,7 +1635,7 @@ Only Accepts A-Z & 0-9");
     }
     #endregion
     #endregion AdminMethods
-
+    //
     #region Resident
     #region UpdateUsername
     public void UpdateUsername()

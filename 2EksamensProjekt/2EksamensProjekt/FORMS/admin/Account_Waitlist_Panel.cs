@@ -3,6 +3,8 @@
 public partial class Account_Waitlist_Panel : Form
 {
     private static readonly Account_Waitlist_Panel Singleton = new();
+    private readonly API.SQLCMDS _sqlCMDS = API.SQLCMDS.GetInstance();
+
     private readonly API _api = API.GetInstance();
     private Account_Waitlist_Panel()
     {
@@ -26,8 +28,8 @@ public partial class Account_Waitlist_Panel : Form
     {
         do
         {
-            _api.Gridview(dataGridView2, _api.sqlcmds.Waitlist, false);
-            _api.Gridview(dataGridView1, _api.sqlcmds.CurrentResidents, false);
+            _api.Gridview(dataGridView2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
+            _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
         }
         while (true);
     }

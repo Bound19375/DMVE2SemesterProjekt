@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj": {}
+    "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
+    "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+        "projectUniqueName": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
         "projectName": "2EksamensProjekt",
-        "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
+        "projectPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj",
         "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
+        "outputPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
           "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -67,17 +71,21 @@
         }
       }
     },
-    "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj": {
+    "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj",
+        "projectUniqueName": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj",
         "projectName": "ConsoleApp1",
-        "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj",
+        "projectPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\ConsoleApp1.csproj",
         "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\obj\\",
+        "outputPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\ConsoleApp1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
           "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -91,8 +99,8 @@
           "net6.0-windows7.0": {
             "targetAlias": "net6.0-windows",
             "projectReferences": {
-              "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
-                "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
+              "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
+                "projectPath": "C:\\Users\\bound\\OneDrive\\Skrivebord\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
               }
             }
           }

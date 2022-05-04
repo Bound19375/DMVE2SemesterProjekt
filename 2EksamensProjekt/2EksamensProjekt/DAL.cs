@@ -1269,7 +1269,7 @@ Only Accepts A-Z & 0-9");
         PerUser,
         PerUnit
     }
-    public void AdminStatisticsPrint(ADMINPRINTSQL sql)
+    public void AdminStatisticsPrint(ADMINPRINTSQL sql = 0)
     {
         try
         {
@@ -1346,55 +1346,49 @@ Only Accepts A-Z & 0-9");
                     {
                         case ADMINPRINTSQL.AllUsers:
                             writer.WriteLine(
-                           "{\n" +
-                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                           $"\tType: {Convert.ToString(rdr[1])}\n" +
-                           $"\tName: {Convert.ToString(rdr[2])}\n" +
-                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                           "}\n" +
-                           "\n");
+                               "{\n" +
+                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
+                               $" Navn: {Convert.ToString(rdr[1])}\n" +
+                               $" Type: {Convert.ToString(rdr[2])}\n" +
+                               $" ID: {Convert.ToString(rdr[3])}\n" +
+                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
+                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
+                               "}\n" +
+                               "\n");
                             break;
 
                         case ADMINPRINTSQL.AllPerUnit:
-                        writer.WriteLine(
-                           "{\n" +
-                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                           $"\tType: {Convert.ToString(rdr[1])}\n" +
-                           $"\tName: {Convert.ToString(rdr[2])}\n" +
-                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                           "}\n" +
-                           "\n");
+                            writer.WriteLine(
+                               "{\n" +
+                               $" ID: {Convert.ToString(rdr[0])}\n" +
+                               $" Type: {Convert.ToString(rdr[1])}\n" +
+                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
+                               "}\n" +
+                               "\n");
                             break;
 
                         case ADMINPRINTSQL.PerUser:
-                        writer.WriteLine(
-                           "{\n" +
-                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                           $"\tType: {Convert.ToString(rdr[1])}\n" +
-                           $"\tName: {Convert.ToString(rdr[2])}\n" +
-                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                           "}\n" +
-                           "\n");
+                            writer.WriteLine(
+                               "{\n" +
+                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
+                               $" Navn: {Convert.ToString(rdr[1])}\n" +
+                               $" Type: {Convert.ToString(rdr[2])}\n" +
+                               $" ID: {Convert.ToString(rdr[3])}\n" +
+                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
+                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
+                               "}\n" +
+                               "\n");
                             break;
 
                         case ADMINPRINTSQL.PerUnit:
-                        writer.WriteLine(
-                           "{\n" +
-                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                           $"\tType: {Convert.ToString(rdr[1])}\n" +
-                           $"\tName: {Convert.ToString(rdr[2])}\n" +
-                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                           "}\n" +
-                           "\n");
-                        break;
+                            writer.WriteLine(
+                               "{\n" +
+                               $" ID: {Convert.ToString(rdr[0])}\n" +
+                               $" Type: {Convert.ToString(rdr[1])}\n" +
+                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
+                               "}\n" +
+                               "\n");
+                            break;
                     }
                 }
                 writer.Close();

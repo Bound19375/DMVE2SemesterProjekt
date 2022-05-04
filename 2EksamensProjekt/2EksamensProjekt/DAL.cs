@@ -1,4 +1,4 @@
-﻿namespace _2EksamensProjekt.DAL;
+namespace _2EksamensProjekt.DAL;
 public class API
 {
     #region Properties
@@ -47,7 +47,6 @@ public class API
         {
             return Singleton;
         }
-
 
         public enum SELECTSQLQUERY
         {
@@ -158,6 +157,83 @@ public class API
                     return "NONE";
             }
         }
+
+  /*
+        //Waitlist
+        public string Waitlist = 
+            "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
+            "FROM account a " +
+            "WHERE a.privilege = 'waitlist' " +
+            "ORDER BY a.username;";
+        //Residents
+        public string CurrentResidents = 
+            "SELECT a.username AS 'Brugernavn', h.type AS 'Type', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', ha.start_contract AS 'Kontraktdato', h.m2 AS 'M2', h.rental_price AS 'Husleje', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse' " +
+            "FROM housing_account ha, housing h, account a, locality l " +
+            "WHERE ha.account_username = a.username " +
+            "AND ha.housing_id = h.id " +
+            "AND h.locality_postal_code = l.postal_code " +
+            "ORDER BY a.username;";
+        //Residents Username
+        public string CurrentResidentsUsername = 
+            "SELECT account_username AS 'Brugernavn' " +
+            "FROM housing_account;";
+        //WashingMachines
+        public string WMSORTALL = 
+            "SELECT r.id AS 'Vaskemaskine' " +
+            "FROM resource r " +
+            "WHERE r.type = 'washingmachine';";
+        //PartyHall
+        public string PHSortAll = 
+            "SELECT r.id AS 'Festsal' " +
+            "FROM resource r " +
+            "WHERE r.type = 'partyhall';";
+        //ParkingSpace
+        public string PSSortAll = 
+            "SELECT r.id AS 'Parkeringsplads' " +
+            "FROM resource r " +
+            "WHERE r.type = 'parkingspace';";
+        //Booked Overall
+        public string AllResourcesBooked = 
+            "SELECT arr.id AS 'Booking id', a.username AS 'Brugernavn', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r.`type` AS 'Type', r.id AS 'Type-id', arr.start_timestamp AS 'Starttidspunkt', arr.end_timestamp AS 'Sluttidspunkt' " +
+            "FROM account_resource_reservations arr, account a, resource r " +
+            "WHERE arr.account_username = a.username " +
+            "AND arr.resource_id = r.id " +
+            "AND NOW() < arr.end_timestamp " +
+            "ORDER BY arr.end_timestamp;";
+        //Available
+        public string AvailableResourceIDS = "SELECT r.id FROM account_resource_reservations arr, resource r WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr.resource_id))) GROUP BY r.id ORDER BY r.id;";
+        public string AvailableResourcesByType = "SELECT r.id, r.`type` FROM account_resource_reservations arr, resource r WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr.resource_id))) GROUP BY r.id ORDER BY r.id;";
+        //Usernames
+        public string Usernames = 
+            "SELECT a.username " +
+            "FROM account a " +
+            "ORDER BY a.username;";
+        //StartDate & EndDate
+        public string StartDate = 
+            "SELECT DISTINCT arr.start_timestamp " +
+            "FROM account_resource_reservations arr " +
+            "ORDER BY arr.start_timestamp;";
+        public string EndDate = 
+            "SELECT DISTINCT arr.end_timestamp " +
+            "FROM account_resource_reservations arr " +
+            "ORDER BY arr.end_timestamp;";
+        //Booking Cancel IDS
+        public string BookingCancelIDs = 
+            "SELECT arr.id " +
+            "FROM account_resource_reservations arr, account a, resource r " +
+            "WHERE arr.account_username = a.username " +
+            "AND arr.resource_id = r.id " +
+            "AND NOW() < arr.end_timestamp " +
+            "ORDER BY arr.end_timestamp;";
+        //Resident Info
+        public string CurrentResidentInfo = 
+            "SELECT ha.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege " +
+            "FROM housing_account ha, housing h, account a " +
+            "WHERE h.id = ha.housing_id " +
+            "AND (ha.account_username = @username AND a.username = @username) " +
+            "GROUP BY ha.housing_id;";
+      */
+
     }
     #endregion SQLCMDS
 
@@ -966,7 +1042,12 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             cmd1.ExecuteNonQuery();
 
             //Write To txt file
-            string cmd_TxtPrint = "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+            string cmd_TxtPrint = 
+                "SELECT a.username, h.type, CONCAT(a.first_names, ' ', a.last_name), ha.start_contract, h.m2, h.rental_price " +
+                "FROM housing_account ha, housing h, account a " +
+                "WHERE ha.account_username = a.username " +
+                "AND ha.housing_id = h.id " +
+                "ORDER BY a.username;";
             cmd1 = new(cmd_TxtPrint, OpenConn(conn));
 
             MySqlDataReader rdr = cmd1.ExecuteReader();
@@ -1027,18 +1108,18 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             cmd1.ExecuteNonQuery();
 
             //Create User
-            string sqlcommand = "INSERT INTO account (username, password, privilege) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist');";
-            cmd1 = new(sqlcommand, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
-            cmd1.Parameters.AddWithValue("@password", Password);
-            
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
             if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
             {
+                string sqlcommand = "INSERT INTO account (username, password, privilege, type) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type);";
+                cmd1 = new(sqlcommand, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
+                cmd1.Parameters.AddWithValue("@password", Password);
+                cmd1.Parameters.AddWithValue("@type", WaitlistType);
                 cmd1.ExecuteNonQuery();
 
                 //Append Created User To Waitlist
-                string sql = "SELECT * FROM account WHERE username = @username";
+                /*string sql = "SELECT * FROM account WHERE username = @username";
                 cmd1 = new(sql, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 MySqlDataReader reader = cmd1.ExecuteReader();
@@ -1052,7 +1133,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                 cmd1 = new(sqlwaitlist, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@type", WaitlistType);
                 cmd1.Parameters.AddWithValue("@dbusername", dbusername);
-                cmd1.ExecuteNonQuery();
+                cmd1.ExecuteNonQuery();*/
 
                 //COMMIT
                 string commit = "COMMIT;";
@@ -1097,7 +1178,7 @@ Only Accepts A-Z & 0-9");
             cmd1.ExecuteNonQuery();
 
             //Delete Booking
-            string insert = "DELETE FROM resident_resource_reservations WHERE id = @id;";
+            string insert = "DELETE FROM account_resource_reservations WHERE id = @id;";
             cmd1 = new(insert, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@id", CancelBookingID);
             cmd1.ExecuteNonQuery();
@@ -1141,7 +1222,7 @@ Only Accepts A-Z & 0-9");
             cmd1.ExecuteNonQuery();
 
             //Insert Booking
-            string insert = "INSERT INTO resident_resource_reservations(residents_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
+            string insert = "INSERT INTO account_resource_reservations(account_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
             cmd1 = new(insert, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@user", AccountUsername);
             cmd1.Parameters.AddWithValue("@start", Convert.ToDateTime(Start));
@@ -1184,7 +1265,7 @@ Only Accepts A-Z & 0-9");
             string housetype = String.Empty;
 
             //Check User Type
-            string sqlcommand = "SELECT w.`type` FROM waitlist w WHERE w.account_username = @username;";
+            string sqlcommand = "SELECT a.`type` FROM account a WHERE a.username = @username;";
             MySqlCommand cmd1 = new(sqlcommand, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@username", AccountUsername);
             MySqlDataReader reader = cmd1.ExecuteReader();
@@ -1217,31 +1298,31 @@ Only Accepts A-Z & 0-9");
                 cmd1.ExecuteNonQuery();
 
                 //Insert Into Residents
-                sqlcommand = "INSERT INTO residents (name, account_username) VALUES (@name, @username);";
+                sqlcommand = "INSERT INTO account (first_names, username) VALUES (@name, @username);";
                 cmd1 = new(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@name", AccountName);
                 cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.ExecuteNonQuery();
 
                 //Insert Into Housing_Residents
-                sqlcommand = "INSERT INTO housing_residents (housing_id, residents_username, start_contract) VALUES (@id, @username, CURRENT_TIMESTAMP);";
+                sqlcommand = "INSERT INTO housing_account (housing_id, account_username, start_contract) VALUES (@id, @username, CURRENT_TIMESTAMP);";
                 cmd1 = new(sqlcommand, OpenConn(conn)); 
                 cmd1.Parameters.AddWithValue("@id", HouseID);
                 cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.ExecuteNonQuery();
 
                 //Update Account Status
-                sqlcommand = "UPDATE account SET privilege = @housetype WHERE username = @username";
+                sqlcommand = "UPDATE account SET privilege = 'resident' WHERE username = @username";
                 cmd1 = new(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@housetype", housetype);
+                //cmd1.Parameters.AddWithValue("@housetype", housetype);
                 cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.ExecuteNonQuery();
 
                 //Remove From Waitlist
-                sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";
-                cmd1 = new(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", AccountUsername);
-                cmd1.ExecuteNonQuery();
+                // sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";
+                // cmd1 = new(sqlcommand, OpenConn(conn));
+                // cmd1.Parameters.AddWithValue("@username", AccountUsername);
+                // cmd1.ExecuteNonQuery();
 
                 //COMMIT
                 string commit = "COMMIT;";
@@ -1529,7 +1610,7 @@ Only Accepts A-Z & 0-9");
             cmd1.ExecuteNonQuery();
 
             //Delete From Waitlist
-            sqlString = "DELETE FROM waitlist WHERE account_username = @accountusername;";
+            sqlString = "DELETE FROM account WHERE username = @accountusername;";
             cmd1 = new(sqlString, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@accountusername", AccountUsername);
 
@@ -1573,25 +1654,25 @@ Only Accepts A-Z & 0-9");
             cmd1.ExecuteNonQuery();
 
             //Delete From Resource Reservations
-            sqlString = "DELETE FROM resident_resource_reservations WHERE residents_username = @accountusername;";
+            sqlString = "DELETE FROM account_resource_reservations WHERE account_username = @accountusername;";
             cmd1 = new(sqlString, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
 
             cmd1.ExecuteNonQuery();
 
             //Delete From Housing Residents
-            sqlString = "DELETE FROM housing_residents WHERE residents_username = @accountusername;";
+            sqlString = "DELETE FROM housing_account WHERE account_username = @accountusername;";
             cmd1 = new(sqlString, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
 
             cmd1.ExecuteNonQuery();
 
             //Delete From Residents
-            sqlString = "DELETE FROM residents WHERE account_username = @accountusername;";
-            cmd1 = new(sqlString, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
-
-            cmd1.ExecuteNonQuery();
+            // sqlString = "DELETE FROM residents WHERE account_username = @accountusername;";
+            // cmd1 = new(sqlString, OpenConn(conn));
+            // cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
+            //
+            // cmd1.ExecuteNonQuery();
 
             //Delete Account
             sqlString = "DELETE FROM account WHERE username = @accountusername;";

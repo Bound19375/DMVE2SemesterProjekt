@@ -2,14 +2,14 @@
 
 public partial class adminSP : Form
 {
-    private readonly API api = API.Getinstance();
+    private readonly API _api = API.GetInstance();
 
-    private static readonly adminSP singleton = new adminSP();
+    private static readonly adminSP Singleton = new();
 
     private adminSP()
     {
         InitializeComponent();
-        label5.Text = $"{api.AccountUsername}";
+        label5.Text = $@"{_api.AccountUsername}";
         panel1.Controls.Clear();
         Housing myForm = Housing.GetInstance();
         myForm.TopLevel = false;
@@ -20,13 +20,13 @@ public partial class adminSP : Form
 
     public static adminSP GetInstance()
     {
-        return singleton;
+        return Singleton;
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         e.Cancel = true;
-        this.Hide();
+        Hide();
         Login obj = Login.GetInstance();
         obj.Show();
     }

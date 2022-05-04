@@ -6,7 +6,7 @@ public partial class AdminCreateHouse : Form
     public static int M2 { get; private set; }
     public static int Price { get; private set; }
 
-    private readonly API api = API.Getinstance();
+    private readonly API _api = API.GetInstance();
     public AdminCreateHouse()
     {
         InitializeComponent();
@@ -17,7 +17,7 @@ public partial class AdminCreateHouse : Form
         HouseType = comboBox1.Text;
         M2 = Convert.ToInt32(textBox1.Text);
         Price = Convert.ToInt32(textBox2.Text);
-        api.CreateNewHouse();
-        this.Close();
+        _api.CreateNewHouse();
+        Close();
     }
 }

@@ -3,6 +3,7 @@
 global using System.ComponentModel;
 global using System.Data;
 global using System.Globalization;
+global using System.Text;
 global using System.Text.RegularExpressions;
 global using _2EksamensProjekt.DAL;
 global using _2EksamensProjekt.FORMS;

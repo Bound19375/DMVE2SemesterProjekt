@@ -2,35 +2,35 @@
 
 public partial class secretarySP : Form
 {
-    private static readonly secretarySP singleton = new secretarySP();
-    private readonly API api = API.Getinstance();
+    private static readonly secretarySP Singleton = new();
+    private readonly API _api = API.GetInstance();
     private secretarySP()
     {
         InitializeComponent();
-        label5.Text = $"{api.AccountUsername}";
-        Task t2 = new Task(() => gridViewTimer());
+        label5.Text = $@"{_api.AccountUsername}";
+        Task t2 = new(GridViewTimer);
         t2.Start();
     }
 
     public static secretarySP GetInstance()
     {
-        return singleton;
+        return Singleton;
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         e.Cancel = true;
-        this.Hide();
+        Hide();
         Login obj = Login.GetInstance();
         obj.Show();
     }
 
-    private void gridViewTimer()
+    private void GridViewTimer()
     {
         do
         {
-            api.Gridview(dataGridView2, api.sqlcmds.Waitlist, false);
-            api.Gridview(dataGridView1, api.sqlcmds.CurrentResidents, false);
+            _api.Gridview(dataGridView2, _api.sqlcmds.Waitlist, false);
+            _api.Gridview(dataGridView1, _api.sqlcmds.CurrentResidents, false);
                 
         }
         while(true);
@@ -44,6 +44,6 @@ public partial class secretarySP : Form
 
     private void button2_Click(object sender, EventArgs e)
     {
-        api.SecretaryPrint();
+        _api.SecretaryPrint();
     }
 }

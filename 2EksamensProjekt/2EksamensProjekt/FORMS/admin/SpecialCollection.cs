@@ -2,10 +2,10 @@
 
 public partial class SpecialCollection : Form
 {
-    private readonly API api = API.Getinstance();
+    private readonly API _api = API.GetInstance();
     public SpecialCollection()
     {
         InitializeComponent();
-        api.GridviewCollection(dataGridView1, api.SpecialCollectionSql);
+        _api.GridviewCollection(dataGridView1, _api.SpecialCollectionSql);
     }
 }

@@ -2,28 +2,28 @@
 
 public partial class residentSP : Form
 {
-    private readonly API api = API.Getinstance();
-    private static readonly residentSP singleton = new residentSP();
+    private readonly API _api = API.GetInstance();
+    private static readonly residentSP Singleton = new();
     private residentSP()
     {
         InitializeComponent();
-        label5.Text = $"{api.AccountUsername}";
+        label5.Text = $@"{_api.AccountUsername}";
         radioButton3.Checked = true;
         comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
-        groupBox2.Text = "washingmachine";
-        Task t2 = new Task(() => Worker());
+        groupBox2.Text = @"washingmachine";
+        Task t2 = new(Worker);
         t2.Start();
     }
 
     public static residentSP GetInstance()
     {
-        return singleton;
+        return Singleton;
     }
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         Login obj = Login.GetInstance();
         obj.Show();
-        this.Hide();
+        Hide();
     }
 
     private void Worker()
@@ -33,59 +33,59 @@ public partial class residentSP : Form
             try
             {
                 //GroupBoxUnitChoice
-                api.groupboxReader(groupBox2, "AvailableType");
+                _api.GroupboxReader(groupBox2, "AvailableType");
                 //StartDate
-                api.ComboBoxReader(comboBox1, "Start");
+                _api.ComboBoxReader(comboBox1, "Start");
                 //UnitID
-                api.ComboBoxReader(comboBox4, "UnitID");
+                _api.ComboBoxReader(comboBox4, "UnitID");
                 //DurationTime
-                api.ComboBoxReader(comboBox5, "Duration");
+                _api.ComboBoxReader(comboBox5, "Duration");
                 //CancelBookingID
-                api.ComboBoxReader(comboBox6, "CancelBookingID");
+                _api.ComboBoxReader(comboBox6, "CancelBookingID");
                 //AccountNameUpdater
-                api.ComboBoxReader(comboBox2, "NewAccountUsername");
+                _api.ComboBoxReader(comboBox2, "NewAccountUsername");
                 //Password
-                api.ComboBoxReader(comboBox3, "Password");
+                _api.ComboBoxReader(comboBox3, "Password");
 
                 if (label1.InvokeRequired)
                 {
                     label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
                     {
-                        label5.Text = api.AccountUsername; //Calling Async Task SloganT Method From Api Class.
+                        label5.Text = _api.AccountUsername; //Calling Async Task SloganT Method From Api Class.
                     });
                 }
 
                 //StartDate
-                api.ComboBoxFill(comboBox1, api.sqlcmds.StartDate);
+                _api.ComboBoxFill(comboBox1, _api.sqlcmds.StartDate);
                 //Booking Cancel IDS
-                api.ComboBoxFill(comboBox6, api.sqlcmds.BookingCancelIDs);
+                _api.ComboBoxFill(comboBox6, _api.sqlcmds.BookingCancelIDs);
 
                 if (radioButton3.Checked) //WashingMachines
                 {
-                    api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
-                    api.ComboBoxFillNoSqlInt(comboBox5, 4);
+                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFillNoSqlInt(comboBox5, 4);
                 }
                 else if (radioButton4.Checked) //PartyHall
                 {
-                    api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
-                    api.ComboBoxFillNoSqlInt(comboBox5, 24);
+                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFillNoSqlInt(comboBox5, 24);
                 }
                 else if (radioButton5.Checked) // ParkingSpace
                 {
-                    api.ComboBoxFill(comboBox4, api.sqlcmds.AvailableResourceIDS);
-                    api.ComboBoxFillNoSqlInt(comboBox5, 48);
+                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
 
                 //Booked
-                api.Gridview(dataGridView4, api.sqlcmds.AllResourcesBooked, true);
+                _api.Gridview(dataGridView4, _api.sqlcmds.AllResourcesBooked, true);
                 //Available
-                api.Gridview(dataGridView1, api.sqlcmds.AvailableResourcesByType, true);
+                _api.Gridview(dataGridView1, _api.sqlcmds.AvailableResourcesByType, true);
                 //Resident Information
-                api.Gridview(dataGridView5, api.sqlcmds.CurrentResidentInfo, true);
+                _api.Gridview(dataGridView5, _api.sqlcmds.CurrentResidentInfo, true);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new(ex.Message);
             }
         }
         while (true);
@@ -95,11 +95,11 @@ public partial class residentSP : Form
     {
         try
         {
-            api.CancelReservation();
+            _api.CancelReservation();
         }
         catch
         {
-            MessageBox.Show("Select ID");
+            MessageBox.Show(@"Select ID");
         }
     }
 
@@ -107,26 +107,28 @@ public partial class residentSP : Form
     {
         if (comboBox2.Text != String.Empty && comboBox3.Text != String.Empty)
         {
-            api.UpdateUsername();
-            api.UpdatePassword();
-            MessageBox.Show("Account Updated Successfully\n\nLogging Out!");
+            _api.UpdateUsername();
+            _api.UpdatePassword();
+            MessageBox.Show(@"Account Updated Successfully
+
+Logging Out!");
             Login obj = Login.GetInstance();
             obj.Show();
-            this.Hide();
+            Hide();
         }
         else
         {
             if (comboBox2.Text == String.Empty && comboBox3.Text != String.Empty)
             {
-                MessageBox.Show("Account Field Cannot Be Empty");
+                MessageBox.Show(@"Account Field Cannot Be Empty");
             }
             if (comboBox3.Text == String.Empty && comboBox2.Text != String.Empty)
             {
-                MessageBox.Show("Password Field Cannot Be Empty");
+                MessageBox.Show(@"Password Field Cannot Be Empty");
             }
             if (comboBox3.Text == String.Empty && comboBox2.Text == String.Empty)
             {
-                MessageBox.Show("Both Fields Must Be Filled");
+                MessageBox.Show(@"Both Fields Must Be Filled");
             }
         }
     }
@@ -135,11 +137,11 @@ public partial class residentSP : Form
     {
         if (comboBox1.Text != String.Empty && Convert.ToDateTime(comboBox1.Text) >= DateTime.Now && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
         {
-            api.Booking();
+            _api.Booking();
         }
         else
         {
-            MessageBox.Show($"Incorrect Information!");
+            MessageBox.Show(@"Incorrect Information!");
         }
     }
 }

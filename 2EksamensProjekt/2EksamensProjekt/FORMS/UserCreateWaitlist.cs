@@ -2,36 +2,36 @@
 
 public partial class UserCreateWaitlist : Form
 {
-    private readonly API api = API.Getinstance();
+    private readonly API _api = API.GetInstance();
 
-    private static readonly UserCreateWaitlist singleton = new UserCreateWaitlist(); 
+    private static readonly UserCreateWaitlist Singleton = new(); 
     private UserCreateWaitlist()
     {
         InitializeComponent();
-        comboBox1.Text = "normal";
-        Task t1 = new Task(() => worker());
+        comboBox1.Text = @"normal";
+        Task t1 = new(Worker);
         t1.Start();
     }
 
     public static UserCreateWaitlist GetInstance()
     {
-        return singleton;
+        return Singleton;
     }
 
-    private void worker()
+    private void Worker()
     {
         do
         {
-            api.ComboBoxReader(comboBox2, "CreateAccountUsername");
-            api.ComboBoxReader(comboBox3, "Password");
-            api.ComboBoxReader(comboBox1, "WaitlistType");
+            _api.ComboBoxReader(comboBox2, "CreateAccountUsername");
+            _api.ComboBoxReader(comboBox3, "Password");
+            _api.ComboBoxReader(comboBox1, "WaitlistType");
         }
         while (true);
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-        api.CreateUser_Waitlist();
-        this.Hide();
+        _api.CreateUser_Waitlist();
+        Hide();
     }
 }

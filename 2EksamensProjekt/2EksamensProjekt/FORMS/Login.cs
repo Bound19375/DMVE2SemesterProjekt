@@ -2,20 +2,20 @@ namespace _2EksamensProjekt.FORMS;
 
 public partial class Login : Form
 {
-    private readonly API api = API.Getinstance(); 
+    private readonly API _api = API.GetInstance(); 
 
-    private static readonly Login singleton = new Login();
+    private static readonly Login Singleton = new();
 
     private Login()
     {
         InitializeComponent();
-        Task slogan = new Task(() => Slogan());
+        Task slogan = new(Slogan);
         slogan.Start(); //Create an instance of a Task & Start it
     }
 
     public static Login GetInstance() //Login Form Made Singleton Due To Otherwise Disposion Of Objects --Garbage Collector--.
     {
-        return singleton;
+        return Singleton;
     }
 
 /*
@@ -36,7 +36,7 @@ public partial class Login : Form
                 {
                     label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
                     {
-                        label1.Text = api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
+                        label1.Text = _api.SloganT().Result; //Calling Async Task SloganT Method From Api Class.
                     });
                     await Task.Delay(1000); //Sleeping For X Seconds.
                 }
@@ -46,30 +46,30 @@ public partial class Login : Form
                 label1.CreateControl();
             }
         }
-        while (Form.ActiveForm == Login.ActiveForm); //Keep Task Running While Login Form Is The ActiveForm
+        while (true); //Keep Task Running While Login Form Is The ActiveForm
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-        string result = api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
+        string result = _api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
         //MessageBox.Show(result);
         if (result == "admin")
         {
-            this.Hide();
+            Hide();
             adminSP obj = adminSP.GetInstance();
             //obj.Closed += (s, args) => this.Close();
             obj.Show();
         }
         else if (result == "secretary")
         {
-            this.Hide();
+            Hide();
             secretarySP obj = secretarySP.GetInstance();
             //obj.Closed += (s, args) => this.Close();
             obj.Show();
         }
         else if (result == "youth" || result == "senior" || result == "normal")
         {
-            this.Hide();
+            Hide();
             residentSP obj = residentSP.GetInstance();
             //obj.Closed += (s, args) => this.Close();
             obj.Show();
@@ -79,13 +79,6 @@ public partial class Login : Form
 
     private void button2_Click(object sender, EventArgs e)
     {
-        if (textBox1.Text != String.Empty)
-        {
-            MessageBox.Show(api.GetPassword(textBox1.Text).Result);
-        }
-        else
-        {
-            MessageBox.Show("Enter Username");
-        }
+        MessageBox.Show(textBox1.Text != String.Empty ? _api.GetPassword(textBox1.Text).Result : @"Enter Username");
     }
 }

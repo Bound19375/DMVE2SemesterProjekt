@@ -2,7 +2,7 @@
 
 public partial class SpecialCollection : Form
 {
-    private readonly API api = API.Getinstance();
+    private readonly API _api = API.GetInstance();
     public SpecialCollection()
     {
         InitializeComponent();

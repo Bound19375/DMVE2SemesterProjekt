@@ -12,7 +12,7 @@ namespace UnitTests
         public void TestSlogan()
         {
             //Arrange test
-            API test = API.Getinstance();
+            API test = API.GetInstance();
 
             //Act test
             string result = test.SloganT().Result;
@@ -32,7 +32,7 @@ namespace UnitTests
         public void TestConn()
         {
             //Arrange test
-            API test = API.Getinstance();
+            API test = API.GetInstance();
             string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
             MySqlConnection conn = new MySqlConnection(ConnStr);
 
@@ -55,7 +55,7 @@ namespace UnitTests
         public void TestSpecialCollectionList()
         {
             //Arrange test
-            API test = API.Getinstance();
+            API test = API.GetInstance();
 
             //Act test
             bool result;
@@ -78,7 +78,7 @@ namespace UnitTests
         public void TestLogin()
         {
             //Arrange test
-            API test = API.Getinstance();
+            API test = API.GetInstance();
 
             //Act test
             bool result;
@@ -99,15 +99,15 @@ namespace UnitTests
         public void TestAdminPrint()
         {
             //Arrange test
-            API test = API.Getinstance();
+            API test = API.GetInstance();
 
             //Act test
             bool result;
             try
             {
-                string _1 = test.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
-                string _2 = test.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
-                string _3 = test.SpecialCollectionSql = $"SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                string _1 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+                string _2 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                string _3 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
                 TextBox min = new TextBox();
                 TextBox max = new TextBox();
                 min.Text = "100";

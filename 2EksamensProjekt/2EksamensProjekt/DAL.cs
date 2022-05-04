@@ -53,47 +53,27 @@ public class API
         {
             //Waitlist
             Waitlist = 1,
-            //Residents
             CurrentResidents,
-            //Residents Username
             CurrentResidentsUsername,
-            //ReservationIDs
             //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
-            //WashingMachines
             WMSORTALL,
-            //PartyHall
             PHSortAll,
-            //ParkingSpace
             PSSortAll,
-            //Booked By User
-            //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
-            //Booked Overall
+            ResourceSortAllUsers,
+            ResourceSortAllPerUnit,
+            ResourceSortPerUser,
+            ResourceSortPerUnit,
             AllResourcesBooked,
-            //Available
             AvailableResourceIDS,
             AvailableResourcesByType,
-            //Usernames
+            //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
             Usernames,
-            //StartDate & EndDate
             StartDate,
             EndDate,
-            //Booking Cancel IDS
             BookingCancelIDs,
-            //Resident Info
             CurrentResidentInfo,
-            //ResourceSortAllUsers
-            ResourceSortAllUsers,
-            //ResourceSortAllPerUnit
-            ResourceSortAllPerUnit,
-            //ResourceSortPerUser
-            ResourceSortPerUser,
-            //ResourceSortPerUnit
-            ResourceSortPerUnit,
-            //AvailableHouseSortAll
             AvailableHouseSortAll,
-            //AvailableHouseSortByM2
             AvailableHouseSortByM2,
-            //AvailableHouseSortByPrice
             AvailableHouseSortByPrice,
 
             //Fillers

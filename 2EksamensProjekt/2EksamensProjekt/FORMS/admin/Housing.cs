@@ -55,13 +55,13 @@ public partial class Housing : Form
 
                 if (!radioButton3.Checked)
                 {
-                    _api.TextboxReader(textBox3, "MIN");
-                    _api.TextboxReader(textBox2, "MAX");
+                    _api.TextboxReader(textBox3, API.SetReaderField.Min);
+                    _api.TextboxReader(textBox2, API.SetReaderField.Max);
                 }
-                _api.ComboBoxReader(comboBox1, "HouseID");
-                _api.ComboBoxReader(comboBox2, "User");
-                _api.ComboBoxReader(comboBox3, "AccountName");
-                _api.ComboBoxReader(comboBox4, "DeleteFromSystemUsername");
+                _api.ComboBoxReader(comboBox1, API.SetReaderField.HouseID);
+                _api.ComboBoxReader(comboBox2, API.SetReaderField.AccountUsername);
+                _api.ComboBoxReader(comboBox3, API.SetReaderField.AccountName);
+                _api.ComboBoxReader(comboBox4, API.SetReaderField.DeleteFromSystemUsername);
 
             }
             catch (Exception ex)

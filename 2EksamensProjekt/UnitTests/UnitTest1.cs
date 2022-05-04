@@ -105,18 +105,13 @@ namespace UnitTests
             bool result;
             try
             {
-                string _1 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
-                string _2 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
-                string _3 = test.SpecialCollectionSql = "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
                 TextBox min = new TextBox();
                 TextBox max = new TextBox();
                 min.Text = "100";
                 max.Text = "0";
-                test.TextboxReader(min, "MIN");
-                test.TextboxReader(max, "MAX");
-                test.AdminStatisticsPrint(_1);
-                test.AdminStatisticsPrint(_2);
-                test.AdminStatisticsPrint(_3);
+                test.TextboxReader(min, API.SetReaderField.Min);
+                test.TextboxReader(max, API.SetReaderField.Max);
+                test.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUser);
                 result = true;
             }
             catch

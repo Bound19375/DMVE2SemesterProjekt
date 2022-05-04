@@ -41,19 +41,19 @@ public partial class Resources : Form
             try
             {
                 //GroupBoxUnitChoice
-                _api.GroupboxReader(groupBox2, "AvailableType");
+                _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
                 //StartDate
-                _api.ComboBoxReader(comboBox1, "Start");
+                _api.ComboBoxReader(comboBox1, API.SetReaderField.Start);
                 //EndDate
-                _api.ComboBoxReader(comboBox2, "End");
+                _api.ComboBoxReader(comboBox2, API.SetReaderField.End);
                 //User
-                _api.ComboBoxReader(comboBox3, "User");
+                _api.ComboBoxReader(comboBox3, API.SetReaderField.AccountUsername);
                 //UnitID
-                _api.ComboBoxReader(comboBox4, "UnitID");
+                _api.ComboBoxReader(comboBox4, API.SetReaderField.UnitID);
                 //DurationTime
-                _api.ComboBoxReader(comboBox5, "Duration");
+                _api.ComboBoxReader(comboBox5, API.SetReaderField.Duration);
                 //CancelBookingID
-                _api.ComboBoxReader(comboBox6, "CancelBookingID");
+                _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
 
                 //Usernames
                 _api.ComboBoxFill(comboBox3, _api.sqlcmds.Usernames);
@@ -160,7 +160,7 @@ public partial class Resources : Form
                         if (radioButton7.Checked)
                         {
                             _api.GroupBoxInvoker(groupBox2, true);
-                            _api.GroupboxReader(groupBox2, "AvailableType");
+                            _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
                         }
                     }
                 }
@@ -201,7 +201,22 @@ public partial class Resources : Form
     {
         try
         {
-            _api.AdminStatisticsPrint(_api.StatisticSQL!);
+            if (radioButton6.Checked) //All User
+            {
+                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.AllUsers);
+            }
+            else if (radioButton7.Checked) //All Per Unit (Count)
+            {
+                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.AllPerUnit);
+            }
+            else if (radioButton1.Checked) //Per User
+            {
+                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUser);
+            }
+            else if (radioButton2.Checked) //Per Unit
+            {
+                _api.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUnit);
+            }
         }
         catch (Exception)
         {

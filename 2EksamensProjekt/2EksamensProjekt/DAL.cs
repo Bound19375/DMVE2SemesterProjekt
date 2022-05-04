@@ -1,5 +1,4 @@
 ﻿namespace _2EksamensProjekt.DAL;
-
 public class API
 {
     #region Properties
@@ -373,14 +372,39 @@ public class API
         }
     }
     #endregion ButtonComboBoxInvoker
+    #region SetFieldEnum
+    public enum SetReaderField
+    {
+        Min = 1,
+        Max,
+        AccountUsername,
+        NewAccountUsername,
+        CreateAccountUsername,
+        HouseID,
+        AccountName,
+        SpecialCollectionSql,
+        //User,
+        Start,
+        End,
+        Duration,
+        UnitType,
+        UnitID,
+        StatisticSQL,
+        CancelBookingID,
+        AvailableType,
+        Password,
+        WaitlistType,
+        DeleteFromSystemUsername
+    }
+    #endregion
     #region GroupBoxReader
-    public void GroupboxReader(GroupBox gb, string whichField)
+    public void GroupboxReader(GroupBox gb, SetReaderField whichField = 0)
     {
         try
         {
             switch (whichField)
             {
-                case "AvailableType":
+                case SetReaderField.AvailableType:
                     if (gb.InvokeRequired)
                     {
                         gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
@@ -398,174 +422,175 @@ public class API
     }
     #endregion GroupBoxReader
     #region ComboBoxReader
-    public void ComboBoxReader(ComboBox combo, string whichField)
+    public void ComboBoxReader(ComboBox combo, SetReaderField whichField = 0)
     {
         try
         {
             switch (whichField)
             {
-                case "Start":
-                {
-                    if (combo.InvokeRequired)
+                case SetReaderField.Start:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                Start = result;
-                            }
-                        });
-                    }
+                                bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                if (success)
+                                {
+                                    Start = result;
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "End":
-                {
-                    if (combo.InvokeRequired)
+                        break;
+                    }
+                case SetReaderField.End:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                End = result;
-                            }
-                        });
-                    }
+                                bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                if (success)
+                                {
+                                    End = result;
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "Duration":
-                {
-                    if (combo.InvokeRequired)
+                        break;
+                    }
+                case SetReaderField.Duration:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = Int32.TryParse(combo.Text, out int result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                Duration = Start.AddHours(Convert.ToDouble(result));
-                            }
-                        });
-                    }
+                                bool success = Int32.TryParse(combo.Text, out int result);
+                                if (success)
+                                {
+                                    Duration = Start.AddHours(Convert.ToDouble(result));
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "User":
+                        break;
+                    }
+                case SetReaderField.AccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AccountUsername = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.UnitID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                UnitID = success ? result : 0;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.CancelBookingID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                CancelBookingID = success ? result : 0;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.NewAccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                NewAccountUsername = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.Password:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                Password = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.HouseID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                HouseID = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.AccountName:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AccountName = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.CreateAccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                CreateAccountUsername = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.WaitlistType:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                WaitlistType = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.DeleteFromSystemUsername:
                 {
                     if (combo.InvokeRequired)
                     {
                         combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                         {
-                            AccountUsername = combo.Text;
-                        });
-                    }
-
-                    break;
-                }
-                case "UnitID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            UnitID = success ? result : 0;
-                        });
-                    }
-
-                    break;
-                }
-                case "CancelBookingID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            CancelBookingID = success ? result : 0;
-                        });
-                    }
-
-                    break;
-                }
-                case "NewAccountUsername":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            NewAccountUsername = combo.Text;
-                        });
-                    }
-
-                    break;
-                }
-                case "Password":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            Password = combo.Text;
+                            DeleteFromSystemUsername = combo.Text;
                         });
                     }
                     break;
-                }
-                case "HouseID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            HouseID = combo.Text;
-                        });
-                    }
-                    break;
-                }
-                case "AccountName":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            AccountName = combo.Text;
-                        });
-                    }
-                    break;
-                }
-            }
-
-            if (whichField == "CreateAccountUsername")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        CreateAccountUsername = combo.Text;
-                    });
-                }
-            }
-
-            if (whichField == "WaitlistType")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        WaitlistType = combo.Text;
-                    });
-                }
-            }
-            if (whichField == "DeleteFromSystemUsername")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        DeleteFromSystemUsername = combo.Text;
-                    });
                 }
             }
         }
@@ -576,11 +601,11 @@ public class API
     }
     #endregion ComboBoxReader
     #region TextBoxReader
-    public void TextboxReader(TextBox txtbox, string whichField)
+    public void TextboxReader(TextBox txtbox, SetReaderField whichField = 0)
     {
         switch (whichField)
         {
-            case "MIN":
+            case SetReaderField.Min:
             {
                 if (txtbox.InvokeRequired)
                 {
@@ -593,7 +618,7 @@ public class API
 
                 break;
             }
-            case "MAX":
+            case SetReaderField.Max:
             {
                 if (txtbox.InvokeRequired)
                 {
@@ -1237,10 +1262,38 @@ Only Accepts A-Z & 0-9");
     }
     #endregion Delete Housing
     #region Admin Statistics Print (txt)
-    public void AdminStatisticsPrint(string? cmdTxtPrint)
+    public enum ADMINPRINTSQL
+    {
+        AllUsers = 1,
+        AllPerUnit,
+        PerUser,
+        PerUnit
+    }
+    public void AdminStatisticsPrint(ADMINPRINTSQL sql)
     {
         try
         {
+            string cmdTxtPrint = "NONE";
+
+            switch (sql)
+            {
+                case ADMINPRINTSQL.AllUsers:
+                    cmdTxtPrint = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
+                    break;
+
+                case ADMINPRINTSQL.AllPerUnit:
+                    cmdTxtPrint = "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+                    break;
+
+                case ADMINPRINTSQL.PerUser:
+                    cmdTxtPrint = "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+                    break;
+
+                case ADMINPRINTSQL.PerUnit:
+                    cmdTxtPrint = "SELECT * FROM resource r WHERE id = @unitid;";
+                    break;
+            }
+
             MySqlConnection conn = new(ConnStr);
 
             //Set Isolation Level
@@ -1260,31 +1313,92 @@ Only Accepts A-Z & 0-9");
             DataTable tbl = new();
             tbl.Load(cmd1.ExecuteReader());
 
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+
             Directory.CreateDirectory(@"..\..\..\txts");
             string filePath = @"..\..\..\txts\Resources.txt";
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
             {
                 StreamWriter writer = new(stream, Encoding.UTF8);
-                int i;
-                for (i = 0; i < tbl.Columns.Count; i++)
-                {
-                    writer.Write(tbl.Columns[i].ColumnName + "\t\t");
-                }
-                writer.WriteLine("\n");
+                #region WriteFromDataRow (Unused)
+                //int i;
+                //for (i = 0; i < tbl.Columns.Count; i++)
+                //{
+                //    writer.Write(tbl.Columns[i].ColumnName + "\t\t");
+                //}
+                //writer.WriteLine("\n");
 
-                foreach (DataRow row in tbl.Rows)
-                {
-                    object?[] array = row.ItemArray;
+                //foreach (DataRow row in tbl.Rows)
+                //{
+                //    object?[] array = row.ItemArray;
 
-                    for (i = 0; i < array.Length; i++)
+                //    for (i = 0; i < array.Length; i++)
+                //    {
+                //        writer.Write(array[i] + ";");
+                //    }
+                //    writer.WriteLine();
+                //}
+                #endregion
+                while (rdr.Read())
+                {
+                    switch (sql)
                     {
-                        writer.Write(array[i] + ";");
+                        case ADMINPRINTSQL.AllUsers:
+                            writer.WriteLine(
+                           "{\n" +
+                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                           $"\tType: {Convert.ToString(rdr[1])}\n" +
+                           $"\tName: {Convert.ToString(rdr[2])}\n" +
+                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                           "}\n" +
+                           "\n");
+                            break;
+
+                        case ADMINPRINTSQL.AllPerUnit:
+                        writer.WriteLine(
+                           "{\n" +
+                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                           $"\tType: {Convert.ToString(rdr[1])}\n" +
+                           $"\tName: {Convert.ToString(rdr[2])}\n" +
+                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                           "}\n" +
+                           "\n");
+                            break;
+
+                        case ADMINPRINTSQL.PerUser:
+                        writer.WriteLine(
+                           "{\n" +
+                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                           $"\tType: {Convert.ToString(rdr[1])}\n" +
+                           $"\tName: {Convert.ToString(rdr[2])}\n" +
+                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                           "}\n" +
+                           "\n");
+                            break;
+
+                        case ADMINPRINTSQL.PerUnit:
+                        writer.WriteLine(
+                           "{\n" +
+                           $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                           $"\tType: {Convert.ToString(rdr[1])}\n" +
+                           $"\tName: {Convert.ToString(rdr[2])}\n" +
+                           $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                           $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                           $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                           "}\n" +
+                           "\n");
+                        break;
                     }
-                    writer.WriteLine();
                 }
                 writer.Close();
             }
-
             //COMMIT
             string commit = "COMMIT;";
             cmd1 = new(commit, OpenConn(conn));

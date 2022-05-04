@@ -33,19 +33,19 @@ public partial class residentSP : Form
             try
             {
                 //GroupBoxUnitChoice
-                _api.GroupboxReader(groupBox2, "AvailableType");
+                _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
                 //StartDate
-                _api.ComboBoxReader(comboBox1, "Start");
+                _api.ComboBoxReader(comboBox1, API.SetReaderField.Start);
                 //UnitID
-                _api.ComboBoxReader(comboBox4, "UnitID");
+                _api.ComboBoxReader(comboBox4, API.SetReaderField.UnitID);
                 //DurationTime
-                _api.ComboBoxReader(comboBox5, "Duration");
+                _api.ComboBoxReader(comboBox5, API.SetReaderField.Duration);
                 //CancelBookingID
-                _api.ComboBoxReader(comboBox6, "CancelBookingID");
+                _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
                 //AccountNameUpdater
-                _api.ComboBoxReader(comboBox2, "NewAccountUsername");
+                _api.ComboBoxReader(comboBox2, API.SetReaderField.NewAccountUsername);
                 //Password
-                _api.ComboBoxReader(comboBox3, "Password");
+                _api.ComboBoxReader(comboBox3, API.SetReaderField.Password);
 
                 if (label1.InvokeRequired)
                 {

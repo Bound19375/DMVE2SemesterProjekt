@@ -396,7 +396,7 @@ public class API
                     {
                         gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                         {
-                            AvailableType = gb.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Text;
+                            AvailableType = gb.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked)?.Text;
                         });
                     }
                     break;
@@ -1294,7 +1294,7 @@ public class API
 
                 foreach (DataRow row in tbl.Rows)
                 {
-                    object[] array = row.ItemArray;
+                    object?[] array = row.ItemArray;
 
                     for (i = 0; i < array.Length; i++)
                     {

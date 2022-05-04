@@ -6,6 +6,6 @@ public partial class SpecialCollection : Form
     public SpecialCollection()
     {
         InitializeComponent();
-        api.GridviewCollection(dataGridView1, api.SpecialCollectionSql!);
+        _api.GridviewCollection(dataGridView1, _api.SpecialCollectionSql!);
     }
 }

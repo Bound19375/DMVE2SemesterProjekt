@@ -28,35 +28,38 @@ partial class SpecialCollection
     /// </summary>
     private void InitializeComponent()
     {
-        this.dataGridView1 = new System.Windows.Forms.DataGridView();
-        ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-        this.SuspendLayout();
-        // 
-        // dataGridView1
-        // 
-        this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-        this.dataGridView1.Name = "dataGridView1";
-        this.dataGridView1.RowHeadersWidth = 62;
-        this.dataGridView1.RowTemplate.Height = 33;
-        this.dataGridView1.Size = new System.Drawing.Size(1095, 542);
-        this.dataGridView1.TabIndex = 0;
-        // 
-        // SpecialCollection
-        // 
-        this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1119, 566);
-        this.Controls.Add(this.dataGridView1);
-        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-        this.Name = "SpecialCollection";
-        this.Text = "SpecialCollection";
-        ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-        this.ResumeLayout(false);
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(8, 7);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 62;
+            this.dataGridView1.RowTemplate.Height = 33;
+            this.dataGridView1.Size = new System.Drawing.Size(766, 325);
+            this.dataGridView1.TabIndex = 0;
+            // 
+            // SpecialCollection
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(783, 340);
+            this.Controls.Add(this.dataGridView1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Name = "SpecialCollection";
+            this.Text = "SpecialCollection";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private DataGridView dataGridView1;
+    public DataGridView dataGridView1;
 }

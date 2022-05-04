@@ -1,9 +1,7 @@
-﻿namespace _2EksamensProjekt.DAL;
-
+namespace _2EksamensProjekt.DAL;
 public class API
 {
     #region Properties
-
     private int Min { get; set; }
     private int Max { get; set; }
     public string? AccountUsername { get; private set; }
@@ -24,8 +22,6 @@ public class API
     private string? Password { get; set; }
     private string? WaitlistType { get; set; }
     private string? DeleteFromSystemUsername { get; set; }
-
-
     #endregion Fields
 
     #region Singleton
@@ -38,11 +34,12 @@ public class API
     {
         return Singleton;
     }
-    public readonly SQLCMDS sqlcmds = SQLCMDS.GetInstance();
     #endregion Singleton
 
     #region SQLCMDS
-    public class SQLCMDS
+    private readonly SQLCMDS _sqlCMDS = SQLCMDS.GetInstance();
+
+    internal class SQLCMDS
     {
         private static readonly SQLCMDS Singleton = new();
         private SQLCMDS() { }
@@ -50,6 +47,118 @@ public class API
         {
             return Singleton;
         }
+
+        public enum SELECTSQLQUERY
+        {
+            //Waitlist
+            Waitlist = 1,
+            CurrentResidents,
+            CurrentResidentsUsername,
+            //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            WMSORTALL,
+            PHSortAll,
+            PSSortAll,
+            ResourceSortAllUsers,
+            ResourceSortAllPerUnit,
+            ResourceSortPerUser,
+            ResourceSortPerUnit,
+            AllResourcesBooked,
+            AvailableResourceIDS,
+            AvailableResourcesByType,
+            //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
+            Usernames,
+            StartDate,
+            EndDate,
+            BookingCancelIDs,
+            CurrentResidentInfo,
+            AvailableHouseSortAll,
+            AvailableHouseSortByM2,
+            AvailableHouseSortByPrice,
+
+            //Fillers
+            AvailableHouseIDs,
+            UsernamesOnWaitinglist
+        }
+
+        public string SQLCMD(SELECTSQLQUERY query)
+        {
+            switch(query)
+            {
+                case SELECTSQLQUERY.Waitlist: 
+                    return "SELECT a.username, w.type FROM waitlist w, account a WHERE w.account_username = a.username ORDER BY a.username;";
+
+                case SELECTSQLQUERY.CurrentResidents: 
+                    return "SELECT a.username, h.type, r.Name, hr.start_contract, h.m2, h.rental_price FROM housing_residents hr, residents r, housing h, account a WHERE hr.residents_username  = r.account_username AND hr.housing_id = h.id AND r.account_username = a.username ORDER BY a.username;";
+                            //SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;
+                case SELECTSQLQUERY.CurrentResidentsUsername:
+                    return "SELECT residents_username FROM housing_residents;";
+
+                case SELECTSQLQUERY.WMSORTALL:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
+
+                case SELECTSQLQUERY.PHSortAll:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'partyhall';";
+
+                case SELECTSQLQUERY.PSSortAll:
+                    return "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
+
+                case SELECTSQLQUERY.AllResourcesBooked:
+                    return "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.AvailableResourceIDS:
+                    return "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+
+                case SELECTSQLQUERY.AvailableResourcesByType:
+                    return "SELECT r.id FROM resident_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM resident_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+
+                case SELECTSQLQUERY.Usernames:
+                    return "SELECT r.account_username FROM residents r ORDER BY r.account_username;";
+
+                case SELECTSQLQUERY.StartDate:
+                    return "SELECT DISTINCT rrr.start_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.start_timestamp;";
+
+                case SELECTSQLQUERY.EndDate:
+                    return "SELECT DISTINCT rrr.end_timestamp FROM resident_resource_reservations rrr ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.BookingCancelIDs:
+                    return "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.CurrentResidentInfo:
+                    return "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege  FROM housing_residents hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.residents_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
+
+                case SELECTSQLQUERY.ResourceSortAllUsers:
+                    return "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username  = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username ORDER BY rrr.end_timestamp DESC ;";
+
+                case SELECTSQLQUERY.ResourceSortAllPerUnit:
+                    return "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+
+                case SELECTSQLQUERY.ResourceSortPerUser:
+                    return "SELECT a.username, r.Name, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.residents_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+
+                case SELECTSQLQUERY.ResourceSortPerUnit:
+                    return "SELECT * FROM resource r WHERE id = @unitid;";
+
+                case SELECTSQLQUERY.AvailableHouseSortAll:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseSortByM2:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseSortByPrice:
+                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.AvailableHouseIDs:
+                    return "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_residents hr2) GROUP BY h.id ORDER BY h.id;";
+
+                case SELECTSQLQUERY.UsernamesOnWaitinglist:
+                    return "SELECT w.account_username FROM waitlist w";
+
+                default:
+                    return "NONE";
+            }
+        }
+
+  /*
         //Waitlist
         public string Waitlist = 
             "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
@@ -123,12 +232,14 @@ public class API
             "WHERE h.id = ha.housing_id " +
             "AND (ha.account_username = @username AND a.username = @username) " +
             "GROUP BY ha.housing_id;";
+      */
+
     }
     #endregion SQLCMDS
 
     #region Open/Close-Conn
-    //private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-    private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+//private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
     //Open Connection Method 
     public MySqlConnection OpenConn(MySqlConnection conn)
     {
@@ -416,14 +527,46 @@ public class API
         }
     }
     #endregion ButtonComboBoxInvoker
+    #region Enums
+    public enum SetReaderField
+    {
+        Min = 1,
+        Max,
+        AccountUsername,
+        NewAccountUsername,
+        CreateAccountUsername,
+        HouseID,
+        AccountName,
+        SpecialCollectionSql,
+        //User,
+        Start,
+        End,
+        Duration,
+        UnitType,
+        UnitID,
+        StatisticSQL,
+        CancelBookingID,
+        AvailableType,
+        Password,
+        WaitlistType,
+        DeleteFromSystemUsername
+    }
+    public enum ResourceSort
+    {
+        AllUsers = 1,
+        AllPerUnit,
+        PerUser,
+        PerUnit
+    }
+    #endregion
     #region GroupBoxReader
-    public void GroupboxReader(GroupBox gb, string whichField)
+    public void GroupboxReader(GroupBox gb, SetReaderField whichField = 0)
     {
         try
         {
             switch (whichField)
             {
-                case "AvailableType":
+                case SetReaderField.AvailableType:
                     if (gb.InvokeRequired)
                     {
                         gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
@@ -441,174 +584,175 @@ public class API
     }
     #endregion GroupBoxReader
     #region ComboBoxReader
-    public void ComboBoxReader(ComboBox combo, string whichField)
+    public void ComboBoxReader(ComboBox combo, SetReaderField whichField = 0)
     {
         try
         {
             switch (whichField)
             {
-                case "Start":
-                {
-                    if (combo.InvokeRequired)
+                case SetReaderField.Start:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                Start = result;
-                            }
-                        });
-                    }
+                                bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                if (success)
+                                {
+                                    Start = result;
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "End":
-                {
-                    if (combo.InvokeRequired)
+                        break;
+                    }
+                case SetReaderField.End:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = DateTime.TryParse(combo.Text, out DateTime result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                End = result;
-                            }
-                        });
-                    }
+                                bool success = DateTime.TryParse(combo.Text, out DateTime result);
+                                if (success)
+                                {
+                                    End = result;
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "Duration":
-                {
-                    if (combo.InvokeRequired)
+                        break;
+                    }
+                case SetReaderField.Duration:
                     {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                        if (combo.InvokeRequired)
                         {
-                            bool success = Int32.TryParse(combo.Text, out int result);
-                            if (success)
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                             {
-                                Duration = Start.AddHours(Convert.ToDouble(result));
-                            }
-                        });
-                    }
+                                bool success = Int32.TryParse(combo.Text, out int result);
+                                if (success)
+                                {
+                                    Duration = Start.AddHours(Convert.ToDouble(result));
+                                }
+                            });
+                        }
 
-                    break;
-                }
-                case "User":
+                        break;
+                    }
+                case SetReaderField.AccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AccountUsername = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.UnitID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                UnitID = success ? result : 0;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.CancelBookingID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                CancelBookingID = success ? result : 0;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.NewAccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                NewAccountUsername = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+                case SetReaderField.Password:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                Password = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.HouseID:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                HouseID = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.AccountName:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AccountName = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.CreateAccountUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                CreateAccountUsername = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.WaitlistType:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                WaitlistType = combo.Text;
+                            });
+                        }
+                        break;
+                    }
+                case SetReaderField.DeleteFromSystemUsername:
                 {
                     if (combo.InvokeRequired)
                     {
                         combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
                         {
-                            AccountUsername = combo.Text;
-                        });
-                    }
-
-                    break;
-                }
-                case "UnitID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            UnitID = success ? result : 0;
-                        });
-                    }
-
-                    break;
-                }
-                case "CancelBookingID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            bool success = int.TryParse(combo.Text, out int result);
-                            CancelBookingID = success ? result : 0;
-                        });
-                    }
-
-                    break;
-                }
-                case "NewAccountUsername":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            NewAccountUsername = combo.Text;
-                        });
-                    }
-
-                    break;
-                }
-                case "Password":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            Password = combo.Text;
+                            DeleteFromSystemUsername = combo.Text;
                         });
                     }
                     break;
-                }
-                case "HouseID":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            HouseID = combo.Text;
-                        });
-                    }
-                    break;
-                }
-                case "AccountName":
-                {
-                    if (combo.InvokeRequired)
-                    {
-                        combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                        {
-                            AccountName = combo.Text;
-                        });
-                    }
-                    break;
-                }
-            }
-
-            if (whichField == "CreateAccountUsername")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        CreateAccountUsername = combo.Text;
-                    });
-                }
-            }
-
-            if (whichField == "WaitlistType")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        WaitlistType = combo.Text;
-                    });
-                }
-            }
-            if (whichField == "DeleteFromSystemUsername")
-            {
-                if (combo.InvokeRequired)
-                {
-                    combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
-                    {
-                        DeleteFromSystemUsername = combo.Text;
-                    });
                 }
             }
         }
@@ -619,11 +763,11 @@ public class API
     }
     #endregion ComboBoxReader
     #region TextBoxReader
-    public void TextboxReader(TextBox txtbox, string whichField)
+    public void TextboxReader(TextBox txtbox, SetReaderField whichField = 0)
     {
         switch (whichField)
         {
-            case "MIN":
+            case SetReaderField.Min:
             {
                 if (txtbox.InvokeRequired)
                 {
@@ -636,7 +780,7 @@ public class API
 
                 break;
             }
-            case "MAX":
+            case SetReaderField.Max:
             {
                 if (txtbox.InvokeRequired)
                 {
@@ -653,7 +797,7 @@ public class API
     }
     #endregion TextBoxReader
     #region Special Collection Method
-    public class Houses
+    internal class Houses
     {
         public int ID { get; set; }
         public string? Housetype { get; set; }
@@ -661,7 +805,14 @@ public class API
         public int Price { get; set; }
     }
 
-    private List<Houses> SpecialCollectionList(string? dosql)
+    public enum SPECIALCOLLECTION
+    {
+        SortByAll = 1,
+        SortByM2,
+        SortByPrice
+    }
+
+    public void SpecialCollectionList(DataGridView gv, SPECIALCOLLECTION specialcollection = 0)
     {
         List<Houses> collection = new();
         collection.Clear();
@@ -677,6 +828,23 @@ public class API
         sqlString = "START TRANSACTION;";
         cmd1 = new(sqlString, OpenConn(conn));
         cmd1.ExecuteNonQuery();
+
+        string dosql = "NONE";
+        switch (specialcollection)
+        {
+            case SPECIALCOLLECTION.SortByAll:
+                dosql = _sqlCMDS.SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
+                break;
+
+            case SPECIALCOLLECTION.SortByM2:
+                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
+
+                break;
+
+            case SPECIALCOLLECTION.SortByPrice:
+                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
+                break;
+        }
 
         //Append To List
         cmd1 = new(dosql, OpenConn(conn));
@@ -702,11 +870,8 @@ public class API
         cmd1 = new(commit, OpenConn(conn));
         cmd1.ExecuteNonQuery();
         CloseConn(conn);
-        return collection;
-    }
-    public void GridviewCollection(DataGridView gv, string? sql)
-    {
-        var bindingList = new BindingList<Houses>(SpecialCollectionList(sql)); //Raise an event if the underlying list changes 
+
+        var bindingList = new BindingList<Houses>(collection); //Raise an event if the underlying list changes 
         var source = new BindingSource(bindingList, null);
         gv.DataSource = source;
         gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -857,7 +1022,7 @@ public class API
         }
     }
     #endregion GetPassword
-
+    //
     #region SecretaryMethods
     #region Secretary Print Resident (txt)
     public void SecretaryPrint()
@@ -925,6 +1090,7 @@ public class API
     }
     #endregion
     #endregion SecretaryMethods
+    //
     #region Create User And Waitlist
     public void CreateUser_Waitlist()
     {
@@ -1086,6 +1252,7 @@ Only Accepts A-Z & 0-9");
         }
     }
     #endregion Booking
+    //
     #region AdminMethods
     #region Grant Housing
     public void GrantHousing()
@@ -1285,10 +1452,33 @@ Only Accepts A-Z & 0-9");
     }
     #endregion Delete Housing
     #region Admin Statistics Print (txt)
-    public void AdminStatisticsPrint(string? cmdTxtPrint)
+    public void AdminStatisticsPrint(ResourceSort sql = 0)
     {
         try
         {
+            string cmdTxtPrint = "NONE";
+
+            switch (sql)
+            {
+                case ResourceSort.AllUsers:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers);
+                    break;
+
+                case ResourceSort.AllPerUnit:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
+
+                    break;
+
+                case ResourceSort.PerUser:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser);
+
+                    break;
+
+                case ResourceSort.PerUnit:
+                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit);
+                    break;
+            }
+
             MySqlConnection conn = new(ConnStr);
 
             //Set Isolation Level
@@ -1308,31 +1498,86 @@ Only Accepts A-Z & 0-9");
             DataTable tbl = new();
             tbl.Load(cmd1.ExecuteReader());
 
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+
             Directory.CreateDirectory(@"..\..\..\txts");
             string filePath = @"..\..\..\txts\Resources.txt";
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
             {
                 StreamWriter writer = new(stream, Encoding.UTF8);
-                int i;
-                for (i = 0; i < tbl.Columns.Count; i++)
-                {
-                    writer.Write(tbl.Columns[i].ColumnName + "\t\t");
-                }
-                writer.WriteLine("\n");
+                #region WriteFromDataRow (Unused)
+                //int i;
+                //for (i = 0; i < tbl.Columns.Count; i++)
+                //{
+                //    writer.Write(tbl.Columns[i].ColumnName + "\t\t");
+                //}
+                //writer.WriteLine("\n");
 
-                foreach (DataRow row in tbl.Rows)
-                {
-                    object?[] array = row.ItemArray;
+                //foreach (DataRow row in tbl.Rows)
+                //{
+                //    object?[] array = row.ItemArray;
 
-                    for (i = 0; i < array.Length; i++)
+                //    for (i = 0; i < array.Length; i++)
+                //    {
+                //        writer.Write(array[i] + ";");
+                //    }
+                //    writer.WriteLine();
+                //}
+                #endregion
+                while (rdr.Read())
+                {
+                    switch (sql)
                     {
-                        writer.Write(array[i] + ";");
+                        case ResourceSort.AllUsers:
+                            writer.WriteLine(
+                               "{\n" +
+                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
+                               $" Navn: {Convert.ToString(rdr[1])}\n" +
+                               $" Type: {Convert.ToString(rdr[2])}\n" +
+                               $" ID: {Convert.ToString(rdr[3])}\n" +
+                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
+                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
+                               "}\n" +
+                               "\n");
+                            break;
+
+                        case ResourceSort.AllPerUnit:
+                            writer.WriteLine(
+                               "{\n" +
+                               $" ID: {Convert.ToString(rdr[0])}\n" +
+                               $" Type: {Convert.ToString(rdr[1])}\n" +
+                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
+                               "}\n" +
+                               "\n");
+                            break;
+
+                        case ResourceSort.PerUser:
+                            writer.WriteLine(
+                               "{\n" +
+                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
+                               $" Navn: {Convert.ToString(rdr[1])}\n" +
+                               $" Type: {Convert.ToString(rdr[2])}\n" +
+                               $" ID: {Convert.ToString(rdr[3])}\n" +
+                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
+                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
+                               "}\n" +
+                               "\n");
+                            break;
+
+                        case ResourceSort.PerUnit:
+                            writer.WriteLine(
+                               "{\n" +
+                               $" ID: {Convert.ToString(rdr[0])}\n" +
+                               $" Type: {Convert.ToString(rdr[1])}\n" +
+                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
+                               "}\n" +
+                               "\n");
+                            break;
                     }
-                    writer.WriteLine();
                 }
                 writer.Close();
             }
-
             //COMMIT
             string commit = "COMMIT;";
             cmd1 = new(commit, OpenConn(conn));
@@ -1451,7 +1696,7 @@ Only Accepts A-Z & 0-9");
     }
     #endregion
     #endregion AdminMethods
-
+    //
     #region Resident
     #region UpdateUsername
     public void UpdateUsername()

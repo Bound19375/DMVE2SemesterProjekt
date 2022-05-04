@@ -22,9 +22,9 @@ public partial class UserCreateWaitlist : Form
     {
         do
         {
-            _api.ComboBoxReader(comboBox2, "CreateAccountUsername");
-            _api.ComboBoxReader(comboBox3, "Password");
-            _api.ComboBoxReader(comboBox1, "WaitlistType");
+            _api.ComboBoxReader(comboBox2, API.SetReaderField.CreateAccountUsername);
+            _api.ComboBoxReader(comboBox3, API.SetReaderField.Password);
+            _api.ComboBoxReader(comboBox1, API.SetReaderField.WaitlistType);
         }
         while (true);
     }

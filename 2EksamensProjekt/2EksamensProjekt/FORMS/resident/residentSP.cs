@@ -3,6 +3,8 @@
 public partial class residentSP : Form
 {
     private readonly API _api = API.GetInstance();
+    private readonly API.SQLCMDS _sqlCMDS = API.SQLCMDS.GetInstance();
+
     private static readonly residentSP Singleton = new();
     private residentSP()
     {
@@ -33,19 +35,19 @@ public partial class residentSP : Form
             try
             {
                 //GroupBoxUnitChoice
-                _api.GroupboxReader(groupBox2, "AvailableType");
+                _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
                 //StartDate
-                _api.ComboBoxReader(comboBox1, "Start");
+                _api.ComboBoxReader(comboBox1, API.SetReaderField.Start);
                 //UnitID
-                _api.ComboBoxReader(comboBox4, "UnitID");
+                _api.ComboBoxReader(comboBox4, API.SetReaderField.UnitID);
                 //DurationTime
-                _api.ComboBoxReader(comboBox5, "Duration");
+                _api.ComboBoxReader(comboBox5, API.SetReaderField.Duration);
                 //CancelBookingID
-                _api.ComboBoxReader(comboBox6, "CancelBookingID");
+                _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
                 //AccountNameUpdater
-                _api.ComboBoxReader(comboBox2, "NewAccountUsername");
+                _api.ComboBoxReader(comboBox2, API.SetReaderField.NewAccountUsername);
                 //Password
-                _api.ComboBoxReader(comboBox3, "Password");
+                _api.ComboBoxReader(comboBox3, API.SetReaderField.Password);
 
                 if (label1.InvokeRequired)
                 {
@@ -56,32 +58,32 @@ public partial class residentSP : Form
                 }
 
                 //StartDate
-                _api.ComboBoxFill(comboBox1, _api.sqlcmds.StartDate);
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
                 //Booking Cancel IDS
-                _api.ComboBoxFill(comboBox6, _api.sqlcmds.BookingCancelIDs);
+                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
                 if (radioButton3.Checked) //WashingMachines
                 {
-                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 4);
                 }
                 else if (radioButton4.Checked) //PartyHall
                 {
-                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 24);
                 }
                 else if (radioButton5.Checked) // ParkingSpace
                 {
-                    _api.ComboBoxFill(comboBox4, _api.sqlcmds.AvailableResourceIDS);
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
 
                 //Booked
-                _api.Gridview(dataGridView4, _api.sqlcmds.AllResourcesBooked, true);
+                _api.Gridview(dataGridView4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
                 //Available
-                _api.Gridview(dataGridView1, _api.sqlcmds.AvailableResourcesByType, true);
+                _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
                 //Resident Information
-                _api.Gridview(dataGridView5, _api.sqlcmds.CurrentResidentInfo, true);
+                _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentInfo), true);
             }
             catch (Exception ex)
             {

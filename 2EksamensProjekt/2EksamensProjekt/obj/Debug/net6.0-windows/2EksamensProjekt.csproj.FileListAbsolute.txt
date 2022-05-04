@@ -2,7 +2,6 @@ C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2Eksame
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\2EksamensProjekt.deps.json
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\2EksamensProjekt.runtimeconfig.json
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\2EksamensProjekt.dll
-C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\ref\2EksamensProjekt.dll
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\2EksamensProjekt.pdb
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\BouncyCastle.Crypto.dll
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\Google.Protobuf.dll
@@ -13,7 +12,6 @@ C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2Eksame
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\Ubiety.Dns.Core.dll
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\bin\Debug\net6.0-windows\ZstdNet.dll
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\2EksamensProjekt.csproj.AssemblyReference.cache
-C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.Login.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\2EksamensProjekt.csproj.GenerateResource.cache
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\2EksamensProjekt.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\2EksamensProjekt.AssemblyInfoInputs.cache
@@ -90,9 +88,7 @@ C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2Eksame
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Resources.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.resident.residentSP.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.secretary.secretarySP.resources
-C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.secretary.UserCreateWaitlist.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.Properties.Resources.resources
-C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.AdminCreateHouse.resources
 C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Housing.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.Housing.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.SpecialCollection.resources
@@ -100,3 +96,7 @@ C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2Eksame
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.AdminCreateHouse.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.Login.resources
 C:\Users\bound\Desktop\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.UserCreateWaitlist.resources
+C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.admin.AdminCreateHouse.resources
+C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.Login.resources
+C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\_2EksamensProjekt.FORMS.UserCreateWaitlist.resources
+C:\Users\bound\OneDrive\Skrivebord\DMVE2SemesterProjekt\2EksamensProjekt\2EksamensProjekt\obj\Debug\net6.0-windows\refint\2EksamensProjekt.dll

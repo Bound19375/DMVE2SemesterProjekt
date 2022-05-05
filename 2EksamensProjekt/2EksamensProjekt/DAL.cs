@@ -85,155 +85,160 @@ public class API
             switch(query)
             {
                 case SELECTSQLQUERY.Waitlist: 
-                    return "SELECT a.username, w.type FROM account w, account a WHERE w.username = a.username AND a.privilege = 'waitlist' ORDER BY a.username;";
-
+                    return 
+                        "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
+                        "FROM account a " +
+                        "WHERE a.privilege = 'waitlist' " +
+                        "ORDER BY a.username;";
+                
                 case SELECTSQLQUERY.CurrentResidents: 
-                    return "SELECT a.username, h.type, r.first_names, hr.start_contract, h.m2, h.rental_price FROM housing_account hr, account r, housing h, account a WHERE hr.account_username  = r.username AND hr.housing_id = h.id AND r.username = a.username AND a.privilege = 'resident' ORDER BY a.username;";
-                            //SELECT hr.housing_id, h.`type`, h.m2, h.rental_price, r.name, hr.start_contract, hr.residents_username FROM housing h, housing_residents hr, residents r WHERE h.id = hr.housing_id and hr.residents_username = r.account_username;
+                    return 
+                        "SELECT a.username AS 'Brugernavn', h.type AS 'Type', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', ha.start_contract AS 'Kontraktdato', h.m2 AS 'M2', h.rental_price AS 'Husleje', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse' " +
+                        "FROM housing_account ha, housing h, account a, locality l " +
+                        "WHERE ha.account_username = a.username AND ha.housing_id = h.id AND l.postal_code = h.locality_postal_code " +
+                        "ORDER BY a.username;";
+                
                 case SELECTSQLQUERY.CurrentResidentsUsername:
-                    return "SELECT account_username FROM housing_account;";
+                    return 
+                        "SELECT account_username AS 'Brugernavn' " +
+                        "FROM housing_account;";
 
                 case SELECTSQLQUERY.WMSORTALL:
-                    return "SELECT r.id FROM resource r WHERE r.type = 'washingmachine';";
+                    return 
+                        "SELECT r.id AS 'Vaskemaskine' " +
+                        "FROM resource r " +
+                        "WHERE r.type = 'washingmachine';";
 
                 case SELECTSQLQUERY.PHSortAll:
-                    return "SELECT r.id FROM resource r WHERE r.type = 'partyhall';";
+                    return 
+                        "SELECT r.id AS 'Festsal' " +
+                        "FROM resource r " +
+                        "WHERE r.type = 'partyhall';";
 
                 case SELECTSQLQUERY.PSSortAll:
-                    return "SELECT r.id FROM resource r WHERE r.type = 'parkingspace';";
+                    return 
+                        "SELECT r.id AS 'Parkeringsplads' " +
+                        "FROM resource r " +
+                        "WHERE r.type = 'parkingspace';";
 
                 case SELECTSQLQUERY.AllResourcesBooked:
-                    return "SELECT rrr.id AS 'booking id', a.username, r.first_names, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM account_resource_reservations rrr, account r, account a, resource r2 WHERE rrr.account_username = r.username AND rrr.resource_id = r2.id AND r.username = a.username AND NOW() < rrr.end_timestamp AND a.privilege = 'resident' ORDER BY rrr.end_timestamp;";
+                    return 
+                        "SELECT arr.id AS 'Booking id', a.username AS 'Brugernavn', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r.`type` AS 'Type', r.id AS 'Type-id', arr.start_timestamp AS 'Starttidspunkt', arr.end_timestamp AS 'Sluttidspunkt' " +
+                        "FROM account_resource_reservations arr, account a, resource r " +
+                        "WHERE arr.account_username = a.username AND arr.resource_id = r.id AND NOW() < arr.end_timestamp " +
+                        "ORDER BY arr.end_timestamp;";
 
                 case SELECTSQLQUERY.AvailableResourceIDS:
-                    return "SELECT r.id FROM account_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM account_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+                    return 
+                        "SELECT r.id AS 'Type-id' " +
+                        "FROM account_resource_reservations arr, resource r " +
+                        "WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "GROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.AvailableResourcesByType:
-                    return "SELECT r.id FROM account_resource_reservations rrr, resource r WHERE r.`type` = @availabletype AND ((r.id = rrr.resource_id AND (NOW() > rrr.end_timestamp OR @durationendtime < rrr.start_timestamp)) OR (r.id NOT IN(SELECT rrr2.resource_id FROM account_resource_reservations rrr2))) GROUP BY r.id ORDER BY r.id;";
+                    return 
+                        "SELECT r.id AS 'Type-id' " +
+                        "FROM account_resource_reservations arr, resource r " +
+                        "WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "GROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.Usernames:
-                    return "SELECT r.username FROM account r WHERE r.privilege = 'resident' ORDER BY r.username;";
+                    return 
+                        "SELECT a.username AS 'Brugernavn' " +
+                        "FROM account a " +
+                        "WHERE a.privilege = 'resident' " +
+                        "ORDER BY a.username;";
 
                 case SELECTSQLQUERY.StartDate:
-                    return "SELECT DISTINCT rrr.start_timestamp FROM account_resource_reservations rrr ORDER BY rrr.start_timestamp;";
+                    return 
+                        "SELECT DISTINCT arr.start_timestamp AS 'Starttidspunkt' " +
+                        "FROM account_resource_reservations arr " +
+                        "ORDER BY arr.start_timestamp;";
 
                 case SELECTSQLQUERY.EndDate:
-                    return "SELECT DISTINCT rrr.end_timestamp FROM account_resource_reservations rrr ORDER BY rrr.end_timestamp;";
+                    return 
+                        "SELECT DISTINCT rrr.end_timestamp AS 'Sluttidspunkt' " +
+                        "FROM account_resource_reservations rrr " +
+                        "ORDER BY rrr.end_timestamp;";
 
                 case SELECTSQLQUERY.BookingCancelIDs:
-                    return "SELECT rrr.id FROM account_resource_reservations rrr, account r, account a, resource r2 WHERE rrr.account_username = r.username AND rrr.resource_id = r2.id AND r.username = a.username AND NOW() < rrr.end_timestamp ORDER BY rrr.end_timestamp;";
+                    return 
+                        "SELECT arr.id AS 'Booking id' " +
+                        "FROM account_resource_reservations arr " +
+                        "WHERE NOW() < arr.end_timestamp " +
+                        "ORDER BY arr.end_timestamp;";
 
                 case SELECTSQLQUERY.CurrentResidentInfo:
-                    return "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.'type'  FROM housing_account hr, housing h, account a WHERE h.id = hr.housing_id AND (hr.account_username = @username AND a.username = @username) GROUP BY hr.housing_id;";
+                    return 
+                        "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.'type' " +
+                        "FROM housing_account hr, housing h, account a " +
+                        "WHERE h.id = hr.housing_id AND hr.account_username = a.username AND a.username = @username " +
+                        "GROUP BY hr.housing_id;";
 
                 case SELECTSQLQUERY.ResourceSortAllUsers:
-                    return "SELECT a.username, r.first_names, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM account_resource_reservations rrr, account r, account a, resource r2 WHERE rrr.account_username  = r.username AND rrr.resource_id = r2.id AND r.username = a.username ORDER BY rrr.end_timestamp DESC ;";
+                    return 
+                        "SELECT a.username, a.first_names, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp " +
+                        "FROM account_resource_reservations rrr, account r, account a, resource r2 " +
+                        "WHERE rrr.account_username  = r.username AND rrr.resource_id = r2.id AND r.username = a.username " +
+                        "ORDER BY rrr.end_timestamp DESC ;";
 
                 case SELECTSQLQUERY.ResourceSortAllPerUnit:
-                    return "SELECT * FROM resource r WHERE r.`type` = @availabletype;";
+                    return 
+                        "SELECT * " +
+                        "FROM resource r " +
+                        "WHERE r.`type` = @availabletype;";
 
                 case SELECTSQLQUERY.ResourceSortPerUser:
-                    return "SELECT a.username, r.first_names, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp FROM account_resource_reservations rrr, account r, account a, resource r2 WHERE rrr.account_username = r.username AND rrr.resource_id = r2.id AND r.username = a.username AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.account_username = @username AND r2.type = @unittype ORDER BY rrr.end_timestamp;";
+                    return 
+                        "SELECT a.username, a.first_names, r.type, r.id, rrr.start_timestamp, rrr.end_timestamp " +
+                        "FROM account_resource_reservations rrr, account a, resource r " +
+                        "WHERE rrr.account_username = a.username AND rrr.resource_id = r.id AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.account_username = @username AND r.type = @unittype " +
+                        "ORDER BY rrr.end_timestamp;";
 
                 case SELECTSQLQUERY.ResourceSortPerUnit:
-                    return "SELECT * FROM resource r WHERE id = @unitid;";
+                    return 
+                        "SELECT * " +
+                        "FROM resource " +
+                        "WHERE id = @unitid;";
 
                 case SELECTSQLQUERY.AvailableHouseSortAll:
-                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) GROUP BY h.id ORDER BY h.id;";
+                    return 
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
+                        "FROM housing h " +
+                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
+                        "GROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByM2:
-                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                    return 
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
+                        "FROM housing h " +
+                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max " +
+                        "GROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByPrice:
-                    return "SELECT h.id, h.`type`, h.rental_price, h.m2 FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max GROUP BY h.id ORDER BY h.id;";
+                    return 
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
+                        "FROM housing h " +
+                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max " +
+                        "GROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseIDs:
-                    return "SELECT h.id FROM housing h WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) GROUP BY h.id ORDER BY h.id;";
+                    return 
+                        "SELECT h.id " +
+                        "FROM housing h " +
+                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
+                        "GROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.UsernamesOnWaitinglist:
-                    return "SELECT w.username FROM account w WHERE privilege = 'waitlist'";
+                    return 
+                        "SELECT a.username " +
+                        "FROM account a " +
+                        "WHERE privilege = 'waitlist'";
 
                 default:
                     return "NONE";
             }
         }
-
-  /*
-        //Waitlist
-        public string Waitlist = 
-            "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
-            "FROM account a " +
-            "WHERE a.privilege = 'waitlist' " +
-            "ORDER BY a.username;";
-        //Residents
-        public string CurrentResidents = 
-            "SELECT a.username AS 'Brugernavn', h.type AS 'Type', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', ha.start_contract AS 'Kontraktdato', h.m2 AS 'M2', h.rental_price AS 'Husleje', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse' " +
-            "FROM housing_account ha, housing h, account a, locality l " +
-            "WHERE ha.account_username = a.username " +
-            "AND ha.housing_id = h.id " +
-            "AND h.locality_postal_code = l.postal_code " +
-            "ORDER BY a.username;";
-        //Residents Username
-        public string CurrentResidentsUsername = 
-            "SELECT account_username AS 'Brugernavn' " +
-            "FROM housing_account;";
-        //WashingMachines
-        public string WMSORTALL = 
-            "SELECT r.id AS 'Vaskemaskine' " +
-            "FROM resource r " +
-            "WHERE r.type = 'washingmachine';";
-        //PartyHall
-        public string PHSortAll = 
-            "SELECT r.id AS 'Festsal' " +
-            "FROM resource r " +
-            "WHERE r.type = 'partyhall';";
-        //ParkingSpace
-        public string PSSortAll = 
-            "SELECT r.id AS 'Parkeringsplads' " +
-            "FROM resource r " +
-            "WHERE r.type = 'parkingspace';";
-        //Booked Overall
-        public string AllResourcesBooked = 
-            "SELECT arr.id AS 'Booking id', a.username AS 'Brugernavn', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r.`type` AS 'Type', r.id AS 'Type-id', arr.start_timestamp AS 'Starttidspunkt', arr.end_timestamp AS 'Sluttidspunkt' " +
-            "FROM account_resource_reservations arr, account a, resource r " +
-            "WHERE arr.account_username = a.username " +
-            "AND arr.resource_id = r.id " +
-            "AND NOW() < arr.end_timestamp " +
-            "ORDER BY arr.end_timestamp;";
-        //Available
-        public string AvailableResourceIDS = "SELECT r.id FROM account_resource_reservations arr, resource r WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr.resource_id))) GROUP BY r.id ORDER BY r.id;";
-        public string AvailableResourcesByType = "SELECT r.id, r.`type` FROM account_resource_reservations arr, resource r WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr.resource_id))) GROUP BY r.id ORDER BY r.id;";
-        //Usernames
-        public string Usernames = 
-            "SELECT a.username " +
-            "FROM account a " +
-            "ORDER BY a.username;";
-        //StartDate & EndDate
-        public string StartDate = 
-            "SELECT DISTINCT arr.start_timestamp " +
-            "FROM account_resource_reservations arr " +
-            "ORDER BY arr.start_timestamp;";
-        public string EndDate = 
-            "SELECT DISTINCT arr.end_timestamp " +
-            "FROM account_resource_reservations arr " +
-            "ORDER BY arr.end_timestamp;";
-        //Booking Cancel IDS
-        public string BookingCancelIDs = 
-            "SELECT arr.id " +
-            "FROM account_resource_reservations arr, account a, resource r " +
-            "WHERE arr.account_username = a.username " +
-            "AND arr.resource_id = r.id " +
-            "AND NOW() < arr.end_timestamp " +
-            "ORDER BY arr.end_timestamp;";
-        //Resident Info
-        public string CurrentResidentInfo = 
-            "SELECT ha.*, h.`type`, h.m2, h.rental_price, a.username, a.privilege " +
-            "FROM housing_account ha, housing h, account a " +
-            "WHERE h.id = ha.housing_id " +
-            "AND (ha.account_username = @username AND a.username = @username) " +
-            "GROUP BY ha.housing_id;";
-      */
-
     }
     #endregion SQLCMDS
 

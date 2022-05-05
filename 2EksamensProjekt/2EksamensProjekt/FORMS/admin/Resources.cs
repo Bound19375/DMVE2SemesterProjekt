@@ -42,30 +42,61 @@ public partial class Resources : Form
         {
             try
             {
-                //GroupBoxUnitChoice
-                _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
-                //StartDate
-                _api.ComboBoxReader(comboBox1, API.SetReaderField.Start);
-                //EndDate
-                _api.ComboBoxReader(comboBox2, API.SetReaderField.End);
-                //User
-                _api.ComboBoxReader(comboBox3, API.SetReaderField.AccountUsername);
-                //UnitID
-                _api.ComboBoxReader(comboBox4, API.SetReaderField.UnitID);
-                //DurationTime
-                _api.ComboBoxReader(comboBox5, API.SetReaderField.Duration);
-                //CancelBookingID
-                _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
+                //Invokers
+                if (radioButton8.Checked) //Sort
+                {
+                    _api.GroupBoxInvoker(groupBox1, true);
 
-                //Usernames
-                _api.ComboBoxFill(comboBox3, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Usernames));
-                //StartDate
-                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
-                //EndDate
-                _api.ComboBoxFill(comboBox2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.EndDate));
-                //Booking Cancel IDS
-                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
+                    if (radioButton1.Checked) // Per User
+                    {
+                        _api.ComboBoxInvoker(comboBox3, true);
+                        _api.ComboBoxInvoker(comboBox1, true);
+                        _api.ComboBoxInvoker(comboBox2, true);
+                        _api.ButtonInvoker(button3, false);
+                        _api.ComboBoxInvoker(comboBox4, false);
+
+                    }
+
+                    if (radioButton2.Checked) // Per Unit
+                    {
+                        _api.ComboBoxInvoker(comboBox4, true);
+                        _api.ComboBoxInvoker(comboBox1, false);
+                        _api.ComboBoxInvoker(comboBox2, false);
+                        _api.ComboBoxInvoker(comboBox3, false);
+
+                    }
+
+                    if (radioButton6.Checked || radioButton7.Checked) //All
+                    {
+                        _api.ComboBoxInvoker(comboBox3, false);
+                        _api.ComboBoxInvoker(comboBox4, false);
+                        _api.ComboBoxInvoker(comboBox1, false);
+                        _api.ComboBoxInvoker(comboBox2, false);
+                        _api.ComboBoxInvoker(comboBox4, false);
+                        _api.ComboBoxInvoker(comboBox5, false);
+
+                        if (radioButton7.Checked)
+                        {
+                            _api.GroupBoxInvoker(groupBox2, true);
+                            _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
+                        }
+                    }
+                }
+
+                if (radioButton9.Checked) //Book
+                {
+                    _api.ButtonInvoker(button3, true);
+                    _api.ComboBoxInvoker(comboBox2, false);
+                    _api.ComboBoxInvoker(comboBox3, true);
+                    _api.ComboBoxInvoker(comboBox5, true);
+                    _api.ComboBoxInvoker(comboBox1, true);
+                    _api.ComboBoxInvoker(comboBox4, true);
+                    _api.GroupBoxInvoker(groupBox1, false);
+                    _api.GroupBoxInvoker(groupBox2, true);
+                }
+
+                //Fillers
                 if (radioButton3.Checked) //WashingMachines
                 {
                     if (radioButton8.Checked)//Sort
@@ -102,79 +133,48 @@ public partial class Resources : Form
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
+                
+                _api.ComboBoxFill(comboBox3, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Usernames));
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
+                _api.ComboBoxFill(comboBox2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.EndDate));
+                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
-                //Booked
+                //Readers
+                _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
+                _api.ComboBoxReader(comboBox1, API.SetReaderField.Start);
+                _api.ComboBoxReader(comboBox2, API.SetReaderField.End);
+                _api.ComboBoxReader(comboBox3, API.SetReaderField.SortUsername);
+                _api.ComboBoxReader(comboBox4, API.SetReaderField.UnitID);
+                _api.ComboBoxReader(comboBox5, API.SetReaderField.Duration);
+                _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
+
+                //GridViewFillers
                 _api.Gridview(dataGridView4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
-                //Available
                 _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
 
-                if (radioButton6.Checked) //All User
+                if (radioButton8.Checked)
                 {
+                    if (radioButton6.Checked) //All User
+                    {
+                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
+
+                    }
+                    else if (radioButton7.Checked) //All Per Unit (Count)
+                    {
+                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
+                    }
+                    else if (radioButton1.Checked) //Per User
+                    {
+                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
+                    }
+                    else if (radioButton2.Checked) //Per Unit
+                    {
+                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
+                    }
+                }
+                else
                     _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
 
-                }
-                else if (radioButton7.Checked) //All Per Unit (Count)
-                {
-                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
-                }
-                else if (radioButton1.Checked) //Per User
-                {
-                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
-                }
-                else if (radioButton2.Checked) //Per Unit
-                {
-                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
-                }
-                    
-                //Invokers
-                if (radioButton8.Checked) //Sort
-                {
-                    _api.ButtonInvoker(button3, false);
-                    _api.GroupBoxInvoker(groupBox1, true);
-                    _api.ComboBoxInvoker(comboBox3, false);
-                    _api.ComboBoxInvoker(comboBox1, false);
-                    _api.ComboBoxInvoker(comboBox2, false);
-                    _api.ComboBoxInvoker(comboBox4, false);
-                    _api.ComboBoxInvoker(comboBox5, false);
-
-                    if (radioButton1.Checked) // Per User
-                    {
-                        _api.ComboBoxInvoker(comboBox3, true);
-                        _api.ComboBoxInvoker(comboBox1, true);
-                        _api.ComboBoxInvoker(comboBox2, true);
-                    }
-
-                    if (radioButton2.Checked) // Per Unit
-                    {
-                        _api.ComboBoxInvoker(comboBox4, true);
-                        _api.ComboBoxInvoker(comboBox1, true);
-                        _api.ComboBoxInvoker(comboBox2, true);
-                    }
-
-                    if (radioButton6.Checked || radioButton7.Checked) //All
-                    {
-                        _api.ComboBoxInvoker(comboBox3, false);
-                        _api.ComboBoxInvoker(comboBox4, false);
-
-                        if (radioButton7.Checked)
-                        {
-                            _api.GroupBoxInvoker(groupBox2, true);
-                            _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
-                        }
-                    }
-                }
-
-                if (radioButton9.Checked) //Book
-                {
-                    _api.ButtonInvoker(button3, true);
-                    _api.ComboBoxInvoker(comboBox2, false);
-                    _api.ComboBoxInvoker(comboBox3, true);
-                    _api.ComboBoxInvoker(comboBox5, true);
-                    _api.ComboBoxInvoker(comboBox1, true);
-                    _api.ComboBoxInvoker(comboBox4, true);
-                    _api.GroupBoxInvoker(groupBox1, false);
-                    _api.GroupBoxInvoker(groupBox2, true);
-                }
             }
             catch (Exception ex)
             {
@@ -224,14 +224,14 @@ public partial class Resources : Form
                 MessageBox.Show($@"User: {_api.AccountUsername}
                                 Start Date: {_api.Start}
                                 End Date: {_api.End}
-                                Unit Type: {_api.UnitType}
+                                Unit Type: 
                                 ARE REQUIRED TO SORT BY USER");
             }
             else if (radioButton2.Checked)
             {
                 MessageBox.Show($@"Start Date: {_api.Start}
                                 End Date: {_api.End}
-                                Unit Type: {_api.UnitType}
+                                Unit Type: 
                                 Unit ID: {_api.UnitID}
                                 ARE REQUIRED TO SORT BY UNIT");
             }

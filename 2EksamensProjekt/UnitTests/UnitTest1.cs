@@ -84,6 +84,7 @@ namespace UnitTests
             try
             {
                 Task t1 = test.Login("A", "1");
+                await Task.FromResult(t1);
                 result = true;
             }
             catch
@@ -110,7 +111,7 @@ namespace UnitTests
                 max.Text = "0";
                 test.TextboxReader(min, API.SetReaderField.Min);
                 test.TextboxReader(max, API.SetReaderField.Max);
-                test.AdminStatisticsPrint(API.ADMINPRINTSQL.PerUser);
+                test.AdminStatisticsPrint(API.ResourceSort.AllPerUnit);
                 result = true;
             }
             catch

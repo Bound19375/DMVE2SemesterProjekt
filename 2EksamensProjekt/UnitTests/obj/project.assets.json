@@ -7012,19 +7012,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\bound\\.nuget\\packages\\": {}
+    "C:\\Users\\Tim\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\UnitTests.csproj",
+      "projectUniqueName": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\UnitTests.csproj",
       "projectName": "UnitTests",
-      "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\UnitTests.csproj",
-      "packagesPath": "C:\\Users\\bound\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\obj\\",
+      "projectPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\UnitTests.csproj",
+      "packagesPath": "C:\\Users\\Tim\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\UnitTests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\bound\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Tim\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7038,8 +7038,8 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "projectReferences": {
-            "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
-              "projectPath": "C:\\Users\\bound\\Desktop\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
+            "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj": {
+              "projectPath": "C:\\Users\\Tim\\Documents\\GitHub\\DMVE2SemesterProjekt\\2EksamensProjekt\\2EksamensProjekt\\2EksamensProjekt.csproj"
             }
           }
         }

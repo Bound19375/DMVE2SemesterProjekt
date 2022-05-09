@@ -9,7 +9,7 @@ public partial class Account_Waitlist_Panel : Form
     private Account_Waitlist_Panel()
     {
         InitializeComponent();
-        Task t2 = new(GridViewTimer);
+        Task t2 = new(Worker);
         t2.Start();
     }
 
@@ -24,12 +24,12 @@ public partial class Account_Waitlist_Panel : Form
         Hide();
     }
 
-    private void GridViewTimer()
+    private void Worker()
     {
         do
         {
-            _api.Gridview(dataGridView2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
-            _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
+            _api.Gridview(dataGridView2, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
+            _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
         }
         while (true);
     }

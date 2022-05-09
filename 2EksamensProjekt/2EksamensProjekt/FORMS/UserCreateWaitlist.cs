@@ -41,7 +41,7 @@ public partial class UserCreateWaitlist : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
-        _api.CreateUser_Waitlist();
+        _api.CreateUserWaitlist();
         Hide();
     }
 }

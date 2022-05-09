@@ -34,26 +34,26 @@ public partial class Housing : Form
                 string sql = "NONE";
                 if (radioButton3.Checked)
                 {
-                    sql = _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
+                    sql = _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
                 }
                 else if (radioButton1.Checked)
                 {
-                    sql = _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
+                    sql = _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
 
                 }
                 else if (radioButton2.Checked)
                 {
-                    sql = _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
+                    sql = _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
 
                 }
-                _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
                 _api.Gridview(dataGridView2, sql, true);
-                _api.Gridview(dataGridView3, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
+                _api.Gridview(dataGridView3, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
 
 
-                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseIDs));
-                _api.ComboBoxFill(comboBox2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.UsernamesOnWaitinglist));
-                _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentsUsername));
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseIDs));
+                _api.ComboBoxFill(comboBox2, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.UsernamesOnWaitinglist));
+                _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentsUsername));
 
                 if (!radioButton3.Checked)
                 {

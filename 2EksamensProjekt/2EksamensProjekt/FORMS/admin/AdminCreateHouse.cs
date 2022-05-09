@@ -12,7 +12,7 @@ public partial class AdminCreateHouse : Form
     private AdminCreateHouse()
     {
         InitializeComponent();
-        Task t1 = new(worker);
+        Task t1 = new(Worker);
         t1.Start();
     }
 
@@ -27,7 +27,7 @@ public partial class AdminCreateHouse : Form
         Hide();
     }
 
-    private void worker()
+    private void Worker()
     {
         do
         {
@@ -40,7 +40,7 @@ public partial class AdminCreateHouse : Form
 
 
             //Filler
-            _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Zipcode));
+            _api.ComboBoxFill(comboBox6, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Zipcode));
         }
         while (true);
     }
@@ -48,6 +48,6 @@ public partial class AdminCreateHouse : Form
     private void button1_Click(object sender, EventArgs e)
     {
         _api.CreateNewHouse();
-        Close();
+        Hide();
     }
 }

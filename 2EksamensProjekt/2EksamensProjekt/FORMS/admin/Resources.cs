@@ -101,11 +101,11 @@ public partial class Resources : Form
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.WMSORTALL));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.WMSORTALL));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 4);
                 }
@@ -113,11 +113,11 @@ public partial class Resources : Form
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.PHSortAll));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.PHSortAll));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 24);
                 }
@@ -125,19 +125,19 @@ public partial class Resources : Form
                 {
                     if (radioButton8.Checked)//Sort
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.PSSortAll));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.PSSortAll));
                     }
                     else if (radioButton9.Checked)//Book
                     {
-                        _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                        _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     }
                     _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
                 
-                _api.ComboBoxFill(comboBox3, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Usernames));
-                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
-                _api.ComboBoxFill(comboBox2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.EndDate));
-                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
+                _api.ComboBoxFill(comboBox3, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Usernames));
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.StartDate));
+                _api.ComboBoxFill(comboBox2, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.EndDate));
+                _api.ComboBoxFill(comboBox6, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
                 //Readers
                 _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
@@ -149,31 +149,31 @@ public partial class Resources : Form
                 _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
 
                 //GridViewFillers
-                _api.Gridview(dataGridView4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
-                _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
+                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
 
                 if (radioButton8.Checked)
                 {
                     if (radioButton6.Checked) //All User
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
 
                     }
                     else if (radioButton7.Checked) //All Per Unit (Count)
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
                     }
                     else if (radioButton1.Checked) //Per User
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
                     }
                     else if (radioButton2.Checked) //Per Unit
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
                     }
                 }
                 else
-                    _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
+                    _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
 
             }
             catch (Exception ex)

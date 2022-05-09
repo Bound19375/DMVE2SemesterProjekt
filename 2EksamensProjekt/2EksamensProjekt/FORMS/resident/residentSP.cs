@@ -58,32 +58,32 @@ public partial class residentSP : Form
                 }
 
                 //StartDate
-                _api.ComboBoxFill(comboBox1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.StartDate));
+                _api.ComboBoxFill(comboBox1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.StartDate));
                 //Booking Cancel IDS
-                _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
+                _api.ComboBoxFill(comboBox6, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.BookingCancelIDs));
 
                 if (radioButton3.Checked) //WashingMachines
                 {
-                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 4);
                 }
                 else if (radioButton4.Checked) //PartyHall
                 {
-                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 24);
                 }
                 else if (radioButton5.Checked) // ParkingSpace
                 {
-                    _api.ComboBoxFill(comboBox4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
+                    _api.ComboBoxFill(comboBox4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourceIDS));
                     _api.ComboBoxFillNoSqlInt(comboBox5, 48);
                 }
 
                 //Booked
-                _api.Gridview(dataGridView4, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
+                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
                 //Available
-                _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
                 //Resident Information
-                _api.Gridview(dataGridView5, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentInfo), true);
+                _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentInfo), true);
             }
             catch (Exception ex)
             {

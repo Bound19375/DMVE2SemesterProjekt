@@ -6,7 +6,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAABAAAACAAAICBFiYAAEAAGAAAAAAAAA=</HashCode>
+      <HashCode>AAAAABAAACAAABAAAACAAAACBFiYAAEAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\Account_Waitlist_Panel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -32,9 +32,6 @@
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.SpecialCollection">
     <Position X="5" Y="4.75" Width="2.25" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAACAAAACAAiAAAAAAAAACAAAAAA=</HashCode>
       <FileName>FORMS\admin\SpecialCollection.cs</FileName>
@@ -46,7 +43,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>MAAAAAAAACAQABAQAACBAAACBUCIAAEAAEAAAAAAAAA=</HashCode>
+      <HashCode>MAAAABAAACAAABAQAACBAAACBUCIAAEAAEAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\AdminCreateHouse.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -83,15 +80,11 @@
   <Class Name="_2EksamensProjekt.DAL.API">
     <Position X="14" Y="4.75" Width="3" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <NestedTypes>
-      <Class Name="_2EksamensProjekt.DAL.API.SQLCMDS">
-        <Compartments>
-          <Compartment Name="Methods" Collapsed="true" />
-        </Compartments>
+      <Class Name="_2EksamensProjekt.DAL.API.SQLCMDS" Collapsed="true">
         <NestedTypes>
           <Enum Name="_2EksamensProjekt.DAL.API.SQLCMDS.SELECTSQLQUERY" Collapsed="true">
             <TypeIdentifier>
@@ -113,7 +106,7 @@
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
-      <Class Name="_2EksamensProjekt.DAL.API.Houses">
+      <Class Name="_2EksamensProjekt.DAL.API.Houses" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -125,7 +118,7 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAIAQICAAXAKsSgFEJGEACIgBABGAAESIESUAQIAsQA=</HashCode>
+      <HashCode>AAIAQICAAXAKsSgFEJGEACIgBABHAAECIESUAQIAsQA=</HashCode>
       <FileName>DAL.cs</FileName>
     </TypeIdentifier>
   </Class>

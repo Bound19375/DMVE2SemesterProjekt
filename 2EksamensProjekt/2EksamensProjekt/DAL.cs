@@ -87,7 +87,7 @@ public class API
             Zipcode,
         }
 
-        public string SQLCMD(SELECTSQLQUERY query)
+        public string GetSQLQuery(SELECTSQLQUERY query)
         {
             switch(query)
             {
@@ -974,16 +974,16 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         switch (specialcollection)
         {
             case SPECIALCOLLECTION.SortByAll:
-                dosql = _sqlCMDS.SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
+                dosql = _sqlCMDS.GetSQLQuery(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortAll);
                 break;
 
             case SPECIALCOLLECTION.SortByM2:
-                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
+                dosql = dosql = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByM2);
 
                 break;
 
             case SPECIALCOLLECTION.SortByPrice:
-                dosql = dosql = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
+                dosql = dosql = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
                 break;
         }
 
@@ -1233,7 +1233,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
     #endregion SecretaryMethods
     //
     #region Create User And Waitlist
-    public void CreateUser_Waitlist()
+    public void CreateUserWaitlist()
     {
         try
         {
@@ -1542,8 +1542,11 @@ Only Accepts A-Z & 0-9");
             {
                 throw new("Username Already Exists!\nSet Another Username");
             }
-
-            throw new(ex.Message);
+            
+            if (ex.Number == 1452)
+            {
+                MessageBox.Show("Ukorrekt PostNr!");
+            }
         }
     }
     #endregion Create New Housing
@@ -1607,21 +1610,21 @@ Only Accepts A-Z & 0-9");
             switch (sql)
             {
                 case ResourceSort.AllUsers:
-                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers);
+                    cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers);
                     break;
 
                 case ResourceSort.AllPerUnit:
-                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
+                    cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
 
                     break;
 
                 case ResourceSort.PerUser:
-                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser);
+                    cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser);
 
                     break;
 
                 case ResourceSort.PerUnit:
-                    cmdTxtPrint = SQLCMDS.GetInstance().SQLCMD(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit);
+                    cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit);
                     break;
             }
 

@@ -31,8 +31,8 @@ public partial class secretarySP : Form
     {
         do
         {
-            _api.Gridview(dataGridView2, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
-            _api.Gridview(dataGridView1, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
+            _api.Gridview(dataGridView2, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
+            _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
                 
         }
         while(true);

@@ -4,7 +4,8 @@ public class API
     #region Properties
     private int Min { get; set; }
     private int Max { get; set; }
-    public string? AccountUsername { get; private set; }
+    public string? AccountUsername { get; set; }
+    private string? SortUsername { get; set; }
     private string? NewAccountUsername { get; set; }
     private string? CreateAccountUsername { get; set; }
     private string? HouseID { get; set; }
@@ -14,7 +15,6 @@ public class API
     public DateTime Start { get; private set; }
     public DateTime End { get; private set; }
     private DateTime Duration { get; set; }
-    public string? UnitType { get; set; }
     public int UnitID { get; private set; }
     public string? StatisticSQL { get; set; }
     private int CancelBookingID { get; set; }
@@ -93,72 +93,72 @@ public class API
                 case SELECTSQLQUERY.CurrentResidents: 
                     return 
                         "SELECT a.username AS 'Brugernavn', h.type AS 'Type', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', ha.start_contract AS 'Kontraktdato', h.m2 AS 'M2', h.rental_price AS 'Husleje', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse' " +
-                        "FROM housing_account ha, housing h, account a, locality l " +
-                        "WHERE ha.account_username = a.username AND ha.housing_id = h.id AND l.postal_code = h.locality_postal_code " +
-                        "ORDER BY a.username;";
+                        "\nFROM housing_account ha, housing h, account a, locality l " +
+                        "\nWHERE ha.account_username = a.username AND ha.housing_id = h.id AND l.postal_code = h.locality_postal_code " +
+                        "\nORDER BY a.username;";
                 
                 case SELECTSQLQUERY.CurrentResidentsUsername:
                     return 
                         "SELECT account_username AS 'Brugernavn' " +
-                        "FROM housing_account;";
+                        "\nFROM housing_account;";
 
                 case SELECTSQLQUERY.WMSORTALL:
                     return 
                         "SELECT r.id AS 'Vaskemaskine' " +
-                        "FROM resource r " +
-                        "WHERE r.type = 'washingmachine';";
+                        "\nFROM resource r " +
+                        "\nWHERE r.type = 'washingmachine';";
 
                 case SELECTSQLQUERY.PHSortAll:
                     return 
                         "SELECT r.id AS 'Festsal' " +
-                        "FROM resource r " +
-                        "WHERE r.type = 'partyhall';";
+                        "\nFROM resource r " +
+                        "\nWHERE r.type = 'partyhall';";
 
                 case SELECTSQLQUERY.PSSortAll:
                     return 
                         "SELECT r.id AS 'Parkeringsplads' " +
-                        "FROM resource r " +
-                        "WHERE r.type = 'parkingspace';";
+                        "\nFROM resource r " +
+                        "\nWHERE r.type = 'parkingspace';";
 
                 case SELECTSQLQUERY.AllResourcesBooked:
                     return 
                         "SELECT arr.id AS 'Booking id', a.username AS 'Brugernavn', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r.`type` AS 'Type', r.id AS 'Type-id', arr.start_timestamp AS 'Starttidspunkt', arr.end_timestamp AS 'Sluttidspunkt' " +
-                        "FROM account_resource_reservations arr, account a, resource r " +
-                        "WHERE arr.account_username = a.username AND arr.resource_id = r.id AND NOW() < arr.end_timestamp " +
-                        "ORDER BY arr.end_timestamp;";
+                        "\nFROM account_resource_reservations arr, account a, resource r " +
+                        "\nWHERE arr.account_username = a.username AND arr.resource_id = r.id AND NOW() < arr.end_timestamp " +
+                        "\nORDER BY arr.end_timestamp;";
 
                 case SELECTSQLQUERY.AvailableResourceIDS:
                     return 
                         "SELECT r.id AS 'Type-id' " +
-                        "FROM account_resource_reservations arr, resource r " +
-                        "WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
-                        "GROUP BY r.id ORDER BY r.id;";
+                        "\nFROM account_resource_reservations arr, resource r " +
+                        "\nWHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.AvailableResourcesByType:
                     return 
                         "SELECT r.id AS 'Type-id' " +
-                        "FROM account_resource_reservations arr, resource r " +
-                        "WHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
-                        "GROUP BY r.id ORDER BY r.id;";
+                        "\nFROM account_resource_reservations arr, resource r " +
+                        "\nWHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.Usernames:
                     return 
                         "SELECT a.username AS 'Brugernavn' " +
-                        "FROM account a " +
-                        "WHERE a.privilege = 'resident' " +
-                        "ORDER BY a.username;";
+                        "\nFROM account a " +
+                        "\nWHERE a.privilege = 'resident' " +
+                        "\nORDER BY a.username;";
 
                 case SELECTSQLQUERY.StartDate:
                     return 
                         "SELECT DISTINCT arr.start_timestamp AS 'Starttidspunkt' " +
-                        "FROM account_resource_reservations arr " +
-                        "ORDER BY arr.start_timestamp;";
+                        "\nFROM account_resource_reservations arr " +
+                        "\nORDER BY arr.start_timestamp;";
 
                 case SELECTSQLQUERY.EndDate:
                     return 
                         "SELECT DISTINCT rrr.end_timestamp AS 'Sluttidspunkt' " +
-                        "FROM account_resource_reservations rrr " +
-                        "ORDER BY rrr.end_timestamp;";
+                        "\nFROM account_resource_reservations rrr " +
+                        "\nORDER BY rrr.end_timestamp;";
 
                 case SELECTSQLQUERY.BookingCancelIDs:
                     return 
@@ -170,69 +170,69 @@ public class API
                 case SELECTSQLQUERY.CurrentResidentInfo:
                     return 
                         "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.'type' " +
-                        "FROM housing_account hr, housing h, account a " +
-                        "WHERE h.id = hr.housing_id AND hr.account_username = a.username AND a.username = @username " +
-                        "GROUP BY hr.housing_id;";
+                        "\nFROM housing_account hr, housing h, account a " +
+                        "\nWHERE h.id = hr.housing_id AND hr.account_username = a.username AND a.username = @username " +
+                        "\nGROUP BY hr.housing_id;";
 
                 case SELECTSQLQUERY.ResourceSortAllUsers:
                     return 
                         "SELECT a.username, a.first_names, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp " +
-                        "FROM account_resource_reservations rrr, account r, account a, resource r2 " +
-                        "WHERE rrr.account_username  = r.username AND rrr.resource_id = r2.id AND r.username = a.username " +
-                        "ORDER BY rrr.end_timestamp DESC ;";
+                        "\nFROM account_resource_reservations rrr, account r, account a, resource r2 " +
+                        "\nWHERE rrr.account_username  = r.username AND rrr.resource_id = r2.id AND r.username = a.username " +
+                        "\nORDER BY rrr.end_timestamp DESC ;";
 
                 case SELECTSQLQUERY.ResourceSortAllPerUnit:
                     return 
                         "SELECT * " +
-                        "FROM resource r " +
-                        "WHERE r.`type` = @availabletype;";
+                        "\nFROM resource r " +
+                        "\nWHERE r.`type` = @availabletype;";
 
                 case SELECTSQLQUERY.ResourceSortPerUser:
                     return 
                         "SELECT a.username, a.first_names, r.type, r.id, rrr.start_timestamp, rrr.end_timestamp " +
-                        "FROM account_resource_reservations rrr, account a, resource r " +
-                        "WHERE rrr.account_username = a.username AND rrr.resource_id = r.id AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.account_username = @username AND r.type = @unittype " +
-                        "ORDER BY rrr.end_timestamp;";
+                        "\nFROM account_resource_reservations rrr, account a, resource r " +
+                        "\nWHERE rrr.account_username = a.username AND rrr.resource_id = r.id AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.account_username = @sortusername AND r.type = @availabletype" +
+                        "\nORDER BY rrr.end_timestamp;";
 
                 case SELECTSQLQUERY.ResourceSortPerUnit:
                     return 
                         "SELECT * " +
-                        "FROM resource " +
-                        "WHERE id = @unitid;";
+                        "\nFROM resource " +
+                        "\nWHERE id = @unitid;";
 
                 case SELECTSQLQUERY.AvailableHouseSortAll:
                     return 
                         "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "FROM housing h " +
-                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
-                        "GROUP BY h.id ORDER BY h.id;";
+                        "\nFROM housing h " +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
+                        "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByM2:
                     return 
                         "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "FROM housing h " +
-                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max " +
-                        "GROUP BY h.id ORDER BY h.id;";
+                        "\nFROM housing h " +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max " +
+                        "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByPrice:
-                    return 
+                    return
                         "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "FROM housing h " +
-                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max " +
-                        "GROUP BY h.id ORDER BY h.id;";
+                        "\nFROM housing h " +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max " +
+                        "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseIDs:
                     return 
                         "SELECT h.id " +
-                        "FROM housing h " +
-                        "WHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
-                        "GROUP BY h.id ORDER BY h.id;";
+                        "\nFROM housing h " +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
+                        "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.UsernamesOnWaitinglist:
                     return 
                         "SELECT a.username " +
-                        "FROM account a " +
-                        "WHERE privilege = 'waitlist'";
+                        "\nFROM account a " +
+                        "\nWHERE privilege = 'waitlist'";
 
                 default:
                     return "NONE";
@@ -356,12 +356,14 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             MySqlCommand cmd1 = new(dataTableSql, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@min", Min);
             cmd1.Parameters.AddWithValue("@max", Max);
-            cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
-            cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
-            cmd1.Parameters.AddWithValue("@unittype", UnitType);
+            string start = Start.ToString("yyyy-MM-dd HH:mm:ss");
+            cmd1.Parameters.AddWithValue("@start", start);
+            string end = End.ToString("yyyy-MM-dd HH:mm:ss");
+            cmd1.Parameters.AddWithValue("@end", end);
             cmd1.Parameters.AddWithValue("@unitid", UnitID);
             cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
             cmd1.Parameters.AddWithValue("@username", AccountUsername);
+            cmd1.Parameters.AddWithValue("@sortusername", SortUsername);
             cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
             tbl.Load(cmd1.ExecuteReader());
 
@@ -414,7 +416,6 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             cmd1.Parameters.AddWithValue("@max", Max);
             cmd1.Parameters.AddWithValue("@start", Start.ToString("yy-MM-dd HH:mm:ss.ffff"));
             cmd1.Parameters.AddWithValue("@end", End.ToString("yy-MM-dd HH:mm:ss.ffff"));
-            cmd1.Parameters.AddWithValue("@unittype", UnitType);
             cmd1.Parameters.AddWithValue("@unitid", UnitID);
             cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
             cmd1.Parameters.AddWithValue("@username", AccountUsername);
@@ -502,32 +503,41 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
     #region ButtonComboboxGroupboxInvoker
     public void ButtonInvoker(Button btn, bool btnEnableDisable)
     {
-        if (btn.InvokeRequired)
+        if (btn.Enabled != btnEnableDisable)
         {
-            btn.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+            if (btn.InvokeRequired)
             {
-                btn.Enabled = btnEnableDisable;
-            });
+                btn.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    btn.Enabled = btnEnableDisable;
+                });
+            }
         }
     }
     public void ComboBoxInvoker(ComboBox combo, bool cbEnableDisable)
     {
-        if (combo.InvokeRequired)
+        if (combo.Enabled != cbEnableDisable)
         {
-            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+            if (combo.InvokeRequired)
             {
-                combo.Enabled = cbEnableDisable;
-            });
+                combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    combo.Enabled = cbEnableDisable;
+                });
+            }
         }
     }
     public void GroupBoxInvoker(GroupBox gb, bool gbEnableDisable)
     {
-        if (gb.InvokeRequired)
+        if (gb.Enabled != gbEnableDisable)
         {
-            gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+            if (gb.InvokeRequired)
             {
-                gb.Enabled = gbEnableDisable;
-            });
+                gb.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                {
+                    gb.Enabled = gbEnableDisable;
+                });
+            }
         }
     }
     #endregion ButtonComboBoxInvoker
@@ -539,6 +549,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         AccountUsername,
         NewAccountUsername,
         CreateAccountUsername,
+        SortUsername,
         HouseID,
         AccountName,
         SpecialCollectionSql,
@@ -546,7 +557,6 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         Start,
         End,
         Duration,
-        UnitType,
         UnitID,
         StatisticSQL,
         CancelBookingID,
@@ -654,6 +664,20 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
 
                         break;
                     }
+
+                case SetReaderField.SortUsername:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                SortUsername = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
                 case SetReaderField.UnitID:
                     {
                         if (combo.InvokeRequired)
@@ -1228,9 +1252,8 @@ Only Accepts A-Z & 0-9");
             //Insert Booking
             string insert = "INSERT INTO account_resource_reservations(account_username, resource_id, start_timestamp, end_timestamp) VALUES(@user, @unitid, @start, @duration);";
             cmd1 = new(insert, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@user", AccountUsername);
+            cmd1.Parameters.AddWithValue("@user", SortUsername);
             cmd1.Parameters.AddWithValue("@start", Convert.ToDateTime(Start));
-            cmd1.Parameters.AddWithValue("@unittype", UnitType);
             cmd1.Parameters.AddWithValue("@unitid", UnitID);
             cmd1.Parameters.AddWithValue("@duration", Duration);
             cmd1.ExecuteNonQuery();

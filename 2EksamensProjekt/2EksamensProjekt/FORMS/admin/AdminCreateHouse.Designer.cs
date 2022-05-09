@@ -47,9 +47,10 @@ partial class AdminCreateHouse
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(51, 150);
+            this.label1.Location = new System.Drawing.Point(36, 90);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 26);
+            this.label1.Size = new System.Drawing.Size(42, 18);
             this.label1.TabIndex = 4;
             this.label1.Text = "Type";
             // 
@@ -61,19 +62,19 @@ partial class AdminCreateHouse
             "normal",
             "youth",
             "senior"});
-            this.comboBox1.Location = new System.Drawing.Point(12, 181);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.comboBox1.Location = new System.Drawing.Point(8, 109);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(160, 33);
+            this.comboBox1.Size = new System.Drawing.Size(113, 23);
             this.comboBox1.TabIndex = 5;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(71, 223);
+            this.label2.Location = new System.Drawing.Point(50, 134);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 26);
+            this.label2.Size = new System.Drawing.Size(29, 18);
             this.label2.TabIndex = 6;
             this.label2.Text = "M2";
             // 
@@ -87,39 +88,42 @@ partial class AdminCreateHouse
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(41, 296);
+            this.label3.Location = new System.Drawing.Point(29, 178);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 26);
+            this.label3.Size = new System.Drawing.Size(62, 18);
             this.label3.TabIndex = 9;
             this.label3.Text = "Husleje";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 368);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button1.BackColor = System.Drawing.Color.SpringGreen;
+            this.button1.Location = new System.Drawing.Point(8, 221);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(159, 38);
+            this.button1.Size = new System.Drawing.Size(111, 23);
             this.button1.TabIndex = 11;
             this.button1.Text = "Create";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // comboBox6
             // 
             this.comboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(12, 108);
+            this.comboBox6.Location = new System.Drawing.Point(8, 65);
+            this.comboBox6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(160, 33);
+            this.comboBox6.Size = new System.Drawing.Size(113, 23);
             this.comboBox6.TabIndex = 51;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Arial Narrow", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label11.Location = new System.Drawing.Point(49, 79);
+            this.label11.Location = new System.Drawing.Point(34, 47);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(77, 26);
+            this.label11.Size = new System.Drawing.Size(54, 20);
             this.label11.TabIndex = 50;
             this.label11.Text = "PostNr:";
             // 
@@ -127,9 +131,10 @@ partial class AdminCreateHouse
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label10.Location = new System.Drawing.Point(40, 14);
+            this.label10.Location = new System.Drawing.Point(28, 8);
+            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(103, 26);
+            this.label10.Size = new System.Drawing.Size(70, 18);
             this.label10.TabIndex = 49;
             this.label10.Text = "Adresse:";
             // 
@@ -137,34 +142,37 @@ partial class AdminCreateHouse
             // 
             this.comboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(12, 43);
+            this.comboBox5.Location = new System.Drawing.Point(8, 26);
+            this.comboBox5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(160, 33);
+            this.comboBox5.Size = new System.Drawing.Size(113, 21);
             this.comboBox5.TabIndex = 48;
             // 
             // comboBox2
             // 
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(12, 252);
+            this.comboBox2.Location = new System.Drawing.Point(8, 151);
+            this.comboBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(160, 33);
+            this.comboBox2.Size = new System.Drawing.Size(113, 21);
             this.comboBox2.TabIndex = 52;
             // 
             // comboBox3
             // 
             this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(12, 325);
+            this.comboBox3.Location = new System.Drawing.Point(8, 195);
+            this.comboBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(160, 33);
+            this.comboBox3.Size = new System.Drawing.Size(113, 21);
             this.comboBox3.TabIndex = 53;
             // 
             // AdminCreateHouse
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(184, 422);
+            this.ClientSize = new System.Drawing.Size(129, 253);
             this.Controls.Add(this.comboBox3);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.comboBox6);
@@ -177,7 +185,6 @@ partial class AdminCreateHouse
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "AdminCreateHouse";
             this.Text = "Create";
             this.ResumeLayout(false);

@@ -40,9 +40,10 @@ partial class Account_Waitlist_Panel
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(11, 777);
+            this.button2.Location = new System.Drawing.Point(8, 466);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(1110, 33);
+            this.button2.Size = new System.Drawing.Size(777, 20);
             this.button2.TabIndex = 19;
             this.button2.Text = "Print";
             this.button2.UseVisualStyleBackColor = true;
@@ -50,21 +51,24 @@ partial class Account_Waitlist_Panel
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1127, 777);
+            this.button1.BackColor = System.Drawing.Color.SpringGreen;
+            this.button1.Location = new System.Drawing.Point(789, 466);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(386, 33);
+            this.button1.Size = new System.Drawing.Size(270, 20);
             this.button1.TabIndex = 18;
             this.button1.Text = "Opret";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(1258, 9);
+            this.label3.Location = new System.Drawing.Point(881, 5);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(146, 38);
+            this.label3.Size = new System.Drawing.Size(98, 25);
             this.label3.TabIndex = 17;
             this.label3.Text = "Venteliste";
             // 
@@ -72,37 +76,40 @@ partial class Account_Waitlist_Panel
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(460, 7);
+            this.label1.Location = new System.Drawing.Point(322, 4);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(125, 38);
+            this.label1.Size = new System.Drawing.Size(86, 25);
             this.label1.TabIndex = 16;
             this.label1.Text = "Beboere";
             // 
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(1127, 52);
+            this.dataGridView2.Location = new System.Drawing.Point(789, 31);
+            this.dataGridView2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 62;
             this.dataGridView2.RowTemplate.Height = 33;
-            this.dataGridView2.Size = new System.Drawing.Size(386, 719);
+            this.dataGridView2.Size = new System.Drawing.Size(270, 431);
             this.dataGridView2.TabIndex = 15;
             // 
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(11, 52);
+            this.dataGridView1.Location = new System.Drawing.Point(8, 31);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1110, 719);
+            this.dataGridView1.Size = new System.Drawing.Size(777, 431);
             this.dataGridView1.TabIndex = 14;
             // 
             // Account_Waitlist_Panel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1529, 842);
+            this.ClientSize = new System.Drawing.Size(1070, 505);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
@@ -110,6 +117,7 @@ partial class Account_Waitlist_Panel
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Account_Waitlist_Panel";
             this.Text = "Account_Waitlist_Panel";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();

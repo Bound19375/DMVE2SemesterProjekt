@@ -80,7 +80,7 @@ public partial class Housing : Form
 
     private void button3_Click(object sender, EventArgs e)
     {
-        AdminCreateHouse obj = new();
+        AdminCreateHouse obj = AdminCreateHouse.GetInstance();
         obj.Show();
     }
 

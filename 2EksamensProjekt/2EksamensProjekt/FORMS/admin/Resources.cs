@@ -221,18 +221,18 @@ public partial class Resources : Form
         {
             if (radioButton1.Checked)
             {
-                MessageBox.Show($@"User: {_api.AccountUsername}
-                                Start Date: {_api.Start}
-                                End Date: {_api.End}
-                                Unit Type: 
+                MessageBox.Show($@"User
+                                Start Date
+                                End Date
+                                Unit Type
                                 ARE REQUIRED TO SORT BY USER");
             }
             else if (radioButton2.Checked)
             {
-                MessageBox.Show($@"Start Date: {_api.Start}
-                                End Date: {_api.End}
-                                Unit Type: 
-                                Unit ID: {_api.UnitID}
+                MessageBox.Show($@"Start Date
+                                End Date
+                                Unit Type 
+                                Unit ID
                                 ARE REQUIRED TO SORT BY UNIT");
             }
         }

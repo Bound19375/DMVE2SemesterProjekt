@@ -2,21 +2,51 @@
 
 public partial class AdminCreateHouse : Form
 {
-    public static string HouseType { get; private set; } = "NONE";
-    public static int M2 { get; private set; }
-    public static int Price { get; private set; }
+    
 
     private readonly API _api = API.GetInstance();
-    public AdminCreateHouse()
+    private readonly API.SQLCMDS _sqlCMDS = API.SQLCMDS.GetInstance();
+
+    private static AdminCreateHouse singleton = new AdminCreateHouse();
+
+    private AdminCreateHouse()
     {
         InitializeComponent();
+        Task t1 = new(worker);
+        t1.Start();
+    }
+
+    public static AdminCreateHouse GetInstance()
+    {
+        return singleton;
+    }
+
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        e.Cancel = true;
+        Hide();
+    }
+
+    private void worker()
+    {
+        do
+        {
+            //Reader
+            _api.ComboBoxReader(comboBox5, API.SetReaderField.Address);
+            _api.ComboBoxReader(comboBox6, API.SetReaderField.Zipcode);
+            _api.ComboBoxReader(comboBox1, API.SetReaderField.HouseType);
+            _api.ComboBoxReader(comboBox2, API.SetReaderField.M2);
+            _api.ComboBoxReader(comboBox3, API.SetReaderField.Price);
+
+
+            //Filler
+            _api.ComboBoxFill(comboBox6, _sqlCMDS.SQLCMD(API.SQLCMDS.SELECTSQLQUERY.Zipcode));
+        }
+        while (true);
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-        HouseType = comboBox1.Text;
-        M2 = Convert.ToInt32(textBox1.Text);
-        Price = Convert.ToInt32(textBox2.Text);
         _api.CreateNewHouse();
         Close();
     }

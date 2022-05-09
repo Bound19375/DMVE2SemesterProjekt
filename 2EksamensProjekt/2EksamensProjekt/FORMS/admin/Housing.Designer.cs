@@ -87,7 +87,7 @@ partial class Housing
             this.dataGridView2.ReadOnly = true;
             this.dataGridView2.RowHeadersWidth = 62;
             this.dataGridView2.RowTemplate.Height = 33;
-            this.dataGridView2.Size = new System.Drawing.Size(1404, 310);
+            this.dataGridView2.Size = new System.Drawing.Size(1246, 310);
             this.dataGridView2.TabIndex = 1;
             // 
             // label3
@@ -275,10 +275,10 @@ partial class Housing
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(1375, 334);
+            this.button3.Location = new System.Drawing.Point(1376, 692);
             this.button3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(160, 38);
+            this.button3.Size = new System.Drawing.Size(160, 33);
             this.button3.TabIndex = 36;
             this.button3.Text = "Opret Bolig";
             this.button3.UseVisualStyleBackColor = true;
@@ -286,10 +286,10 @@ partial class Housing
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(1374, 383);
+            this.button4.Location = new System.Drawing.Point(1376, 735);
             this.button4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(160, 60);
+            this.button4.Size = new System.Drawing.Size(160, 35);
             this.button4.TabIndex = 37;
             this.button4.Text = "Fjern Bolig";
             this.button4.UseVisualStyleBackColor = true;

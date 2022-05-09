@@ -10,18 +10,24 @@ public class API
     private string? CreateAccountUsername { get; set; }
     private string? HouseID { get; set; }
     private string? AccountName { get; set; }
-    public string? SpecialCollectionSql { get; set; }
+    private string? AccountSurname { get; set; }
+    private string? AccountPhoneNumber { get; set; }
     //public string? User { get; set; }
-    public DateTime Start { get; private set; }
-    public DateTime End { get; private set; }
+    private DateTime Start { get; set; }
+    private DateTime End { get; set; }
     private DateTime Duration { get; set; }
-    public int UnitID { get; private set; }
-    public string? StatisticSQL { get; set; }
+    private int UnitID { get; set; }
     private int CancelBookingID { get; set; }
     private string? AvailableType { get; set; }
     private string? Password { get; set; }
     private string? WaitlistType { get; set; }
     private string? DeleteFromSystemUsername { get; set; }
+    private string? HouseType { get; set; }
+    private int M2 { get; set; }
+    private int Price { get; set; }
+    private string? Address { get; set; }
+    private string? Zipcode { get; set; }
+
     #endregion Fields
 
     #region Singleton
@@ -77,7 +83,8 @@ public class API
 
             //Fillers
             AvailableHouseIDs,
-            UsernamesOnWaitinglist
+            UsernamesOnWaitinglist,
+            Zipcode,
         }
 
         public string SQLCMD(SELECTSQLQUERY query)
@@ -229,10 +236,15 @@ public class API
                         "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.UsernamesOnWaitinglist:
-                    return 
+                    return
                         "SELECT a.username " +
                         "\nFROM account a " +
-                        "\nWHERE privilege = 'waitlist'";
+                        "\nWHERE privilege = 'waitlist';";
+
+                case SELECTSQLQUERY.Zipcode:
+                    return
+                        "SELECT postal_code " +
+                        "\nFROM locality;";
 
                 default:
                     return "NONE";
@@ -552,6 +564,8 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         SortUsername,
         HouseID,
         AccountName,
+        AccountSurname,
+        AccountPhoneNumer,
         SpecialCollectionSql,
         //User,
         Start,
@@ -563,7 +577,12 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         AvailableType,
         Password,
         WaitlistType,
-        DeleteFromSystemUsername
+        DeleteFromSystemUsername,
+        HouseType,
+        M2,
+        Price,
+        Address,
+        Zipcode
     }
     public enum ResourceSort
     {
@@ -665,6 +684,32 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                         break;
                     }
 
+                case SetReaderField.AccountSurname:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                AccountSurname = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
+                case SetReaderField.AccountPhoneNumer:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                 AccountPhoneNumber = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
                 case SetReaderField.SortUsername:
                     {
                         if (combo.InvokeRequired)
@@ -704,6 +749,73 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
 
                         break;
                     }
+
+                case SetReaderField.HouseType:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                HouseType = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
+                case SetReaderField.M2:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                M2 = success ? result : 0;
+                            });
+                        }
+
+                        break;
+                    }
+
+                case SetReaderField.Price:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                bool success = int.TryParse(combo.Text, out int result);
+                                Price = success ? result : 0;
+                            });
+                        }
+                        break;
+                    }
+
+                case SetReaderField.Address:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                Address = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
+                case SetReaderField.Zipcode:
+                    {
+                        if (combo.InvokeRequired)
+                        {
+                            combo.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to adress
+                            {
+                                Zipcode = combo.Text;
+                            });
+                        }
+
+                        break;
+                    }
+
                 case SetReaderField.NewAccountUsername:
                     {
                         if (combo.InvokeRequired)
@@ -1136,14 +1248,17 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             cmd1.ExecuteNonQuery();
 
             //Create User
-            Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
+            Regex regex = new(@"^[a-zA-Z0-9ÆØÅæøå]+$"); //Input Validation
             if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
             {
-                string sqlcommand = "INSERT INTO account (username, password, privilege, type) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type);";
+                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @accountname, @accountsurname, @phone);";
                 cmd1 = new(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 cmd1.Parameters.AddWithValue("@password", Password);
                 cmd1.Parameters.AddWithValue("@type", WaitlistType);
+                cmd1.Parameters.AddWithValue("@accountname", AccountName);
+                cmd1.Parameters.AddWithValue("@accountsurname", AccountSurname);
+                cmd1.Parameters.AddWithValue("@phone", AccountPhoneNumber);
                 cmd1.ExecuteNonQuery();
 
                 //Append Created User To Waitlist
@@ -1384,7 +1499,7 @@ Only Accepts A-Z & 0-9");
             MySqlConnection conn = new(ConnStr);
 
 
-            if (AdminCreateHouse.HouseType != string.Empty && AdminCreateHouse.M2 != 0 && AdminCreateHouse.Price != 0)
+            if (HouseType != string.Empty && M2 != 0 && Price != 0)
             {
                 //Set Isolation Level
                 string sqlString = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
@@ -1397,11 +1512,14 @@ Only Accepts A-Z & 0-9");
                 cmd1.ExecuteNonQuery();
 
                 //Insert Into Residents
-                string sqlcommand = "INSERT INTO housing (type, m2, rental_price) VALUES (@type, @m2, @price);";
+                string sqlcommand = "INSERT INTO housing (type, m2, rental_price, street_address, locality_postal_code) VALUES (@type, @m2, @price, @address, @zip);";
                 cmd1 = new(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@type", AdminCreateHouse.HouseType);
-                cmd1.Parameters.AddWithValue("@m2", AdminCreateHouse.M2);
-                cmd1.Parameters.AddWithValue("@price", AdminCreateHouse.Price);
+                cmd1.Parameters.AddWithValue("@type", HouseType);
+                cmd1.Parameters.AddWithValue("@m2", M2);
+                cmd1.Parameters.AddWithValue("@price", Price);
+                cmd1.Parameters.AddWithValue("@address", Address);
+                cmd1.Parameters.AddWithValue("@zip", Zipcode);
+
                 cmd1.ExecuteNonQuery();
 
                 //COMMIT

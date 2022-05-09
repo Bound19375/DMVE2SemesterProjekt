@@ -25,6 +25,10 @@ public partial class UserCreateWaitlist : Form
             _api.ComboBoxReader(comboBox2, API.SetReaderField.CreateAccountUsername);
             _api.ComboBoxReader(comboBox3, API.SetReaderField.Password);
             _api.ComboBoxReader(comboBox1, API.SetReaderField.WaitlistType);
+            _api.ComboBoxReader(comboBox4, API.SetReaderField.AccountPhoneNumer);
+            _api.ComboBoxReader(comboBox5, API.SetReaderField.AccountName);
+            _api.ComboBoxReader(comboBox6, API.SetReaderField.AccountSurname);
+
         }
         while (true);
     }

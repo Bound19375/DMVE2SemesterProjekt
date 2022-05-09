@@ -92,11 +92,11 @@ public class API
             switch(query)
             {
                 case SELECTSQLQUERY.Waitlist: 
-                    return 
-                        "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
-                        "FROM account a " +
-                        "WHERE a.privilege = 'waitlist' " +
-                        "ORDER BY a.creation_date;";
+                    return
+                        "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type', CONCAT(a.first_names, ' ', a.last_name), phone_number" +
+                        "\nFROM account a " +
+                        "\nWHERE a.privilege = 'waitlist' " +
+                        "\nORDER BY a.creation_date;";
                 
                 case SELECTSQLQUERY.CurrentResidents: 
                     return 
@@ -176,8 +176,8 @@ public class API
                         "ORDER BY arr.end_timestamp;";
 
                 case SELECTSQLQUERY.CurrentResidentInfo:
-                    return 
-                        "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.username, a.'type' " +
+                    return
+                        "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.'type', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
                         "\nFROM housing_account hr, housing h, account a " +
                         "\nWHERE h.id = hr.housing_id AND hr.account_username = a.username AND a.username = @username " +
                         "\nGROUP BY hr.housing_id;";
@@ -1252,7 +1252,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             Regex regex = new(@"^[a-zA-Z0-9ÆØÅæøå]+$"); //Input Validation
             if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
             {
-                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @accountname, @accountsurname, @phone);";
+                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @phone, @accountsurname, @accountname);";
                 cmd1 = new(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 cmd1.Parameters.AddWithValue("@password", Password);

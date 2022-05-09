@@ -3,80 +3,80 @@
   <Class Name="_2EksamensProjekt.FORMS.admin.Account_Waitlist_Panel">
     <Position X="19.75" Y="4.75" Width="2.75" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAABAAAACAAAICBFiYAAEAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\Account_Waitlist_Panel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.adminSP">
     <Position X="9.5" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAABAAAACAAAACBUA4AAAAAHAAAQAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAABAAAACAAAACBEC4AAEAAHAAAQAAAAA=</HashCode>
       <FileName>FORMS\admin\adminSP.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.Housing">
     <Position X="7.25" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ACAAABAAACAAABAQAACAAABCBfg5ABAAAHAOAAAAAAI=</HashCode>
+      <HashCode>ACAAABAAACAAABAQAACAAABCBPi5ABEAAHAOAAAAAAI=</HashCode>
       <FileName>FORMS\admin\Housing.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.SpecialCollection">
     <Position X="5" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAgAAAAAACAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAiAAAAAAAAACAAAAAA=</HashCode>
       <FileName>FORMS\admin\SpecialCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.admin.AdminCreateHouse">
     <Position X="17" Y="4.75" Width="2.75" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ACAAAAAAASAAABAQAACBACACAAAMAAAAEGAAAAAAAAA=</HashCode>
+      <HashCode>MAAAAAAAACAQABAQAACBAAACBUCIAAEAAEAAAAAAAAA=</HashCode>
       <FileName>FORMS\admin\AdminCreateHouse.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.Login">
     <Position X="11.75" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ACAAAAAAACAAABAAAACAAgACBQAYAAAAEGAAAAAAAAA=</HashCode>
+      <HashCode>ACAAAAAAACAAABAAAACAAgACBACYAAEAEGAAAAAAAAA=</HashCode>
       <FileName>FORMS\Login.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.resident.residentSP">
     <Position X="22.5" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>8QAAABAAACAAABAQAACAAAACBcgqAAAAAHABAAAAAAI=</HashCode>
+      <HashCode>8QAAABAAACAAABAQAACAAAACBMiqAAEAAHABAAAAAAI=</HashCode>
       <FileName>FORMS\resident\residentSP.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.secretary.secretarySP">
     <Position X="0.5" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAABAAAACAAAACBVgaAAAAAGAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAABAAAACAAAICBFiYAAEAAGAAAAAAAAA=</HashCode>
       <FileName>FORMS\secretary\secretarySP.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -84,35 +84,58 @@
     <Position X="14" Y="4.75" Width="3" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
-      <Compartment Name="Nested Types" Collapsed="false" />
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <NestedTypes>
       <Class Name="_2EksamensProjekt.DAL.API.SQLCMDS">
         <Compartments>
           <Compartment Name="Methods" Collapsed="true" />
         </Compartments>
+        <NestedTypes>
+          <Enum Name="_2EksamensProjekt.DAL.API.SQLCMDS.SELECTSQLQUERY" Collapsed="true">
+            <TypeIdentifier>
+              <NewMemberFileName>DAL.cs</NewMemberFileName>
+            </TypeIdentifier>
+          </Enum>
+        </NestedTypes>
         <TypeIdentifier>
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
+      <Enum Name="_2EksamensProjekt.DAL.API.SetReaderField" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DAL.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="_2EksamensProjekt.DAL.API.ResourceSort" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DAL.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
       <Class Name="_2EksamensProjekt.DAL.API.Houses">
         <TypeIdentifier>
           <NewMemberFileName>DAL.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
+      <Enum Name="_2EksamensProjekt.DAL.API.SPECIALCOLLECTION" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DAL.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAIEQJKAAHAKsSgBCJGEAAIAAQBmBBQSIESUAQIAsRA=</HashCode>
+      <HashCode>AAIAQICAAXAKsSgFEJGEACIgBABGAAESIESUAQIAsQA=</HashCode>
       <FileName>DAL.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2EksamensProjekt.FORMS.UserCreateWaitlist">
     <Position X="2.75" Y="4.75" Width="2.25" />
     <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAQABAQAACAAAACBQAIAAAAAGAAAAAAAAA=</HashCode>
+      <HashCode>AAAAABAAACAAABAQAACAAAACBECIAAEAAEAAAAAAAAA=</HashCode>
       <FileName>FORMS\UserCreateWaitlist.cs</FileName>
     </TypeIdentifier>
   </Class>

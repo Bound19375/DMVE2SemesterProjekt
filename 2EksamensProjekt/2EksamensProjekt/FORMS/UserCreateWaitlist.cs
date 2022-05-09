@@ -18,6 +18,12 @@ public partial class UserCreateWaitlist : Form
         return Singleton;
     }
 
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        e.Cancel = true;
+        Hide();
+    }
+
     private void Worker()
     {
         do

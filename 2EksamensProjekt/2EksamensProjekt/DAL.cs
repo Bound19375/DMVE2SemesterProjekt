@@ -87,9 +87,8 @@ public class API
                 case SELECTSQLQUERY.Waitlist: 
                     return 
                         "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
-                        "\nFROM account a " +
-                        "\nWHERE a.privilege = 'waitlist' " +
-                        "\nORDER BY a.username;";
+                        "FROM account a " +
+                        "WHERE a.privilege = 'waitlist' ";
                 
                 case SELECTSQLQUERY.CurrentResidents: 
                     return 

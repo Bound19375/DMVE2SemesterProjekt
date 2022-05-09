@@ -93,7 +93,7 @@ public class API
             {
                 case SELECTSQLQUERY.Waitlist: 
                     return
-                        "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type', CONCAT(a.first_names, ' ', a.last_name), phone_number" +
+                        "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type', CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', phone_number" +
                         "\nFROM account a " +
                         "\nWHERE a.privilege = 'waitlist' " +
                         "\nORDER BY a.creation_date;";
@@ -139,14 +139,14 @@ public class API
                     return 
                         "SELECT r.id AS 'Type-id' " +
                         "\nFROM account_resource_reservations arr, resource r " +
-                        "\nWHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp OR @durationendtime >= arr.end_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
                         "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.AvailableResourcesByType:
                     return 
-                        "SELECT r.id AS 'Type-id' " +
-                        "\nFROM account_resource_reservations arr, resource r " +
-                        "\nWHERE r.`type` = @availabletype AND ((r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp)) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2))) " +
+                        "SELECT r.id AS 'Type-id'" +
+                        "\nFROM account_resource_reservations arr, resource r" +
+                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp OR @durationendtime >= arr.end_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
                         "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.Usernames:
@@ -209,24 +209,24 @@ public class API
                         "\nWHERE id = @unitid;";
 
                 case SELECTSQLQUERY.AvailableHouseSortAll:
-                    return 
-                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "\nFROM housing h " +
-                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) " +
+                    return
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2, CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
+                        "\nFROM housing h, locality l" +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.locality_postal_code = l.postal_code" +
                         "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByM2:
-                    return 
-                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "\nFROM housing h " +
-                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max " +
+                    return
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2, CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
+                        "\nFROM housing h, locality l" +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.m2 BETWEEN @min AND @max AND h.locality_postal_code = l.postal_code" +
                         "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseSortByPrice:
                     return
-                        "SELECT h.id, h.`type`, h.rental_price, h.m2 " +
-                        "\nFROM housing h " +
-                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max " +
+                        "SELECT h.id, h.`type`, h.rental_price, h.m2, CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
+                        "\nFROM housing h, locality l" +
+                        "\nWHERE h.id NOT IN(SELECT hr2.housing_id FROM housing_account hr2) AND h.rental_price BETWEEN @min AND @max AND h.locality_postal_code = l.postal_code" +
                         "\nGROUP BY h.id ORDER BY h.id;";
 
                 case SELECTSQLQUERY.AvailableHouseIDs:
@@ -665,7 +665,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                                 bool success = Int32.TryParse(combo.Text, out int result);
                                 if (success)
                                 {
-                                    Duration = Start.AddHours(Convert.ToDouble(result));
+                                    Duration = Start.AddHours(result);
                                 }
                             });
                         }
@@ -944,6 +944,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         public string? Housetype { get; set; }
         public int M2 { get; set; }
         public int Price { get; set; }
+        public string? Address { get; set; }
     }
 
     public enum SPECIALCOLLECTION
@@ -1000,7 +1001,8 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                 ID = rdr.GetInt32(0),
                 Housetype = rdr.GetString(1),
                 M2 = rdr.GetInt32(3),
-                Price = rdr.GetInt32(2)
+                Price = rdr.GetInt32(2),
+                Address = rdr.GetString(4),
             };
 
             collection.Add(house);
@@ -1438,13 +1440,6 @@ Only Accepts A-Z & 0-9");
                 //Begin Transation
                 sqlString = "START TRANSACTION;";
                 cmd1 = new(sqlString, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                //Insert Into Residents
-                sqlcommand = "UPDATE account SET first_names = @name WHERE username = @username;";
-                cmd1 = new(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@name", AccountName);
-                cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.ExecuteNonQuery();
 
                 //Insert Into Housing_Residents

@@ -62,7 +62,6 @@ public partial class Housing : Form
                 }
                 _api.ComboBoxReader(comboBox1, API.SetReaderField.HouseID);
                 _api.ComboBoxReader(comboBox2, API.SetReaderField.AccountUsername);
-                _api.ComboBoxReader(comboBox3, API.SetReaderField.AccountName);
                 _api.ComboBoxReader(comboBox4, API.SetReaderField.DeleteFromSystemUsername);
             }
             catch (Exception ex)

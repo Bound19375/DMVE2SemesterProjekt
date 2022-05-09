@@ -18,7 +18,7 @@ public partial class Resources : Form
         comboBox2.Enabled = false;
         comboBox4.Enabled = false;
         comboBox5.Enabled = false;
-        groupBox2.Text = @"washingmachine";
+        radioButton3.Enabled = true;
         comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
         Task t2 = new(Worker);
         t2.Start();

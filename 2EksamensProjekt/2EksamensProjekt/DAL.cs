@@ -88,8 +88,7 @@ public class API
                     return 
                         "SELECT a.username AS 'Brugernavn', a.`type`AS 'Type' " +
                         "FROM account a " +
-                        "WHERE a.privilege = 'waitlist' " +
-                        "ORDER BY a.username;";
+                        "WHERE a.privilege = 'waitlist' ";
                 
                 case SELECTSQLQUERY.CurrentResidents: 
                     return 

@@ -1641,6 +1641,15 @@ Only Accepts A-Z & 0-9");
             cmd1 = new(cmdTxtPrint, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@min", Min);
             cmd1.Parameters.AddWithValue("@max", Max);
+            string start = Start.ToString("yyyy-MM-dd HH:mm:ss");
+            cmd1.Parameters.AddWithValue("@start", start);
+            string end = End.ToString("yyyy-MM-dd HH:mm:ss");
+            cmd1.Parameters.AddWithValue("@end", end);
+            cmd1.Parameters.AddWithValue("@unitid", UnitID);
+            cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
+            cmd1.Parameters.AddWithValue("@username", AccountUsername);
+            cmd1.Parameters.AddWithValue("@sortusername", SortUsername);
+            cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
             DataTable tbl = new();
             tbl.Load(cmd1.ExecuteReader());
 

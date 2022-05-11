@@ -47,7 +47,22 @@ public partial class AdminCreateHouse : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
-        _api.CreateNewHouse();
-        Hide();
+        Regex regex = new(@"^[a-zA-Z0-9\sæøåÆØÅ]+$"); //Input Validation
+        if (regex.IsMatch(comboBox1.Text) && regex.IsMatch(comboBox2.Text) && regex.IsMatch(comboBox3.Text) && regex.IsMatch(comboBox5.Text) && regex.IsMatch(comboBox6.Text))
+        {
+            if (comboBox6.Items.Contains(comboBox6.Text))
+            {
+                _api.CreateNewHouse();
+                Hide();
+            }
+            else
+            {
+                MessageBox.Show("Ukorrekt PostNr!");
+            }
+        }
+        else
+        {
+            MessageBox.Show("Oh you naughty sql injection tryharder!");
+        }
     }
 }

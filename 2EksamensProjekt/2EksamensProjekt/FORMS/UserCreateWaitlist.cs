@@ -41,7 +41,15 @@ public partial class UserCreateWaitlist : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
-        _api.CreateUserWaitlist();
-        Hide();
+        Regex regex = new(@"^[a-zA-Z0-9\sæøåÆØÅ]+$"); //Input Validation
+        if (regex.IsMatch(comboBox1.Text) && regex.IsMatch(comboBox2.Text) && regex.IsMatch(comboBox3.Text) && regex.IsMatch(comboBox4.Text) && regex.IsMatch(comboBox5.Text) && regex.IsMatch(comboBox6.Text))
+        {
+            _api.CreateUserWaitlist();
+            Hide();
+        }
+        else
+        {
+            MessageBox.Show("Oh you naughty sql injection tryharder!");
+        }
     }
 }

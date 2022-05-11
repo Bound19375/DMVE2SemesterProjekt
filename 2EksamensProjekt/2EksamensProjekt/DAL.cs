@@ -1165,147 +1165,6 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         }
     }
     #endregion GetPassword
-    //
-    #region SecretaryMethods
-    #region Secretary Print Resident (txt)
-    public void SecretaryPrint()
-    {
-        try
-        {
-            MySqlConnection conn = new(ConnStr);
-
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Write To txt file
-            string cmd_TxtPrint = 
-                "SELECT a.username, h.type, CONCAT(a.first_names, ' ', a.last_name), ha.start_contract, h.m2, h.rental_price " +
-                "FROM housing_account ha, housing h, account a " +
-                "WHERE ha.account_username = a.username " +
-                "AND ha.housing_id = h.id " +
-                "ORDER BY a.username;";
-            cmd1 = new(cmd_TxtPrint, OpenConn(conn));
-
-            MySqlDataReader rdr = cmd1.ExecuteReader();
-                
-            Directory.CreateDirectory(@"..\..\..\txts");
-            string filePath = @"..\..\..\txts\Residencies.txt";
-            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
-            {
-                StreamWriter writer = new(stream, Encoding.UTF8);
-
-                while (rdr.Read())
-                {
-                    writer.WriteLine(
-                        "{\n" +
-                        $"\tUsername: {Convert.ToString(rdr[0])}\n" +
-                        $"\tType: {Convert.ToString(rdr[1])}\n" +
-                        $"\tName: {Convert.ToString(rdr[2])}\n" +
-                        $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
-                        $"\tM2: {Convert.ToString(rdr[4])}\n" +
-                        $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
-                        "}\n" +
-                        "\n");
-                }
-                writer.Close();
-            }
-            rdr.Close();
-
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            CloseConn(conn);
-            MessageBox.Show($@"File Downloaded To: {filePath[9..]}");
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
-    }
-    #endregion
-    #endregion SecretaryMethods
-    //
-    #region Create User And Waitlist
-    public void CreateUserWaitlist()
-    {
-        try
-        {
-            MySqlConnection conn = new(ConnStr);
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Create User
-            Regex regex = new(@"^[a-zA-Z0-9ÆØÅæøå]+$"); //Input Validation
-            if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
-            {
-                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @phone, @accountsurname, @accountname);";
-                cmd1 = new(sqlcommand, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
-                cmd1.Parameters.AddWithValue("@password", Password);
-                cmd1.Parameters.AddWithValue("@type", WaitlistType);
-                cmd1.Parameters.AddWithValue("@accountname", AccountName);
-                cmd1.Parameters.AddWithValue("@accountsurname", AccountSurname);
-                cmd1.Parameters.AddWithValue("@phone", AccountPhoneNumber);
-                cmd1.ExecuteNonQuery();
-
-                //Append Created User To Waitlist
-                /*string sql = "SELECT * FROM account WHERE username = @username";
-                cmd1 = new(sql, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
-                MySqlDataReader reader = cmd1.ExecuteReader();
-                string dbusername = "NONE";
-                while (reader.Read())
-                {
-                    dbusername = reader.GetString(0);
-                }
-                reader.Close();
-                string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
-                cmd1 = new(sqlwaitlist, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@type", WaitlistType);
-                cmd1.Parameters.AddWithValue("@dbusername", dbusername);
-                cmd1.ExecuteNonQuery();*/
-
-                //COMMIT
-                string commit = "COMMIT;";
-                cmd1 = new(commit, OpenConn(conn));
-                cmd1.ExecuteNonQuery();
-
-                CloseConn(conn);
-            }
-            else
-            {
-                MessageBox.Show(@"Incorrect Username Format!
-Only Accepts A-Z & 0-9");
-            }
-            CloseConn(conn);
-        }
-        catch (MySqlException ex)
-        {
-            if (ex.Number == 1062)
-            {
-                throw new("Username Already Exists!\nSet Another Username");
-            }
-
-            throw new(ex.ToString());
-        }
-    }
-    #endregion
     #region CancelReservation
     public void CancelReservation()
     {
@@ -1397,8 +1256,147 @@ Only Accepts A-Z & 0-9");
         }
     }
     #endregion Booking
-    //
+    
     #region AdminMethods
+    #region SecretaryMethods
+    #region Secretary Print Resident (txt)
+    public void SecretaryPrint()
+    {
+        try
+        {
+            MySqlConnection conn = new(ConnStr);
+
+            //Set Isolation Level
+            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            string sqlString = "START TRANSACTION;";
+            cmd1 = new(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Write To txt file
+            string cmd_TxtPrint =
+                "SELECT a.username, h.type, CONCAT(a.first_names, ' ', a.last_name), ha.start_contract, h.m2, h.rental_price " +
+                "FROM housing_account ha, housing h, account a " +
+                "WHERE ha.account_username = a.username " +
+                "AND ha.housing_id = h.id " +
+                "ORDER BY a.username;";
+            cmd1 = new(cmd_TxtPrint, OpenConn(conn));
+
+            MySqlDataReader rdr = cmd1.ExecuteReader();
+
+            Directory.CreateDirectory(@"..\..\..\txts");
+            string filePath = @"..\..\..\txts\Residencies.txt";
+            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
+            {
+                StreamWriter writer = new(stream, Encoding.UTF8);
+
+                while (rdr.Read())
+                {
+                    writer.WriteLine(
+                        "{\n" +
+                        $"\tUsername: {Convert.ToString(rdr[0])}\n" +
+                        $"\tType: {Convert.ToString(rdr[1])}\n" +
+                        $"\tName: {Convert.ToString(rdr[2])}\n" +
+                        $"\tContract_Date: {Convert.ToString(rdr[3])}\n" +
+                        $"\tM2: {Convert.ToString(rdr[4])}\n" +
+                        $"\tRental_Price: {Convert.ToString(rdr[5])}\n" +
+                        "}\n" +
+                        "\n");
+                }
+                writer.Close();
+            }
+            rdr.Close();
+
+            //COMMIT
+            string commit = "COMMIT;";
+            cmd1 = new(commit, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            CloseConn(conn);
+            MessageBox.Show($@"File Downloaded To: {filePath[9..]}");
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+    #endregion
+    #region Create User And Waitlist
+    public void CreateUserWaitlist()
+    {
+        try
+        {
+            MySqlConnection conn = new(ConnStr);
+            //Set Isolation Level
+            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
+            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Begin Transation
+            string sqlString = "START TRANSACTION;";
+            cmd1 = new(sqlString, OpenConn(conn));
+            cmd1.ExecuteNonQuery();
+
+            //Create User
+            Regex regex = new(@"^[a-zA-Z0-9ÆØÅæøå]+$"); //Input Validation
+            if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
+            {
+                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @phone, @accountsurname, @accountname);";
+                cmd1 = new(sqlcommand, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
+                cmd1.Parameters.AddWithValue("@password", Password);
+                cmd1.Parameters.AddWithValue("@type", WaitlistType);
+                cmd1.Parameters.AddWithValue("@accountname", AccountName);
+                cmd1.Parameters.AddWithValue("@accountsurname", AccountSurname);
+                cmd1.Parameters.AddWithValue("@phone", AccountPhoneNumber);
+                cmd1.ExecuteNonQuery();
+
+                //Append Created User To Waitlist
+                /*string sql = "SELECT * FROM account WHERE username = @username";
+                cmd1 = new(sql, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
+                MySqlDataReader reader = cmd1.ExecuteReader();
+                string dbusername = "NONE";
+                while (reader.Read())
+                {
+                    dbusername = reader.GetString(0);
+                }
+                reader.Close();
+                string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
+                cmd1 = new(sqlwaitlist, OpenConn(conn));
+                cmd1.Parameters.AddWithValue("@type", WaitlistType);
+                cmd1.Parameters.AddWithValue("@dbusername", dbusername);
+                cmd1.ExecuteNonQuery();*/
+
+                //COMMIT
+                string commit = "COMMIT;";
+                cmd1 = new(commit, OpenConn(conn));
+                cmd1.ExecuteNonQuery();
+
+                CloseConn(conn);
+            }
+            else
+            {
+                MessageBox.Show(@"Incorrect Username Format!
+Only Accepts A-Z & 0-9");
+            }
+            CloseConn(conn);
+        }
+        catch (MySqlException ex)
+        {
+            if (ex.Number == 1062)
+            {
+                throw new("Username Already Exists!\nSet Another Username");
+            }
+
+            throw new(ex.ToString());
+        }
+    }
+    #endregion
+    #endregion SecretaryMethods
     #region Grant Housing
     public void GrantHousing()
     {
@@ -1849,7 +1847,7 @@ Only Accepts A-Z & 0-9");
     }
     #endregion
     #endregion AdminMethods
-    //
+    
     #region Resident
     #region UpdateUsername
     public void UpdateUsername()
@@ -1926,7 +1924,4 @@ Only Accepts A-Z & 0-9");
     }
     #endregion UpdatePassword
     #endregion Resident
-
-
-
 }

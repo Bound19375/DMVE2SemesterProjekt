@@ -1,3 +1,4 @@
+
 using _2EksamensProjekt.DAL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySql.Data.MySqlClient;
@@ -74,18 +75,33 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public async void TestLogin()
+        public void TestLogin()
         {
             //Arrange test
             API test = API.GetInstance();
 
             //Act test
-            bool result;
+            bool result = false;
             try
             {
-                Task t1 = test.Login("A", "1");
-                await Task.FromResult(t1);
-                result = true;
+                switch (test.Login("A", "1").Result)
+                {
+                    case "secretary":
+                        result = true;
+                        break;
+                    case "admin":
+                        result = true;
+                        break;
+                    case "youth":
+                        result = true;
+                        break;
+                    case "senior":
+                        result = true;
+                        break;
+                    case "normal":
+                        result = true;
+                        break;
+                }
             }
             catch
             {

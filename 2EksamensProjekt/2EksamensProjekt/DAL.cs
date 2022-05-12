@@ -335,8 +335,11 @@ public class API
                     }
                     if (timeString != null || timeString != string.Empty || timeString != "NULL" || timeString != "[NULL]")
                     {
-                        string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd" };
-                        dbTime = Convert.ToDateTime(DateTime.ParseExact(s: timeString!, formats: dateFormats, provider: DateTimeFormatInfo.InvariantInfo, style: DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss"));
+                        string[] dateFormats = { "dd/MM/yyyy HH.mm.ss", "M/d/yyyy H:mm:ss tt", "M/d/yyyy HH:mm:ss tt", 
+                                                "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "dd.MM.yyyy", "dd-MM-yyyy", 
+                                                "dd/MM/yyyy", "ddMMyyyy", "yyyy.MM.dd", "yyyy-MM-dd", 
+                                                "yyyy/MM/dd", "yyyyMMdd" };
+                        dbTime = Convert.ToDateTime(DateTime.ParseExact(timeString!, dateFormats, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None).ToString("dd-MM-yyyy HH:mm:ss"));
                     }
                 }
                 catch (FormatException ex)
@@ -406,19 +409,15 @@ public class API
             List<string> currentcomboelements = new();
             usernames.Clear();
             currentcomboelements.Clear();
-
             MySqlConnection conn = new(ConnStr);
-
             //Set Isolation Level
             string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
             MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
             cmd1.ExecuteNonQuery();
-
             //Begin Transation
             string sqlString = "START TRANSACTION;";
             cmd1 = new(sqlString, OpenConn(conn));
             cmd1.ExecuteNonQuery();
-
             //Append To List
             cmd1 = new(sql, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@min", Min);
@@ -429,8 +428,6 @@ public class API
             cmd1.Parameters.AddWithValue("@availabletype", AvailableType);
             cmd1.Parameters.AddWithValue("@username", AccountUsername);
             cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
-
-
             MySqlDataReader rdr = cmd1.ExecuteReader();
 
             while (rdr.Read())
@@ -1156,15 +1153,6 @@ public class API
             cmd1.Parameters.AddWithValue("@id", CancelBookingID);
             cmd1.ExecuteNonQuery();
 
-
-            //Alter Booking Count
-            /*
-            string altercount = "UPDATE resource SET times_reserved = times_reserved - 1 WHERE id = @unitid; ";
-            cmd1 = new MySqlCommand(altercount, OpenConn(conn));
-            cmd1.Parameters.AddWithValue("@unitid", Resources.UnitID);
-            cmd1.ExecuteNonQuery();
-            */
-
             //COMMIT
             string commit = "COMMIT;";
             cmd1 = new(commit, OpenConn(conn));
@@ -1233,17 +1221,6 @@ public class API
         try
         {
             MySqlConnection conn = new(ConnStr);
-
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
             //Write To txt file
             string cmd_TxtPrint =
                 "SELECT a.username, h.type, CONCAT(a.first_names, ' ', a.last_name), ha.start_contract, h.m2, h.rental_price " +
@@ -1251,10 +1228,9 @@ public class API
                 "WHERE ha.account_username = a.username " +
                 "AND ha.housing_id = h.id " +
                 "ORDER BY a.username;";
+            MySqlCommand cmd1 = new(cmd_TxtPrint, OpenConn(conn));
             cmd1 = new(cmd_TxtPrint, OpenConn(conn));
-
             MySqlDataReader rdr = cmd1.ExecuteReader();
-
             Directory.CreateDirectory(@"..\..\..\txts");
             string filePath = @"..\..\..\txts\Residencies.txt";
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
@@ -1277,12 +1253,6 @@ public class API
                 writer.Close();
             }
             rdr.Close();
-
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
             CloseConn(conn);
             MessageBox.Show($@"File Downloaded To: {filePath[9..]}");
         }
@@ -1302,17 +1272,16 @@ public class API
             string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
             MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
             cmd1.ExecuteNonQuery();
-
             //Begin Transation
             string sqlString = "START TRANSACTION;";
             cmd1 = new(sqlString, OpenConn(conn));
             cmd1.ExecuteNonQuery();
-
             //Create User
             Regex regex = new(@"^[a-zA-Z0-9ÆØÅæøå]+$"); //Input Validation
             if (regex.IsMatch(CreateAccountUsername!) && regex.IsMatch(Password!))
             {
-                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @phone, @accountsurname, @accountname);";
+                string sqlcommand = "INSERT INTO account (username, password, privilege, type, phone_number, first_names, last_name) " +
+                    "VALUES (@username, AES_ENCRYPT(@password, 'key'), 'waitlist', @type, @phone, @accountsurname, @accountname);";
                 cmd1 = new(sqlcommand, OpenConn(conn));
                 cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
                 cmd1.Parameters.AddWithValue("@password", Password);
@@ -1321,12 +1290,10 @@ public class API
                 cmd1.Parameters.AddWithValue("@accountsurname", AccountSurname);
                 cmd1.Parameters.AddWithValue("@phone", AccountPhoneNumber);
                 cmd1.ExecuteNonQuery();
-
                 //COMMIT
                 string commit = "COMMIT;";
                 cmd1 = new(commit, OpenConn(conn));
                 cmd1.ExecuteNonQuery();
-
                 CloseConn(conn);
             }
             else
@@ -1404,12 +1371,6 @@ public class API
                 cmd1.Parameters.AddWithValue("@username", AccountUsername);
                 cmd1.ExecuteNonQuery();
 
-                //Remove From Waitlist
-                // sqlcommand = "DELETE FROM waitlist WHERE account_username = @username;";
-                // cmd1 = new(sqlcommand, OpenConn(conn));
-                // cmd1.Parameters.AddWithValue("@username", AccountUsername);
-                // cmd1.ExecuteNonQuery();
-
                 //COMMIT
                 string commit = "COMMIT;";
                 cmd1 = new(commit, OpenConn(conn));
@@ -1441,8 +1402,6 @@ public class API
         try
         {
             MySqlConnection conn = new(ConnStr);
-
-
             if (HouseType != string.Empty && M2 != 0 && Price != 0)
             {
                 //Set Isolation Level
@@ -1768,13 +1727,6 @@ public class API
 
             cmd1.ExecuteNonQuery();
 
-            //Delete From Residents
-            // sqlString = "DELETE FROM residents WHERE account_username = @accountusername;";
-            // cmd1 = new(sqlString, OpenConn(conn));
-            // cmd1.Parameters.AddWithValue("@accountusername", DeleteFromSystemUsername);
-            //
-            // cmd1.ExecuteNonQuery();
-
             //Delete Account
             sqlString = "DELETE FROM account WHERE username = @accountusername;";
             cmd1 = new(sqlString, OpenConn(conn));
@@ -1788,7 +1740,6 @@ public class API
             cmd1.ExecuteNonQuery();
 
             CloseConn(conn);
-
         }
         catch (MySqlException ex)
         {
@@ -1835,7 +1786,7 @@ public class API
             MessageBox.Show(ex.Message);
         }
     }
-    #endregion Booking
+    #endregion
     #region UpdatePassword
     public void UpdatePassword()
     {

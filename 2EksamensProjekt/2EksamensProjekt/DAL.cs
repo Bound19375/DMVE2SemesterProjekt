@@ -1354,23 +1354,6 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                 cmd1.Parameters.AddWithValue("@phone", AccountPhoneNumber);
                 cmd1.ExecuteNonQuery();
 
-                //Append Created User To Waitlist
-                /*string sql = "SELECT * FROM account WHERE username = @username";
-                cmd1 = new(sql, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@username", CreateAccountUsername);
-                MySqlDataReader reader = cmd1.ExecuteReader();
-                string dbusername = "NONE";
-                while (reader.Read())
-                {
-                    dbusername = reader.GetString(0);
-                }
-                reader.Close();
-                string sqlwaitlist = "INSERT INTO waitlist(`type`, account_username) VALUES(@type, @dbusername);";
-                cmd1 = new(sqlwaitlist, OpenConn(conn));
-                cmd1.Parameters.AddWithValue("@type", WaitlistType);
-                cmd1.Parameters.AddWithValue("@dbusername", dbusername);
-                cmd1.ExecuteNonQuery();*/
-
                 //COMMIT
                 string commit = "COMMIT;";
                 cmd1 = new(commit, OpenConn(conn));
@@ -1380,8 +1363,7 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
             }
             else
             {
-                MessageBox.Show(@"Incorrect Username Format!
-Only Accepts A-Z & 0-9");
+                MessageBox.Show(@"Incorrect Username Format! Only Accepts A-Z & 0-9");
             }
             CloseConn(conn);
         }

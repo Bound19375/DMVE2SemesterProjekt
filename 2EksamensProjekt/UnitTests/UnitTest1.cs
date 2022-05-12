@@ -116,20 +116,20 @@ namespace UnitTests
         {
             //Arrange test
             API test = API.GetInstance();
-
+            TextBox min = new TextBox();
+            TextBox max = new TextBox();
+            ComboBox user = new ComboBox();
+            min.Text = "100";
+            max.Text = "0";
+            user.Text = "BoundSoul";
+            test.TextboxReader(min, API.SetReaderField.Min);
+            test.TextboxReader(max, API.SetReaderField.Max);
+            test.ComboBoxReader(user, API.SetReaderField.SortUsername);
+            
             //Act test
             bool result;
             try
-            {
-                TextBox min = new TextBox();
-                TextBox max = new TextBox();
-                ComboBox user = new ComboBox();
-                min.Text = "100";
-                max.Text = "0";
-                user.Text = "BoundSoul";
-                test.TextboxReader(min, API.SetReaderField.Min);
-                test.TextboxReader(max, API.SetReaderField.Max);
-                test.ComboBoxReader(user, API.SetReaderField.SortUsername);
+            { 
                 test.AdminStatisticsPrint(API.ResourceSort.AllPerUnit);
                 result = true;
             }

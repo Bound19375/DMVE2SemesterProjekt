@@ -32,10 +32,10 @@ public class API
 
     #region Singleton
 
-    private static readonly API Singleton = new();
-    private API() { } //Private Due to Singleton ^^
+    private static readonly API Singleton = new(); 
+    private API() { } //Private Due to Singleton ^^ 
 
-    //Singleton
+    //Singleton 
     public static API GetInstance()
     {
         return Singleton;
@@ -60,7 +60,6 @@ public class API
             Waitlist = 1,
             CurrentResidents,
             CurrentResidentsUsername,
-            //public string ResidentReservationIDs = "SELECT rrr.id FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
             WMSORTALL,
             PHSortAll,
             PSSortAll,
@@ -71,7 +70,6 @@ public class API
             AllResourcesBooked,
             AvailableResourceIDS,
             AvailableResourcesByType,
-            //public string ResourcesBookedByUsername = "SELECT rrr.id AS 'booking id', a.username, r.Name, r2.`type`, r2.id AS 'unit id', rrr.start_timestamp, rrr.end_timestamp FROM resident_resource_reservations rrr, residents r, account a, resource r2 WHERE rrr.residents_username = r.account_username AND rrr.resource_id = r2.id AND r.account_username = a.username AND NOW() < rrr.end_timestamp AND r.account_username = @username ORDER BY rrr.end_timestamp;";
             Usernames,
             StartDate,
             EndDate,
@@ -80,7 +78,6 @@ public class API
             AvailableHouseSortAll,
             AvailableHouseSortByM2,
             AvailableHouseSortByPrice,
-
             //Fillers
             AvailableHouseIDs,
             UsernamesOnWaitinglist,
@@ -255,8 +252,7 @@ public class API
     #endregion SQLCMDS
 
     #region Open/Close-Conn
-//private static string ConnStr = "server=bound1937.asuscomm.com;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
-private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
+    private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEksamen;user=plebs;password=1234;SslMode=none;";
     //Open Connection Method 
     public MySqlConnection OpenConn(MySqlConnection conn)
     {
@@ -1028,18 +1024,9 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
         {
             MySqlConnection conn = new(ConnStr);
 
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd = new(StartTransaction, OpenConn(conn));
-            cmd.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd = new(sqlString, OpenConn(conn));
-            cmd.ExecuteNonQuery();
-
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
             string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
+            MySqlCommand cmd = new(connSql, OpenConn(conn));
             cmd = new(connSql, OpenConn(conn));
 
             if (regex.IsMatch(username)) //Input Validation Check
@@ -1058,11 +1045,6 @@ private static string ConnStr = "server=62.61.157.3;port=80;database=2SemesterEk
                     dbprivilege = reader.GetString(2);
                 }
                 reader.Close();
-
-                //COMMIT
-                string commit = "COMMIT;";
-                cmd = new(commit, OpenConn(conn));
-                cmd.ExecuteNonQuery();
 
                 CloseConn(conn);
 

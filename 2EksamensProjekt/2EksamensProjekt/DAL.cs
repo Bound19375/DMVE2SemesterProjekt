@@ -1097,19 +1097,10 @@ public class API
         try
         {
             MySqlConnection conn = new(ConnStr);
-
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd = new(StartTransaction, OpenConn(conn));
-            cmd.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd = new(sqlString, OpenConn(conn));
-            cmd.ExecuteNonQuery();
-
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
             string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
+            MySqlCommand cmd = new(connSql, OpenConn(conn));
+
             cmd = new(connSql, OpenConn(conn));
 
             if (regex.IsMatch(username)) //Input Validation Check
@@ -1128,11 +1119,6 @@ public class API
                     dbprivilege = reader.GetString(2);
                 }
                 reader.Close();
-
-                //COMMIT
-                string commit = "COMMIT;";
-                cmd = new(commit, OpenConn(conn));
-                cmd.ExecuteNonQuery();
 
                 CloseConn(conn);
 

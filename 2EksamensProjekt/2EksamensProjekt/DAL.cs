@@ -1022,7 +1022,7 @@ public class API
             MySqlConnection conn = new(ConnStr);
 
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
-            string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
+            string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege, type FROM account WHERE username = @username";
             MySqlCommand cmd = new(connSql, OpenConn(conn));
             cmd = new(connSql, OpenConn(conn));
 
@@ -1035,11 +1035,13 @@ public class API
                 string dbusername = "NONE";
                 string dbpassword = "NONE";
                 string dbprivilege = "NONE";
+                string type = "NONE";
                 while (reader.Read())
                 {
                     dbusername = reader.GetString(0);
                     dbpassword = reader.GetString(1);
                     dbprivilege = reader.GetString(2);
+                    type = reader.GetString(3);
                 }
                 reader.Close();
 
@@ -1054,11 +1056,8 @@ public class API
                             return await Task.FromResult("secretary");
                         case "admin":
                             return await Task.FromResult("admin");
-                        case "youth":
-                        case "senior":
-                        case "normal":
-                        {
-                            switch (dbprivilege)
+                        case "resident":
+                            switch (type)
                             {
                                 case "youth":
                                     return await Task.FromResult("youth");
@@ -1068,7 +1067,6 @@ public class API
                                     return await Task.FromResult("normal");
                             }
                             break;
-                        }
                     }
                 }
                 else

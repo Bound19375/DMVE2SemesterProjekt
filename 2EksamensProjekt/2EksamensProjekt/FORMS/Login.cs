@@ -74,6 +74,10 @@ public partial class Login : Form
             //obj.Closed += (s, args) => this.Close();
             obj.Show();
         }
+        else
+        {
+            MessageBox.Show(result);
+        }
             
     }
 

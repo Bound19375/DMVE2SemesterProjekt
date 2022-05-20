@@ -174,7 +174,7 @@ public class API
 
                 case SELECTSQLQUERY.CurrentResidentInfo:
                     return
-                        "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.'type', CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
+                        "SELECT hr.*, h.`type`, h.m2, h.rental_price, a.`type`, CONCAT(h.street_address, ', ', h.locality_postal_code, ' ', l.city) AS 'Adresse'" +
                         "\nFROM housing_account hr, housing h, account a, locality l" +
                         "\nWHERE h.id = hr.housing_id AND hr.account_username = a.username AND a.username = @username AND h.locality_postal_code = l.postal_code" +
                         "\nGROUP BY hr.housing_id;";

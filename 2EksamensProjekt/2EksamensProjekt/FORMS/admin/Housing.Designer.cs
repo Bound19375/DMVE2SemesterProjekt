@@ -66,12 +66,12 @@ partial class Housing
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(1047, 50);
+            this.dataGridView1.Location = new System.Drawing.Point(987, 50);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(321, 393);
+            this.dataGridView1.Size = new System.Drawing.Size(381, 393);
             this.dataGridView1.TabIndex = 0;
             // 
             // dataGridView2
@@ -92,7 +92,7 @@ partial class Housing
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(1144, 5);
+            this.label3.Location = new System.Drawing.Point(1106, 5);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 38);
             this.label3.TabIndex = 18;
@@ -249,7 +249,7 @@ partial class Housing
             this.dataGridView3.ReadOnly = true;
             this.dataGridView3.RowHeadersWidth = 62;
             this.dataGridView3.RowTemplate.Height = 33;
-            this.dataGridView3.Size = new System.Drawing.Size(919, 393);
+            this.dataGridView3.Size = new System.Drawing.Size(858, 393);
             this.dataGridView3.TabIndex = 34;
             // 
             // label8

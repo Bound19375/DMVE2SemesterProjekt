@@ -79,11 +79,11 @@ public partial class residentSP : Form
                 }
 
                 //Booked
-                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
+                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true, DataGridViewAutoSizeColumnMode.Fill);
                 //Available
-                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true, DataGridViewAutoSizeColumnMode.Fill);
                 //Resident Information
-                _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentInfo), true);
+                _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidentInfo), true, DataGridViewAutoSizeColumnMode.Fill);
             }
             catch (Exception ex)
             {

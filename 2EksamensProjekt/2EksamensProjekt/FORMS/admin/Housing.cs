@@ -46,9 +46,9 @@ public partial class Housing : Form
                     sql = _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseSortByPrice);
 
                 }
-                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false);
-                _api.Gridview(dataGridView2, sql, true);
-                _api.Gridview(dataGridView3, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.Waitlist), false, DataGridViewAutoSizeColumnMode.Fill);
+                _api.Gridview(dataGridView2, sql, true, DataGridViewAutoSizeColumnMode.Fill);
+                _api.Gridview(dataGridView3, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.CurrentResidents), false, DataGridViewAutoSizeColumnMode.Fill);
 
 
                 _api.ComboBoxFill(comboBox1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableHouseIDs));

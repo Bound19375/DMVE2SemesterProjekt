@@ -149,32 +149,33 @@ public partial class Resources : Form
                 _api.ComboBoxReader(comboBox6, API.SetReaderField.CancelBookingID);
 
                 //GridViewFillers
-                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true);
-                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true);
+                _api.Gridview(dataGridView4, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AllResourcesBooked), true, DataGridViewAutoSizeColumnMode.Fill);
+                _api.Gridview(dataGridView1, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.AvailableResourcesByType), true, DataGridViewAutoSizeColumnMode.Fill);
 
                 if (radioButton8.Checked)
                 {
-                    if (radioButton6.Checked) //All User
+                    if (radioButton6.Checked || radioButton10.Checked) //All User
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true, DataGridViewAutoSizeColumnMode.Fill);
 
                     }
                     else if (radioButton7.Checked) //All Per Unit (Count)
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit), true, DataGridViewAutoSizeColumnMode.Fill);
                     }
                     else if (radioButton1.Checked) //Per User
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser), true, DataGridViewAutoSizeColumnMode.Fill);
                     }
                     else if (radioButton2.Checked) //Per Unit
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit), true, DataGridViewAutoSizeColumnMode.Fill);
+                    }
+                    else if (radioButton10.Checked) //Print Everything
+                    {
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true, DataGridViewAutoSizeColumnMode.Fill);
                     }
                 }
-                else
-                    _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true);
-
             }
             catch (Exception ex)
             {
@@ -215,6 +216,10 @@ public partial class Resources : Form
             else if (radioButton2.Checked) //Per Unit
             {
                 _api.AdminStatisticsPrint(API.ResourceSort.PerUnit);
+            }
+            else if (radioButton10.Checked) //Everything
+            {
+                _api.AdminStatisticsPrint(API.ResourceSort.Everything);
             }
         }
         catch (Exception)

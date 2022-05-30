@@ -256,8 +256,7 @@ public class API
     //Open Connection Method 
     public MySqlConnection OpenConn(MySqlConnection conn)
     {
-        string state = conn.State.ToString();
-        if (state == "Closed")
+        if (conn.State == ConnectionState.Closed)
         {
             try
             {
@@ -274,8 +273,7 @@ public class API
     //Close Connection Method
     public MySqlConnection CloseConn(MySqlConnection conn)
     {
-        string state = conn.State.ToString();
-        if (state == "Open")
+        if (conn.State == ConnectionState.Open)
         {
             try
             {
@@ -358,7 +356,7 @@ public class API
     }
     #endregion Database Update Information
     #region GridviewFill
-    public void Gridview(DataGridView gv, string dataTableSql, bool bypass)
+    public void Gridview(DataGridView gv, string dataTableSql, bool bypass, DataGridViewAutoSizeColumnMode mode)
     {
         try
         {
@@ -389,7 +387,7 @@ public class API
                     {
                         var source = new BindingSource(tbl, null);
                         gv.DataSource = source;
-                        gv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        gv.AutoSizeColumnsMode = (DataGridViewAutoSizeColumnsMode)mode;
                     });
                 }
             }
@@ -583,7 +581,8 @@ public class API
         AllUsers = 1,
         AllPerUnit,
         PerUser,
-        PerUnit
+        PerUnit,
+        Everything,
     }
     #endregion
     #region GroupBoxReader
@@ -1501,11 +1500,13 @@ public class API
     }
     #endregion Delete Housing
     #region Admin Statistics Print (txt)
-    public void AdminStatisticsPrint(ResourceSort sql = 0)
+    public void AdminStatisticsPrint(ResourceSort sql)
     {
         try
         {
+            bool printeverything = false;
             string cmdTxtPrint = "NONE";
+            string cmdTxtPrint2 = "NONE";
 
             switch (sql)
             {
@@ -1515,33 +1516,27 @@ public class API
 
                 case ResourceSort.AllPerUnit:
                     cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
-
                     break;
 
                 case ResourceSort.PerUser:
                     cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUser);
-
                     break;
 
                 case ResourceSort.PerUnit:
                     cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortPerUnit);
                     break;
+
+                case ResourceSort.Everything:
+                    cmdTxtPrint = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers);
+                    cmdTxtPrint2 = SQLCMDS.GetInstance().GetSQLQuery(SQLCMDS.SELECTSQLQUERY.ResourceSortAllPerUnit);
+                    printeverything = true;
+                    break;
             }
 
             MySqlConnection conn = new(ConnStr);
 
-            //Set Isolation Level
-            string StartTransaction = "\nSET TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-            MySqlCommand cmd1 = new(StartTransaction, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
-            //Begin Transation
-            string sqlString = "START TRANSACTION;";
-            cmd1 = new(sqlString, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
-
             //Write To txt file
-            cmd1 = new(cmdTxtPrint, OpenConn(conn));
+            MySqlCommand cmd1 = new(cmdTxtPrint, OpenConn(conn));
             cmd1.Parameters.AddWithValue("@min", Min);
             cmd1.Parameters.AddWithValue("@max", Max);
             string start = Start.ToString("yyyy-MM-dd HH:mm:ss");
@@ -1553,100 +1548,68 @@ public class API
             cmd1.Parameters.AddWithValue("@username", AccountUsername);
             cmd1.Parameters.AddWithValue("@sortusername", SortUsername);
             cmd1.Parameters.AddWithValue("@durationendtime", Duration.ToString("yy-MM-dd HH:mm:ss.ffff"));
-            DataTable tbl = new();
-            tbl.Load(cmd1.ExecuteReader());
 
             MySqlDataReader rdr = cmd1.ExecuteReader();
 
-
             Directory.CreateDirectory(@"..\..\..\txts");
             string filePath = @"..\..\..\txts\Resources.txt";
-            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
+            var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
+            StreamWriter writer = new(stream, Encoding.UTF8);
+            while (rdr.Read())
             {
-                StreamWriter writer = new(stream, Encoding.UTF8);
-                #region WriteFromDataRow (Unused)
-                //int i;
-                //for (i = 0; i < tbl.Columns.Count; i++)
-                //{
-                //    writer.Write(tbl.Columns[i].ColumnName + "\t\t");
-                //}
-                //writer.WriteLine("\n");
-
-                //foreach (DataRow row in tbl.Rows)
-                //{
-                //    object?[] array = row.ItemArray;
-
-                //    for (i = 0; i < array.Length; i++)
-                //    {
-                //        writer.Write(array[i] + ";");
-                //    }
-                //    writer.WriteLine();
-                //}
-                #endregion
-                while (rdr.Read())
+                switch (sql)
                 {
-                    switch (sql)
-                    {
-                        case ResourceSort.AllUsers:
-                            writer.WriteLine(
-                               "{\n" +
-                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
-                               $" Navn: {Convert.ToString(rdr[1])}\n" +
-                               $" Type: {Convert.ToString(rdr[2])}\n" +
-                               $" ID: {Convert.ToString(rdr[3])}\n" +
-                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
-                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
-                               "}\n" +
-                               "\n");
-                            break;
+                    case ResourceSort.AllUsers:
+                    case ResourceSort.Everything:
+                        writer.WriteLine(
+                            $"Brugernavn:{Convert.ToString(rdr[0])};Navn:{Convert.ToString(rdr[1])};Type:{Convert.ToString(rdr[2])};ID:{Convert.ToString(rdr[3])};Start Dato:{Convert.ToString(rdr[4])};Slut Dato:{Convert.ToString(rdr[5])};");
+                        break;
 
-                        case ResourceSort.AllPerUnit:
-                            writer.WriteLine(
-                               "{\n" +
-                               $" ID: {Convert.ToString(rdr[0])}\n" +
-                               $" Type: {Convert.ToString(rdr[1])}\n" +
-                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
-                               "}\n" +
-                               "\n");
-                            break;
+                    case ResourceSort.AllPerUnit:
+                        writer.WriteLine(
+                            $"ID:{Convert.ToString(rdr[0])};Type:{Convert.ToString(rdr[1])};Gange_Reserveret: {Convert.ToString(rdr[2])};\t\t");
+                        break;
 
-                        case ResourceSort.PerUser:
-                            writer.WriteLine(
-                               "{\n" +
-                               $" Brugernavn: {Convert.ToString(rdr[0])}\n" +
-                               $" Navn: {Convert.ToString(rdr[1])}\n" +
-                               $" Type: {Convert.ToString(rdr[2])}\n" +
-                               $" ID: {Convert.ToString(rdr[3])}\n" +
-                               $" Start Dato: {Convert.ToString(rdr[4])}\n" +
-                               $" Slut Dato: {Convert.ToString(rdr[5])}\n" +
-                               "}\n" +
-                               "\n");
-                            break;
+                    case ResourceSort.PerUser:
+                        writer.WriteLine(
+                            $"Brugernavn:{Convert.ToString(rdr[0])};Navn:{Convert.ToString(rdr[1])};Type: {Convert.ToString(rdr[2])};ID:{Convert.ToString(rdr[3])};Start Dato:{Convert.ToString(rdr[4])};Slut Dato:{Convert.ToString(rdr[5])};");
+                        break;
 
-                        case ResourceSort.PerUnit:
-                            writer.WriteLine(
-                               "{\n" +
-                               $" ID: {Convert.ToString(rdr[0])}\n" +
-                               $" Type: {Convert.ToString(rdr[1])}\n" +
-                               $" Gange_Reserveret: {Convert.ToString(rdr[2])}\n" +
-                               "}\n" +
-                               "\n");
-                            break;
-                    }
+                    case ResourceSort.PerUnit:
+                        writer.WriteLine(
+                            $"\nID:{Convert.ToString(rdr[0])};Type:{Convert.ToString(rdr[1])};Gange_Reserveret:{Convert.ToString(rdr[2])};");
+                        break;
                 }
-                writer.Close();
             }
-            //COMMIT
-            string commit = "COMMIT;";
-            cmd1 = new(commit, OpenConn(conn));
-            cmd1.ExecuteNonQuery();
+            rdr.Close();
+            writer.Close();
+            stream.Close();
+            CloseConn(conn);
 
+            if (printeverything)
+            {
+                //Write Count To Txt
+                MySqlCommand cmdCount = new(cmdTxtPrint2, OpenConn(conn));
+                cmdCount.Parameters.AddWithValue("@availabletype", AvailableType);
+                MySqlDataReader rdrCount = cmdCount.ExecuteReader();
+                using var streamCount = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 4096, true);
+                StreamWriter writerCount = new(streamCount, Encoding.UTF8);
+                writerCount.WriteLine();
+                while (rdrCount.Read())
+                {
+                    writerCount.WriteLine(
+                        $"ID:{Convert.ToString(rdrCount[0])};Type:{Convert.ToString(rdrCount[1])};Gange_Reserveret:{Convert.ToString(rdrCount[2])}");
+                }
+                rdrCount.Close();
+                writerCount.Close();
+                streamCount.Close();
+            }
             CloseConn(conn);
             MessageBox.Show($@"File Downloaded To: {filePath[9..]}");
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.ToString());
         }
     }
     #endregion Admin Statistics Print (txt)

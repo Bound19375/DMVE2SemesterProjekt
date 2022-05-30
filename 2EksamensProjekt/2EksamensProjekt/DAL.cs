@@ -1024,7 +1024,6 @@ public class API
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
             string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege, type FROM account WHERE username = @username";
             MySqlCommand cmd = new(connSql, OpenConn(conn));
-            cmd = new(connSql, OpenConn(conn));
 
             if (regex.IsMatch(username)) //Input Validation Check
             {
@@ -1095,8 +1094,6 @@ public class API
             Regex regex = new(@"^[a-zA-Z0-9]+$"); //Input Validation
             string connSql = "SELECT username, AES_DECRYPT(password, 'key'), privilege FROM account WHERE username = @username";
             MySqlCommand cmd = new(connSql, OpenConn(conn));
-
-            cmd = new(connSql, OpenConn(conn));
 
             if (regex.IsMatch(username)) //Input Validation Check
             {
@@ -1227,7 +1224,6 @@ public class API
                 "AND ha.housing_id = h.id " +
                 "ORDER BY a.username;";
             MySqlCommand cmd1 = new(cmd_TxtPrint, OpenConn(conn));
-            cmd1 = new(cmd_TxtPrint, OpenConn(conn));
             MySqlDataReader rdr = cmd1.ExecuteReader();
             Directory.CreateDirectory(@"..\..\..\txts");
             string filePath = @"..\..\..\txts\Residencies.txt";
@@ -1445,7 +1441,7 @@ public class API
             
             if (ex.Number == 1452)
             {
-                MessageBox.Show("Ukorrekt PostNr!");
+                MessageBox.Show(@"Ukorrekt PostNr!");
             }
         }
     }

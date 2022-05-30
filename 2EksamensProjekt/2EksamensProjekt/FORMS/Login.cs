@@ -2,15 +2,13 @@ namespace _2EksamensProjekt.FORMS;
 
 public partial class Login : Form
 {
-    private readonly API _api = API.GetInstance(); 
-
+    private readonly API _api = API.GetInstance();
     private static readonly Login Singleton = new();
 
     private Login()
     {
         InitializeComponent();
-        Task slogan = new(Slogan);
-        slogan.Start(); //Create an instance of a Task & Start it
+        new Task(Slogan).Start(); //Create an instance of a Task & Start it
     }
 
     public static Login GetInstance() //Login Form Made Singleton Due To Otherwise Disposion Of Objects --Garbage Collector--.
@@ -52,33 +50,27 @@ public partial class Login : Form
     private void button1_Click(object sender, EventArgs e)
     {
         string result = _api.Login(textBox1.Text, textBox2.Text).Result; //Calling Async Task Login Method From DAL Class.
-        //MessageBox.Show(result);
-        if (result == "admin")
+        switch (result)
         {
-            Hide();
-            adminSP obj = adminSP.GetInstance();
-            //obj.Closed += (s, args) => this.Close();
-            obj.Show();
+            //MessageBox.Show(result);
+            case "admin":
+                Hide();
+                adminSP.GetInstance().Show();
+                break;
+            case "secretary":
+                Hide();
+                secretarySP.GetInstance().Show();
+                break;
+            case "youth":
+            case "senior":
+            case "normal":
+                Hide();
+                residentSP.GetInstance().Show();
+                break;
+            default:
+                MessageBox.Show(result);
+                break;
         }
-        else if (result == "secretary")
-        {
-            Hide();
-            secretarySP obj = secretarySP.GetInstance();
-            //obj.Closed += (s, args) => this.Close();
-            obj.Show();
-        }
-        else if (result == "youth" || result == "senior" || result == "normal")
-        {
-            Hide();
-            residentSP obj = residentSP.GetInstance();
-            //obj.Closed += (s, args) => this.Close();
-            obj.Show();
-        }
-        else
-        {
-            MessageBox.Show(result);
-        }
-            
     }
 
     private void button2_Click(object sender, EventArgs e)

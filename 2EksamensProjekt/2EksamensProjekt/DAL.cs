@@ -136,14 +136,14 @@ public class API
                     return 
                         "SELECT r.id AS 'Type-id' " +
                         "\nFROM account_resource_reservations arr, resource r " +
-                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp OR @durationendtime >= arr.end_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
+                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (@start > arr.end_timestamp OR @durationendtime < arr.start_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
                         "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.AvailableResourcesByType:
                     return 
                         "SELECT r.id AS 'Type-id'" +
                         "\nFROM account_resource_reservations arr, resource r" +
-                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (NOW() > arr.end_timestamp OR @durationendtime < arr.start_timestamp OR @durationendtime >= arr.end_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
+                        "\nWHERE r.`type` = @availabletype AND (r.id = arr.resource_id AND (@start > arr.end_timestamp OR @durationendtime < arr.start_timestamp) OR (r.id NOT IN(SELECT arr2.resource_id FROM account_resource_reservations arr2)))" +
                         "\nGROUP BY r.id ORDER BY r.id;";
 
                 case SELECTSQLQUERY.Usernames:
@@ -270,7 +270,6 @@ public class API
         return conn;
     }
 
-    //Close Connection Method
     public MySqlConnection CloseConn(MySqlConnection conn)
     {
         if (conn.State == ConnectionState.Open)
@@ -312,7 +311,6 @@ public class API
 
     #region Threading
     #region Database Update Information
-    //DataGridView Thread Refresh Method
     private async Task<DateTime> DBUpdateCheck()
     {
         try
@@ -1377,14 +1375,9 @@ public class API
             }
             CloseConn(conn);
         }
-        catch (MySqlException ex)
+        catch (Exception ex)
         {
-            if (ex.Number == 1062)
-            {
-                throw new("Username Already Exists!\nSet Another Username");
-            }
-
-            throw new(ex.Message);
+            MessageBox.Show("Indtast gyldig information!"); ;
         }
            
     }
@@ -1782,4 +1775,5 @@ public class API
     }
     #endregion UpdatePassword
     #endregion Resident
+
 }

@@ -9,9 +9,9 @@ public partial class residentSP : Form
     private residentSP()
     {
         InitializeComponent();
-        label5.Text = $@"{_api.AccountUsername}";
+        comboBox7.Text = $@"{_api.AccountUsername}";
         radioButton3.Checked = true;
-        comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
+        comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ff");
         groupBox2.Text = @"washingmachine";
         Task t2 = new(Worker);
         t2.Start();
@@ -34,6 +34,8 @@ public partial class residentSP : Form
         {
             try
             {
+                //Username
+                _api.ComboBoxReader(comboBox7, API.SetReaderField.SortUsername);
                 //GroupBoxUnitChoice
                 _api.GroupboxReader(groupBox2, API.SetReaderField.AvailableType);
                 //StartDate
@@ -53,7 +55,7 @@ public partial class residentSP : Form
                 {
                     label1.Invoke((MethodInvoker)delegate //Invoking due to GUI Thread //Delegate ref pointing to label1
                     {
-                        label5.Text = _api.AccountUsername; //Calling Async Task SloganT Method From Api Class.
+                        comboBox6.Text = _api.AccountUsername; //Calling Async Task SloganT Method From Api Class.
                     });
                 }
 
@@ -137,13 +139,6 @@ Logging Out!");
 
     private void button3_Click(object sender, EventArgs e)
     {
-        if (comboBox1.Text != String.Empty && Convert.ToDateTime(comboBox1.Text) >= DateTime.Now && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
-        {
-            _api.Booking();
-        }
-        else
-        {
-            MessageBox.Show(@"Incorrect Information!");
-        }
+        _api.Booking();
     }
 }

@@ -19,7 +19,7 @@ public partial class Resources : Form
         comboBox4.Enabled = false;
         comboBox5.Enabled = false;
         radioButton3.Enabled = true;
-        comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
+        comboBox1.Text = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ff");
         Task t2 = new(Worker);
         t2.Start();
     }
@@ -156,7 +156,7 @@ public partial class Resources : Form
                 {
                     if (radioButton6.Checked || radioButton10.Checked) //All User
                     {
-                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true, DataGridViewAutoSizeColumnMode.Fill);
+                        _api.Gridview(dataGridView5, _sqlCMDS.GetSQLQuery(API.SQLCMDS.SELECTSQLQUERY.ResourceSortAllUsers), true, DataGridViewAutoSizeColumnMode.AllCells);
 
                     }
                     else if (radioButton7.Checked) //All Per Unit (Count)
@@ -187,14 +187,7 @@ public partial class Resources : Form
 
     private void button3_Click(object sender, EventArgs e)
     {
-        if (comboBox3.Text != String.Empty && comboBox1.Text != String.Empty && Convert.ToDateTime(comboBox1.Text) >= DateTime.Now && comboBox4.Text != String.Empty && comboBox5.Text != String.Empty)
-        {
-            _api.Booking();
-        }
-        else
-        {
-            MessageBox.Show(@"Incorrect Information!");
-        }
+        _api.Booking();
     }
 
     private void button1_Click(object sender, EventArgs e)

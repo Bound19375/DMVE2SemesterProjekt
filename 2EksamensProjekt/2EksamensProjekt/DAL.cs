@@ -180,8 +180,8 @@ public class API
                         "\nGROUP BY hr.housing_id;";
 
                 case SELECTSQLQUERY.ResourceSortAllUsers:
-                    return 
-                        "SELECT a.username, a.first_names, r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp " +
+                    return
+                        "SELECT a.username, CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r2.type, r2.id, rrr.start_timestamp, rrr.end_timestamp " +
                         "\nFROM account_resource_reservations rrr, account r, account a, resource r2 " +
                         "\nWHERE rrr.account_username  = r.username AND rrr.resource_id = r2.id AND r.username = a.username " +
                         "\nORDER BY rrr.end_timestamp DESC ;";
@@ -193,8 +193,8 @@ public class API
                         "\nWHERE r.`type` = @availabletype;";
 
                 case SELECTSQLQUERY.ResourceSortPerUser:
-                    return 
-                        "SELECT a.username, a.first_names, r.type, r.id, rrr.start_timestamp, rrr.end_timestamp " +
+                    return
+                        "SELECT a.username, CONCAT(a.first_names, ' ', a.last_name) AS 'Fuldt navn', r.type, r.id, rrr.start_timestamp, rrr.end_timestamp " +
                         "\nFROM account_resource_reservations rrr, account a, resource r " +
                         "\nWHERE rrr.account_username = a.username AND rrr.resource_id = r.id AND rrr.start_timestamp >= @start AND rrr.end_timestamp <= @end AND rrr.account_username = @sortusername AND r.type = @availabletype" +
                         "\nORDER BY rrr.end_timestamp;";
